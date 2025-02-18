@@ -1,4 +1,4 @@
-package com.evidenlibrary.backend;
+package com.evidenlibrary.backend.apirest;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
