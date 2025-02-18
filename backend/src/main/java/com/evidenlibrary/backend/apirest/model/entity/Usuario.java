@@ -1,4 +1,4 @@
-package com.evidenlibrary.backend.apirest.model;
+package com.evidenlibrary.backend.apirest.model.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -33,6 +33,12 @@ public class Usuario implements Serializable{
 	    
 	@Column(nullable = false)
 	private String nombre;
+	
+	@Column(nullable = false)
+	private String apellido;
+	
+	@Column(nullable = true)
+	private String direccion;
 	    
 	@Column(nullable = false, unique = true)
 	private String email;

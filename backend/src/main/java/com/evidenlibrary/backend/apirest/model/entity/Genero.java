@@ -1,14 +1,15 @@
-package com.evidenlibrary.backend.apirest.model;
+package com.evidenlibrary.backend.apirest.model.entity;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,12 +17,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "detalles_pedido")
+@Table(name = "generos")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DetallePedido implements Serializable{
+public class Genero implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
@@ -29,17 +30,12 @@ public class DetallePedido implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @ManyToOne
-    @JoinColumn(name = "pedido_id", nullable = false)
-    private Pedido pedido;
-    
-    @ManyToOne
-    @JoinColumn(name = "libro_id", nullable = false)
-    private Libro libro;
+    @Column(nullable = false, unique = true)
+    private String nombre;
     
     @Column(nullable = false)
-    private Integer cantidad;
+    private String descripcion;
     
-    @Column(nullable = false)
-    private Double precioUnitario;
+    @ManyToMany(mappedBy = "generos")
+    private Set<Libro> libros = new HashSet<>();
 }

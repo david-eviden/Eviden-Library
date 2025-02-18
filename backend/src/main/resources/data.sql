@@ -1,13 +1,13 @@
 -- Usuarios (incluye admin, empleados y usuarios regulares)
-INSERT INTO usuarios (nombre, email, password, rol) VALUES
-('Admin Sistema', 'admin@libreria.com', 'admin', 'ADMIN'),
-('Empleado Uno', 'emp1@libreria.com', '1234', 'EMPLEADO'),
-('Empleado Dos', 'emp2@libreria.com', '1234', 'EMPLEADO'),
-('Juan Pérez', 'juan@email.com', '1234', 'USUARIO'),
-('María López', 'maria@email.com', '1234', 'USUARIO'),
-('Carlos Ruiz', 'carlos@email.com', '1234', 'USUARIO'),
-('Ana García', 'ana@email.com', '1234', 'USUARIO'),
-('Pedro Sánchez', 'pedro@email.com', '1234', 'USUARIO');
+INSERT INTO usuarios (nombre, apellido, direccion, email, password, rol) VALUES
+('Admin', 'Sistema', 'localhost', 'admin@libreria.com', 'admin', 'ADMIN'),
+('Empleado', 'Uno', 'Calle Falsa nº1, Valladolid', 'emp1@libreria.com', '1234', 'EMPLEADO'),
+('Empleado', 'Dos', 'Calle Falsa nº2, Valladolid', 'emp2@libreria.com', '1234', 'EMPLEADO'),
+('Juan', 'Pérez', 'Calle Falsa nº3, Valladolid', 'juan@email.com', '1234', 'USUARIO'),
+('María', 'López', 'Calle Falsa nº4, Valladolid', 'maria@email.com', '1234', 'USUARIO'),
+('Carlos', 'Ruiz', 'Calle Falsa nº5, Valladolid', 'carlos@email.com', '1234', 'USUARIO'),
+('Ana', 'García', 'Calle Falsa nº6, Valladolid', 'ana@email.com', '1234', 'USUARIO'),
+('Pedro', 'Sánchez', 'Calle Falsa nº7, Valladolid', 'pedro@email.com', '1234', 'USUARIO');
 
 -- Géneros literarios
 INSERT INTO generos (nombre, descripcion) VALUES

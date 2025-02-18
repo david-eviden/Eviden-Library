@@ -1,4 +1,4 @@
-package com.evidenlibrary.backend.apirest.model;
+package com.evidenlibrary.backend.apirest.model.entity;
 
 import java.io.Serializable;
 import java.util.HashSet;

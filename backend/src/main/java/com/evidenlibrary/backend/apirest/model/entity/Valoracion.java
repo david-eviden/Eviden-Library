@@ -1,6 +1,7 @@
-package com.evidenlibrary.backend.apirest.model;
+package com.evidenlibrary.backend.apirest.model.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,27 +17,33 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "detalles_carrito")
+@Table(name = "valoraciones")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DetalleCarrito implements Serializable {
+public class Valoracion implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	@Id
+	
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @ManyToOne
-    @JoinColumn(name = "carrito_id", nullable = false)
-    private Carrito carrito;
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
     
     @ManyToOne
     @JoinColumn(name = "libro_id", nullable = false)
     private Libro libro;
     
     @Column(nullable = false)
-    private Integer cantidad;
+    private Integer puntuacion;
+    
+    @Column(nullable = true)
+    private String comentario;
+    
+    @Column(nullable = false)
+    private Date fecha;
 }
