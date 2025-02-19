@@ -7,7 +7,7 @@ import com.evidenlibrary.backend.apirest.model.entity.Libro;
 
 public interface FavoritoService {
 
-	//public List<Favorito> findAll();
+	public List<Favorito> findAll();
 	
 	public Favorito findById(Long id);
 	
@@ -17,5 +17,5 @@ public interface FavoritoService {
 	
 	public void deleteLibroByFavorito(Long id);
 	
-	//public void delete(Favorito detalles);
+	public void delete(Favorito detalles);
 }

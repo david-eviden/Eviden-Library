@@ -7,7 +7,7 @@ import com.evidenlibrary.backend.apirest.model.entity.Libro;
 
 public interface DetalleCarritoService {
 
-	//public List<DetalleCarrito> findAll();
+	public List<DetalleCarrito> findAll();
 	
 	public DetalleCarrito findById(Long id);
 	
