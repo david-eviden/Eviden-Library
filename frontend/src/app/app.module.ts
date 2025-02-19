@@ -7,6 +7,11 @@ import { HeaderComponent } from './header/header.component';
 import { PrincipalComponent } from './principal/principal.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FooterComponent } from './footer/footer.component';
+import { AutorComponent } from './autor/autor.component';
+import { LibroComponent } from './libro/libro.component';
+import { GenerosComponent } from './generos/generos.component';
+import { UsuarioComponent } from './usuario/usuario.component';
+import { RouterModule } from '@angular/router';
 
 
 @NgModule({
@@ -14,12 +19,17 @@ import { FooterComponent } from './footer/footer.component';
     AppComponent,
     HeaderComponent,
     PrincipalComponent,
-    FooterComponent
+    FooterComponent,
+    AutorComponent,
+    LibroComponent,
+    GenerosComponent,
+    UsuarioComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    RouterModule
 ],
   providers: [],
   bootstrap: [AppComponent]

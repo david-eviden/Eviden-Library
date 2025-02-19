@@ -1,12 +1,35 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
+<nav class="navbar navbar-expand-lg bg-body-tertiary position-fixed w-100 top-0 left-0 z-index-100">
     <div class="container-fluid d-flex justify-content-between align-items-center mx-4">
+        <!-- Menú de categorías -->
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                <i class="bi bi-list me-2"></i>
+            </button>
+            <ul class="dropdown-menu">
+                <!-- Enlace para cada categoría -->
+                <!-- <li *ngFor="let categoria of categorias">
+                    <a class="dropdown-item" [routerLink]="'/categorias/' + categoria.id">{{ categoria.nombre }}</a>
+                </li> -->
+                <li *ngFor="let categoria of categorias">
+                    <a class="dropdown-item" href="#">{{ categoria.nombre }}</a>
+                </li>
 
-        <!-- Botón del menú -->
-        <button class="btn btn-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
-            aria-controls="offcanvasExample">
-            <i class="bi bi-list me-2"></i>
-        </button>
-
+                <!-- páginas-->
+                <li>
+                    <a class="dropdown-item" [routerLink]="['/libros']">Libros</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" [routerLink]="['/autores']">Autores</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" [routerLink]="['/usuarios']">Usuarios</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" [routerLink]="['/generos']">Géneros</a>
+                </li>
+            </ul>
+        </div>
 
         <!-- Barra de búsqueda -->
         <div class="d-flex flex-grow-1 justify-content-center mx-3">
