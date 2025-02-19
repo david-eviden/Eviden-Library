@@ -1,0 +1,9 @@
+<div class="container mt-5">
+    <h2>Lista de Géneros</h2>
+    <ul class="list-group">
+        <li *ngFor="let genero of generos" class="list-group-item">
+            <h5>{{ genero.nombre }}</h5>
+            <p>{{ genero.descripcion }}</p>
+        </li>
+    </ul>
+</div>

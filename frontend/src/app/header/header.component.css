@@ -1,0 +1,13 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1050;
+    /* encima de otros elementos */
+}
+
+/* Mostrar el menú al pasar el ratón por encima del botón */
+.navbar button:hover+.d-flex {
+    display: block;
+}
