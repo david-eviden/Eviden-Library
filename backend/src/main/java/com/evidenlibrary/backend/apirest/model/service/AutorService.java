@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.evidenlibrary.backend.apirest.model.entity.Autor;
 
-
 public interface AutorService {
 
 	public List<Autor> findAll();

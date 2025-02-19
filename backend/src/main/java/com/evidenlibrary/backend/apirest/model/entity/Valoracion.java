@@ -3,6 +3,9 @@ package com.evidenlibrary.backend.apirest.model.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,6 +37,7 @@ public class Valoracion implements Serializable {
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
     
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "libro_id", nullable = false)
     private Libro libro;
@@ -45,5 +49,6 @@ public class Valoracion implements Serializable {
     private String comentario;
     
     @Column(nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date fecha;
 }

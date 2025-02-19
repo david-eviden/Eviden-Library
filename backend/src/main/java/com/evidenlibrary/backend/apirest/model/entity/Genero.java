@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -36,6 +38,7 @@ public class Genero implements Serializable{
     @Column(nullable = false)
     private String descripcion;
     
+    @JsonBackReference
     @ManyToMany(mappedBy = "generos")
     private Set<Libro> libros = new HashSet<>();
 }
