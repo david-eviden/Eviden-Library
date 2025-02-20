@@ -8,10 +8,10 @@
 
             <!-- sliders -->
             <div class="carousel-item" *ngFor="let fragmento of fragmentos; let i = index" [class.active]="i === 0">
-                <div class="row justify-content-center">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 justify-content-center">
                     <!-- card -->
-                    <div class="col-md-2" *ngFor="let book of fragmento">
-                        <div class="card">
+                    <div class="col mb-4" *ngFor="let book of fragmento">
+                        <div class="card h-100">
                             <img [src]="book.image" class="card-img-top" alt="Portada del libro">
                             <div class="card-body">
                                 <h5 class="card-title">{{ book.title }}</h5>
@@ -76,7 +76,7 @@
         <h2>Ficción literaria</h2>
         <div class="category-books">
             <div class="book" *ngFor="let book of fragmentos[0]">
-                <div class="book-card">
+                <div class="book-card mx-4">
                     <div class="book-img">
                         <img [src]="book.image" alt="Portada del libro">
                     </div>
@@ -91,3 +91,4 @@
 </div>
 <app-autor></app-autor>
 <app-libro></app-libro>
+<app-usuario></app-usuario>

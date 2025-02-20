@@ -12,6 +12,7 @@ const routes: Routes = [
   { path: 'usuarios', component: UsuarioComponent },
   { path: 'generos', component: GenerosComponent },
   //{ path: 'libros/:id', component: LibroComponent } ->librodetalles
+  //{path: '**', component: ErrorComponent} -> error
 ];
 
 @NgModule({
