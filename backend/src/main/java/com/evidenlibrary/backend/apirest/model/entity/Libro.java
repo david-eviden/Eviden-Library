@@ -48,7 +48,7 @@ public class Libro implements Serializable {
     @Column(nullable = false)
     private Integer stock;
     
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinTable(
         name = "libro_autor",
         joinColumns = @JoinColumn(name = "libro_id"),
@@ -57,7 +57,7 @@ public class Libro implements Serializable {
     @JsonIgnore
     private Set<Autor> autores = new HashSet<>();
     
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinTable(
         name = "libro_genero",
         joinColumns = @JoinColumn(name = "libro_id"),

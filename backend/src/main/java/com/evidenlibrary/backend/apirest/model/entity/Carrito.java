@@ -47,4 +47,6 @@ public class Carrito implements Serializable{
     
     @OneToMany(mappedBy = "carrito", cascade = CascadeType.ALL)
     private List<DetalleCarrito> detalles = new ArrayList<>();
+    
+    
 }
