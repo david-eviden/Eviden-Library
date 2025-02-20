@@ -16,7 +16,7 @@ export class UsuarioComponent implements OnInit{
     this.usuarioService.getUsuarios().subscribe(
       (usuarios : Usuario[]) => {
         this.usuarios = usuarios;
-        console.log('Usuarios recibidos:', usuarios);  // Esto mostrará la lista de usuarios en la consola
+        console.log('Usuarios recibidos:', usuarios);  // Lista de usuarios en la consola
       },
       error => {
         console.error('Error al obtener los usuarios', error);  // Muestra errores si los hay
