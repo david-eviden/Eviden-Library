@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.2</version>
+        <version>3.2.12</version>
         <relativePath/>
     </parent>
     
@@ -42,11 +42,6 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
     		<groupId>mysql</groupId>
 		    <artifactId>mysql-connector-java</artifactId>
 		    <version>8.0.33</version>
@@ -67,14 +62,14 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+		<!--
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 
-		<!--
-		
 			spring.datasource.url=jdbc:mysql://localhost:33060/evidenlibrarydb
 			spring.datasource.username=root
 			spring.datasource.password=secret
@@ -83,9 +78,7 @@
 			spring.datasource.platform=mysql
 		
 			Intercambiar h2 por datasources en .properties
-		-->
 
-		<!--
 		<dependency>
     		<groupId>com.h2database</groupId>
     		<artifactId>h2</artifactId>
@@ -100,7 +93,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.1</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
                     <nonFilteredFileExtensions>

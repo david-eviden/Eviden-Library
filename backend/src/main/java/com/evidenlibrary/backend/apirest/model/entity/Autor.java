@@ -42,7 +42,7 @@ public class Autor implements Serializable {
 
     @ManyToMany(mappedBy = "autores", fetch = FetchType.LAZY)
     @JsonIgnore
-    private Set<Libro> libros = new HashSet<>();
+    private final Set<Libro> libros = new HashSet<>();
 
     @JsonProperty("libros")
     public Set<LibroSimple> getLibrosSimples() {
@@ -64,11 +64,34 @@ public class Autor implements Serializable {
             this.stock = stock;
         }
 
+        public LibroSimple(Long id, Double precio, Integer stock, String titulo) {
+            this.id = id;
+            this.precio = precio;
+            this.stock = stock;
+            this.titulo = titulo;
+        }
+
         // Getters
         public Long getId() { return id; }
         public String getTitulo() { return titulo; }
         public Double getPrecio() { return precio; }
         public Integer getStock() { return stock; }
+
+        public void setTitulo(String titulo) {
+            this.titulo = titulo;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public void setPrecio(Double precio) {
+            this.precio = precio;
+        }
+
+        public void setStock(Integer stock) {
+            this.stock = stock;
+        }
     }
     
     // Getters and setters
@@ -95,9 +118,5 @@ public class Autor implements Serializable {
 
     public Set<Libro> getLibros() {
         return libros;
-    }
-
-    public void setLibros(Set<Libro> libros) {
-        this.libros = libros;
     }
 }
