@@ -7,13 +7,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.evidenlibrary.backend.apirest.model.dao.GeneroDao;
+import com.evidenlibrary.backend.apirest.model.dao.LibroDao;
 import com.evidenlibrary.backend.apirest.model.entity.Genero;
+import com.evidenlibrary.backend.apirest.model.entity.Libro;
 
 @Service
 public class GeneroServiceImpl implements GeneroService {
 	
 	@Autowired
 	private GeneroDao generoDao;
+	@Autowired
+	private LibroDao libroDao;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -47,11 +51,17 @@ public class GeneroServiceImpl implements GeneroService {
 		return generoDao.save(genero);
 	}
 
+	
 	@Override
 	@Transactional
 	public void delete(Genero genero) {
-		generoDao.delete(genero);
-
+		//Eliminar realciones en la tabla intermedia(libro_genero)
+		for (Libro libro : genero.getLibros()) {
+            libro.getGeneros().remove(genero); // Eliminar el género de los libros
+            libroDao.save(libro); // Guardar el libro actualizado
+        }
+		// Eliminar el género
+		generoDao.delete(genero);;
 	}
 
 }

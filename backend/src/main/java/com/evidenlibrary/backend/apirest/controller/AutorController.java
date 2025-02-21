@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.evidenlibrary.backend.apirest.model.entity.Autor;
+import com.evidenlibrary.backend.apirest.model.entity.Libro;
 import com.evidenlibrary.backend.apirest.model.service.AutorService;
 
 
@@ -137,22 +138,28 @@ public class AutorController {
 	}
 
 	// Eliminar autor por ID
-	@DeleteMapping("/clientes/{id}")
-	public ResponseEntity<?> delete(@PathVariable Long id) {
-		Autor currentAutor = this.autorService.findById(id);
-		Map<String, Object> response = new HashMap<>();
-		
-		try {
-			autorService.delete(currentAutor);
-		} catch(DataAccessException e) {
-			response.put("mensaje", "Error al eliminar el autor en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		@DeleteMapping("/autores/{id}")
+		public ResponseEntity<?> delete(@PathVariable Long id) {
+			Autor currentAutor = this.autorService.findById(id);
+			Map<String, Object> response = new HashMap<>();
+
+			// Validación de que exista el autor
+			if (currentAutor == null) {
+				response.put("mensaje", "El autor con ID: " + id + " no existe en la base de datos");
+				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+			}
+
+			try {
+				autorService.delete(currentAutor);
+			} catch (DataAccessException e) {
+				response.put("mensaje", "Error al eliminar el autor en la base de datos");
+				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+
+			response.put("mensaje", "El autor ha sido eliminado con éxito");
+			response.put("autor", currentAutor);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 		}
-		
-		response.put("mensaje", "El cliente ha sido eliminado con éxito");
-		response.put("cliente", currentAutor);
-		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
-	}
 
 }
