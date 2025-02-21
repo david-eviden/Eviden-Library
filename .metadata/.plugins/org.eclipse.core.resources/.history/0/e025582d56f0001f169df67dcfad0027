@@ -2,7 +2,6 @@ package com.evidenlibrary.backend.apirest.model.entity;
 
 import java.io.Serializable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
@@ -34,7 +33,6 @@ public class DetallePedido implements Serializable{
 	
 	@JsonManagedReference
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "pedido_id", nullable = false)
     private Pedido pedido;
     

@@ -131,7 +131,7 @@ public class LibroController {
 		}
 
 		response.put("mensaje", "El libro ha sido actualizado con éxito");
-		response.put("libro", nuevoLibro);
+		response.put("cliente", nuevoLibro);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
@@ -156,7 +156,7 @@ public class LibroController {
 		}
 
 		response.put("mensaje", "El libro ha sido eliminado con éxito");
-		response.put("Libro", currentLibro);
+		response.put("cliente", currentLibro);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}
 

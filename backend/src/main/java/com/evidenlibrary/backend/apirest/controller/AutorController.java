@@ -95,7 +95,7 @@ public class AutorController {
 	}
 
 	// Actualizar autor
-	@PutMapping("/autor/{id}")
+	@PutMapping("/detallePedido/{id}")
 	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<?> update(@RequestBody Autor autor, BindingResult result ,@PathVariable Long id) {
 		
@@ -132,12 +132,12 @@ public class AutorController {
 		}
 		
 		response.put("mensaje", "El autor ha sido actualizado con éxito");
-		response.put("cliente", nuevoAutor);
+		response.put("autor", nuevoAutor);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
 	// Eliminar autor por ID
-	@DeleteMapping("/clientes/{id}")
+	@DeleteMapping("/autor/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		Autor currentAutor = this.autorService.findById(id);
 		Map<String, Object> response = new HashMap<>();
@@ -150,8 +150,8 @@ public class AutorController {
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		response.put("mensaje", "El cliente ha sido eliminado con éxito");
-		response.put("cliente", currentAutor);
+		response.put("mensaje", "El autor ha sido eliminado con éxito");
+		response.put("autor", currentAutor);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}
 

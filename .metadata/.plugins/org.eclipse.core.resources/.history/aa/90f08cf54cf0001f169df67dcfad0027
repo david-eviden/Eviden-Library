@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -23,12 +22,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "pedidos")
+@Table(name = "carritos")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Pedido implements Serializable {
+public class Carrito implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
@@ -41,20 +40,13 @@ public class Pedido implements Serializable {
     private Usuario usuario;
     
     @Column(nullable = false)
-    private Date fechaPedido;
+    private Date fechaCreacion;
     
     @Column(nullable = false)
     private String estado;
     
-    @Column(nullable = false)
-    private Double total;
-    
-    @Column(nullable = false)
-    private String direccionEnvio;
-    
-    @JsonManagedReference
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
-    private List<DetallePedido> detalles = new ArrayList<>();
+    @OneToMany(mappedBy = "carrito", cascade = CascadeType.ALL)
+    private List<DetalleCarrito> detalles = new ArrayList<>();
     
     // Getters and setters
 
@@ -66,12 +58,12 @@ public class Pedido implements Serializable {
 		this.usuario = usuario;
 	}
 
-	public Date getFechaPedido() {
-		return fechaPedido;
+	public Date getFechaCreacion() {
+		return fechaCreacion;
 	}
 
-	public void setFechaPedido(Date fechaPedido) {
-		this.fechaPedido = fechaPedido;
+	public void setFechaCreacion(Date fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
 	}
 
 	public String getEstado() {
@@ -82,27 +74,11 @@ public class Pedido implements Serializable {
 		this.estado = estado;
 	}
 
-	public Double getTotal() {
-		return total;
-	}
-
-	public void setTotal(Double total) {
-		this.total = total;
-	}
-
-	public String getDireccionEnvio() {
-		return direccionEnvio;
-	}
-
-	public void setDireccionEnvio(String direccionEnvio) {
-		this.direccionEnvio = direccionEnvio;
-	}
-
-	public List<DetallePedido> getDetalles() {
+	public List<DetalleCarrito> getDetalles() {
 		return detalles;
 	}
 
-	public void setDetalles(List<DetallePedido> detalles) {
+	public void setDetalles(List<DetalleCarrito> detalles) {
 		this.detalles = detalles;
 	}
 

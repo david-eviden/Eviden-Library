@@ -1,5 +1,6 @@
 package com.evidenlibrary.backend.apirest.controller;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,142 +22,145 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.evidenlibrary.backend.apirest.model.entity.Libro;
-import com.evidenlibrary.backend.apirest.model.service.LibroService;
+import com.evidenlibrary.backend.apirest.model.service.CarritoService;
+import com.evidenlibrary.backend.apirest.model.entity.Carrito;
+
 
 @CrossOrigin(origins = { "http://localhost:4200" })
 @RestController
 @RequestMapping("/api")
-public class LibroController {
+public class CarritoController {
 
 	@Autowired
-	private LibroService libroService;
+	private CarritoService carritoService;
+	
 
-	// Obtener libros
-	@GetMapping("/libros")
-	public List<Libro> index() {
-		return libroService.findAll();
+	// Obtener carritos
+	@GetMapping("/carritos")
+	public List<Carrito> index() {
+		return carritoService.findAll();
 	}
-
-	// Obtener libros por ID
-	@GetMapping("/libro/{id}")
+	
+	// Obtener carritos por ID
+	@GetMapping("/carrito/{id}")
 	public ResponseEntity<?> show(@PathVariable Long id) {
-
-		Libro libro = null;
+		
+		Carrito carrito = null;
 		Map<String, Object> response = new HashMap<>();
-
+		
 		try {
-			libro = libroService.findById(id);
-		} catch (DataAccessException e) {
+			carrito = carritoService.findById(id);
+		} catch(DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
-		if (libro == null) {
-			response.put("mensaje", "El libro con ID: ".concat(id.toString().concat(" no existe en la base de datos")));
+		
+		if(carrito == null) {
+			response.put("mensaje", "El carrito con ID: ".concat(id.toString().concat(" no existe en la base de datos")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
-
-		return new ResponseEntity<Libro>(libro, HttpStatus.OK);
+		
+		return new ResponseEntity<Carrito>(carrito, HttpStatus.OK); 
 	}
 
-	// Crear libro
-	@PostMapping("/libro")
-	public ResponseEntity<?> create(@RequestBody Libro libro, BindingResult result) {
-
-		Libro nuevoLibro = null;
+	// Crear carrito
+	@PostMapping("/carrito")
+	public ResponseEntity<?> create(@RequestBody Carrito carrito, BindingResult result) {
+		
+		Carrito nuevoCarrito = null;
 		Map<String, Object> response = new HashMap<>();
-
+		
 		// Validamos campos
-		if (result.hasErrors()) {
-			List<String> errores = result.getFieldErrors().stream()
-					.map(err -> "El campo '" + err.getField() + "' " + err.getDefaultMessage())
-					.collect(Collectors.toList());
-
+		if(result.hasErrors()) {
+			List<String> errores = result.getFieldErrors()
+				.stream()
+				.map(err -> "El campo '" + err.getField() + "' " + err.getDefaultMessage())
+				.collect(Collectors.toList());
+			
 			response.put("errores", errores);
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
-
+		
 		// Manejamos errores
 		try {
-			nuevoLibro = libroService.save(libro);
-		} catch (DataAccessException e) {
+			//Fecha de creacion
+			if (carrito.getFechaCreacion() == null) {
+				carrito.setFechaCreacion(new Date());
+	        }
+			//Estado == ACTUAL
+			if (carrito.getEstado() == null) {
+				carrito.setEstado("ACTIVO");
+			}
+			nuevoCarrito = carritoService.save(carrito);
+		} catch(DataAccessException e) {
 			response.put("mensaje", "Error al insertar en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
-		response.put("mensaje", "El libro ha sido creado con éxito");
-		response.put("autor", nuevoLibro);
+		
+		response.put("mensaje", "El carrito ha sido creado con éxito");
+		response.put("favorito", nuevoCarrito);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
-	// Actualizar libro
-	@PutMapping("/libro/{id}")
+	// Actualizar carrito
+	@PutMapping("/carrito/{id}")
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<?> update(@RequestBody Libro libro, BindingResult result, @PathVariable Long id) {
-
-		Libro currentLibro = this.libroService.findById(id);
-		Libro nuevoLibro = null;
+	public ResponseEntity<?> update(@RequestBody Carrito carrito, BindingResult result ,@PathVariable Long id) {
+		
+		Carrito currentCarrito = this.carritoService.findById(id);
+		Carrito nuevoCarrito = null;
 		Map<String, Object> response = new HashMap<>();
-
+		
 		// Validamos campos
-		if (result.hasErrors()) {
-
-			List<String> errores = result.getFieldErrors().stream()
-					.map(err -> "El campo '" + err.getField() + "' " + err.getDefaultMessage())
-					.collect(Collectors.toList());
-
+		if(result.hasErrors()) {
+			
+			List<String> errores = result.getFieldErrors()
+				.stream()
+				.map(err -> "El campo '" + err.getField() + "' " + err.getDefaultMessage())
+				.collect(Collectors.toList());
+			
 			response.put("errores", errores);
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
-
-		if (currentLibro == null) {
-			response.put("mensaje", "No se puedo editar, el libro con ID: "
-					.concat(id.toString().concat(" no existe en la base de datos")));
+		
+		if(currentCarrito == null) {
+			response.put("mensaje", "No se puedo editar, el carrito con ID: ".concat(id.toString().concat(" no existe en la base de datos")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
-
+		
 		try {
-			currentLibro.setPrecio(libro.getPrecio());
-			currentLibro.setStock(libro.getStock());
-			currentLibro.setTitulo(libro.getTitulo());
-
-			nuevoLibro = libroService.save(currentLibro);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el libro en la base de datos");
+			currentCarrito.setEstado(carrito.getEstado());			
+			
+			nuevoCarrito = carritoService.save(currentCarrito);
+		} catch(DataAccessException e) {
+			response.put("mensaje", "Error al actualizar el carrito en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
-		response.put("mensaje", "El libro ha sido actualizado con éxito");
-		response.put("libro", nuevoLibro);
+		
+		response.put("mensaje", "El carrito ha sido actualizado con éxito");
+		response.put("carrito", nuevoCarrito);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
-	// Eliminar libro por ID
-	@DeleteMapping("/libros/{id}")
+	// Eliminar carrito por ID
+	@DeleteMapping("/carrito/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
-		Libro currentLibro = this.libroService.findById(id);
+		Carrito currentCarrito = this.carritoService.findById(id);
 		Map<String, Object> response = new HashMap<>();
-
-		// Validación de que exista el libro
-		if (currentLibro == null) {
-			response.put("mensaje", "El libro con ID: " + id + " no existe en la base de datos");
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		}
-
+		
 		try {
-			libroService.delete(currentLibro);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al eliminar el libro en la base de datos");
+			carritoService.delete(currentCarrito);
+		} catch(DataAccessException e) {
+			response.put("mensaje", "Error al eliminar el carrito en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
-		response.put("mensaje", "El libro ha sido eliminado con éxito");
-		response.put("Libro", currentLibro);
+		
+		response.put("mensaje", "El carrito ha sido eliminado con éxito");
+		response.put("carrito", currentCarrito);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}
 

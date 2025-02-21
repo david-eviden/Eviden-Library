@@ -132,7 +132,7 @@ public class GeneroController {
 		}
 
 		response.put("mensaje", "El genero ha sido actualizado con éxito");
-		response.put("cliente", nuevoGenero);
+		response.put("genero", nuevoGenero);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
@@ -157,7 +157,7 @@ public class GeneroController {
 		}
 
 		response.put("mensaje", "El genero ha sido eliminado con éxito");
-		response.put("cliente", currentGenero);
+		response.put("genero", currentGenero);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}
 

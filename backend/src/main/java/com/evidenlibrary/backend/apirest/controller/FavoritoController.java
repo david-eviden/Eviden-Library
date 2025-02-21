@@ -136,7 +136,7 @@ public class FavoritoController {
 		}
 		
 		response.put("mensaje", "El favorito ha sido actualizado con éxito");
-		response.put("cliente", nuevoFavorito);
+		response.put("Favorito", nuevoFavorito);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
@@ -155,7 +155,7 @@ public class FavoritoController {
 		}
 		
 		response.put("mensaje", "El favorito ha sido eliminado con éxito");
-		response.put("cliente", currentFavorito);
+		response.put("Favorito", currentFavorito);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}
 
