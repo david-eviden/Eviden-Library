@@ -16,7 +16,7 @@ export class FavoritoComponent {
     this.favoritoService.getUsuarios().subscribe(
       (favoritos: Favorito[]) => {
         this.favoritos = favoritos;
-        console.log('Favoritos recibidos:', favoritos);  // Lista de usuarios en la consola
+        console.log('Favoritos recibidos:', favoritos); 
       },
       error => {
         console.error('Error al obtener los usuarios', error);  // Muestra errores si los hay

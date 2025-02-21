@@ -1,0 +1,15 @@
+<div class="autor-container">
+    <h2 class="text-center mb-4">Lista de Carritos</h2>
+    <ul class="list-group">
+        <li *ngFor="let carrito of carritos" class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="mb-1">{{ carrito.usuario?.nombre }}</h5>
+                <p class="mb-0 text-muted">{{ carrito.detalles }}</p>
+                <p class="mb-0 text-muted">{{ carrito.fechaCreacion}}</p>
+                <p class="mb-0 text-muted">{{ carrito.estado }}</p>
+            </div>
+            
+            <button class="btn btn-primary btn-sm">Ver</button>
+        </li>
+    </ul>
+</div>

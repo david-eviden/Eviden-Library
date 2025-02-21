@@ -23,7 +23,7 @@ export class FavoritoService {
           return favoritos.map(favorito => {
             favorito.usuario = favorito.usuario;
             favorito.libro = favorito.libro;
-            favorito.fecha = favorito.fecha;
+            favorito.fechaAgregado = favorito.fechaAgregado;
            
             return favorito;
           });
