@@ -1,0 +1,16 @@
+<div class="autor-container">
+    <h2 class="text-center mb-4">Lista de Carritos</h2>
+    <ul class="list-group">
+        <li *ngFor="let valoracion of valoraciones" class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="mb-1">{{ valoracion.usuario?.nombre }}</h5>
+                <p class="mb-0 text-muted">{{ valoracion.usuario?.nombre }}</p>
+                <p class="mb-0 text-muted">{{ valoracion.libro?.titulo}}</p>
+                <p class="mb-0 text-muted">{{ valoracion.comentario }}</p>
+                <p class="mb-0 text-muted">{{ valoracion.fecha }}</p>
+            </div>
+            
+            <button class="btn btn-primary btn-sm">Ver</button>
+        </li>
+    </ul>
+</div>
