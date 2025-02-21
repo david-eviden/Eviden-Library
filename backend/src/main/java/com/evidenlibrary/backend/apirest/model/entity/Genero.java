@@ -41,4 +41,38 @@ public class Genero implements Serializable{
     @JsonBackReference
     @ManyToMany(mappedBy = "generos")
     private Set<Libro> libros = new HashSet<>();
+    
+    //Getter y setter
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public Set<Libro> getLibros() {
+		return libros;
+	}
+
+	public void setLibros(Set<Libro> libros) {
+		this.libros = libros;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	
+    
+    
 }

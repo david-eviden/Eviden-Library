@@ -26,7 +26,7 @@ public class Favorito implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-    @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
@@ -40,4 +40,35 @@ public class Favorito implements Serializable {
     
     @Column(nullable = false)
     private Date fechaAgregado;
+    
+    //Getter y Setter
+    
+    public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	public Libro getLibro() {
+		return libro;
+	}
+
+	public void setLibro(Libro libro) {
+		this.libro = libro;
+	}
+
+	public Date getFechaAgregado() {
+		return fechaAgregado;
+	}
+
+	public void setFechaAgregado(Date fechaAgregado) {
+		this.fechaAgregado = fechaAgregado;
+	}
+
+
+	public Long getId() {
+		return id;
+	}
 }

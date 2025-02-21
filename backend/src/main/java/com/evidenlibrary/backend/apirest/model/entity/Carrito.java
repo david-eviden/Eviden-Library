@@ -47,4 +47,44 @@ public class Carrito implements Serializable{
     
     @OneToMany(mappedBy = "carrito", cascade = CascadeType.ALL)
     private List<DetalleCarrito> detalles = new ArrayList<>();
+    
+    // Getters and setters
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	public Date getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(Date fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	public List<DetalleCarrito> getDetalles() {
+		return detalles;
+	}
+
+	public void setDetalles(List<DetalleCarrito> detalles) {
+		this.detalles = detalles;
+	}
+
+	public Long getId() {
+		return id;
+	}
+    
+    
 }
