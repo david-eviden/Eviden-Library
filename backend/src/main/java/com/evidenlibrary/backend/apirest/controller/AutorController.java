@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.evidenlibrary.backend.apirest.model.entity.Autor;
-import com.evidenlibrary.backend.apirest.model.entity.Libro;
 import com.evidenlibrary.backend.apirest.model.service.AutorService;
 
 

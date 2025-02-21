@@ -12,6 +12,7 @@ import { LibroComponent } from './libro/libro.component';
 import { GenerosComponent } from './generos/generos.component';
 import { UsuarioComponent } from './usuario/usuario.component';
 import { RouterModule } from '@angular/router';
+import { FavoritoComponent } from './favorito/favorito.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { RouterModule } from '@angular/router';
     AutorComponent,
     LibroComponent,
     GenerosComponent,
-    UsuarioComponent
+    UsuarioComponent,
+    FavoritoComponent
   ],
   imports: [
     BrowserModule,

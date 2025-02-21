@@ -7,7 +7,7 @@ import { Genero } from './generos';
   providedIn: 'root'  //disponible a nivel global
 })
 export class GeneroService {
-  private urlEndPoint: string = 'http://localhost:8081/api/generos'; 
+  private urlEndPoint: string = 'http://localhost:8080/api/generos'; 
 
   constructor(private http: HttpClient) {}
 
