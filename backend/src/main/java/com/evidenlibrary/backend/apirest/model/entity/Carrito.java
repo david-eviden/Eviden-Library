@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -35,6 +36,7 @@ public class Carrito implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+	@JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
@@ -47,6 +49,8 @@ public class Carrito implements Serializable{
     
     @OneToMany(mappedBy = "carrito", cascade = CascadeType.ALL)
     private List<DetalleCarrito> detalles = new ArrayList<>();
+    
+    
     
     
 }

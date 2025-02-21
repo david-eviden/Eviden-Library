@@ -40,4 +40,40 @@ public class Favorito implements Serializable {
     
     @Column(nullable = false)
     private Date fechaAgregado;
+    
+    //getters y setters
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	public Libro getLibro() {
+		return libro;
+	}
+
+	public void setLibro(Libro libro) {
+		this.libro = libro;
+	}
+
+	public Date getFechaAgregado() {
+		return fechaAgregado;
+	}
+
+	public void setFechaAgregado(Date fechaAgregado) {
+		this.fechaAgregado = fechaAgregado;
+	}
+    
+    
 }

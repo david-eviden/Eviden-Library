@@ -594,3 +594,82 @@
 2025-02-20 14:27:18,451 [Worker-40: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
 2025-02-20 14:27:18,453 [Worker-40: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
 2025-02-20 14:27:18,458 [Worker-40: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
+2025-02-20 14:32:17,606 [Worker-40: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-20 14:32:17,611 [Worker-40: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-20 14:32:17,624 [Worker-40: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
+2025-02-20 14:33:07,954 [Worker-43: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-20 14:33:07,955 [Worker-43: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-20 14:33:07,959 [Worker-43: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
+2025-02-20 14:40:09,379 [Worker-13: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-20 14:40:09,380 [Worker-13: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-20 14:40:09,382 [Worker-13: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
+2025-02-20 14:40:11,565 [Worker-10: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-20 14:40:11,566 [Worker-10: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-20 14:40:11,570 [Worker-10: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
+2025-02-20 14:47:44,328 [Worker-43: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-20 14:47:44,329 [Worker-43: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-20 14:47:44,333 [Worker-43: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
+2025-02-20 14:47:47,214 [Worker-33: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-20 14:47:47,216 [Worker-33: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-20 14:47:47,221 [Worker-33: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
+2025-02-20 14:49:08,295 [Worker-43: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2025-02-20 14:49:08,298 [Worker-43: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2025-02-20 14:49:08,304 [Worker-43: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
+2025-02-20 14:52:00,805 [Worker-36: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-20 14:52:00,807 [Worker-36: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-20 14:52:00,813 [Worker-36: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
+2025-02-21 08:26:43,432 [Worker-4: Loading available Gradle versions] INFO  o.e.b.c.i.u.g.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
+2025-02-21 08:26:52,498 [Worker-14: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - The artifact mysql:mysql-connector-java:jar:8.0.33 has been relocated to com.mysql:mysql-connector-j:jar:8.0.33: MySQL Connector/J artifacts moved to reverse-DNS compliant Maven 2+ coordinates.
+2025-02-21 08:26:53,448 [Worker-14: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:26:53,462 [Worker-14: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:26:53,487 [Worker-14: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
+2025-02-21 08:35:49,905 [Worker-14: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:35:49,913 [Worker-14: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:35:49,921 [Worker-14: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
+2025-02-21 08:36:30,975 [Worker-31: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:36:30,976 [Worker-31: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:36:30,981 [Worker-31: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
+2025-02-21 08:39:40,458 [Worker-26: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:39:40,462 [Worker-26: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:39:40,472 [Worker-26: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
+2025-02-21 08:39:41,489 [Worker-13: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:39:41,493 [Worker-13: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:39:41,504 [Worker-13: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
+2025-02-21 08:39:48,625 [Worker-16: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:39:48,629 [Worker-16: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:39:48,638 [Worker-16: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
+2025-02-21 08:42:20,374 [Worker-7: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:42:20,378 [Worker-7: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:42:20,389 [Worker-7: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
+2025-02-21 08:42:21,059 [Worker-11: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:42:21,063 [Worker-11: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:42:21,075 [Worker-11: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
+2025-02-21 08:44:11,490 [Worker-3: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:44:11,493 [Worker-3: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:44:11,502 [Worker-3: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
+2025-02-21 08:48:12,363 [Worker-27: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:48:12,366 [Worker-27: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:48:12,373 [Worker-27: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
+2025-02-21 08:49:20,991 [Worker-9: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:49:20,993 [Worker-9: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:49:20,999 [Worker-9: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
+2025-02-21 08:50:17,028 [Worker-11: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:50:17,029 [Worker-11: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:50:17,032 [Worker-11: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
+2025-02-21 08:57:44,179 [Worker-3: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:57:44,226 [Worker-3: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 08:57:44,248 [Worker-3: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
+2025-02-21 09:07:45,503 [Worker-10: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 09:07:45,505 [Worker-10: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 09:07:45,508 [Worker-10: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
+2025-02-21 09:14:38,444 [Worker-17: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 09:14:38,446 [Worker-17: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 09:14:38,454 [Worker-17: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
+2025-02-21 09:17:01,791 [Start Help Server] INFO  org.eclipse.jetty.server.Server - jetty-12.0.15; built: 2024-11-05T19:44:57.623Z; git: 8281ae9740d4b4225e8166cc476bad237c70213a; jvm 21.0.6+7-LTS
+2025-02-21 09:17:01,874 [Start Help Server] INFO  o.e.j.server.handler.ContextHandler - Started oeje8n.ContextHandler$CoreContextHandler@52397986{/help,/help,b=null,a=AVAILABLE,h=oeje8n.ContextHandler$CoreContextHandler$CoreToNestedHandler@7ad2af5f{STARTED}}
+2025-02-21 09:17:01,874 [Start Help Server] INFO  o.e.j.s.DefaultSessionIdManager - Session workerName=node0
+2025-02-21 09:17:01,918 [Start Help Server] INFO  o.e.jetty.server.AbstractConnector - Started ServerConnector@7d27d5dc{HTTP/1.1, (http/1.1)}{127.0.0.1:53459}
+2025-02-21 09:17:01,927 [Start Help Server] INFO  org.eclipse.jetty.server.Server - Started oejs.Server@58ed7b95{STARTING}[12.0.15,sto=0] @3196851ms
+2025-02-21 09:17:55,777 [Worker-0: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 09:17:55,777 [Worker-0: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2025-02-21 09:17:55,780 [Worker-0: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\backend\src\test\resources
