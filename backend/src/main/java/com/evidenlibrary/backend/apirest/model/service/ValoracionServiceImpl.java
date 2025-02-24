@@ -18,27 +18,13 @@ public class ValoracionServiceImpl implements ValoracionService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<Valoracion> findAll() {
-		return (List<Valoracion>) valoracionDao.findAll();
+		return valoracionDao.findAll();
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public Valoracion findById(Long id) {
 		return valoracionDao.findById(id).orElse(null);
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public List<Valoracion> findValoracionByLibroId(Long id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public List<Valoracion> findValoracionByUsuarioId(Long id) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -51,6 +37,18 @@ public class ValoracionServiceImpl implements ValoracionService {
 	@Transactional
 	public void delete(Valoracion valoracion) {
 		valoracionDao.delete(valoracion);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Valoracion> findByLibroId(Long libroId) {
+		return valoracionDao.findByLibroId(libroId);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Valoracion> findByUsuarioId(Long usuarioId) {
+		return valoracionDao.findByUsuarioId(usuarioId);
 	}
 
 }

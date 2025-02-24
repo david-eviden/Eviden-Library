@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Carrito } from './carrito';
 import { CarritoService } from './carrito.service';
 
@@ -8,19 +8,20 @@ import { CarritoService } from './carrito.service';
   templateUrl: './carrito.component.html',
   styleUrl: './carrito.component.css'
 })
-export class CarritoComponent {
-  carritos: Carrito[]= [];
+export class CarritoComponent implements OnInit {
+  carritos: Carrito[] = [];
+
   constructor(private carritoService: CarritoService) {}
 
   ngOnInit(): void {
-    this.carritoService.getUsuarios().subscribe(
-      (carritos: Carrito[]) => {
+    this.carritoService.getCarritos().subscribe(
+      carritos => {
         this.carritos = carritos;
-        console.log('Carritos recibidos:', carritos);  // Lista de usuarios en la consola
+        console.log('Carritos recibidos:', carritos);
       },
       error => {
-        console.error('Error al obtener los usuarios', error);  // Muestra errores si los hay
+        console.error('Error al obtener los carritos:', error);
       }
-    )
-  };
+    );
+  }
 }

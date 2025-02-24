@@ -43,7 +43,7 @@ public class AutorController {
 	@GetMapping("/autor/{id}")
 	public ResponseEntity<?> show(@PathVariable Long id) {
 		
-		Autor autor = null;
+		Autor autor;
 		Map<String, Object> response = new HashMap<>();
 		
 		try {
@@ -51,22 +51,22 @@ public class AutorController {
 		} catch(DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 		if(autor == null) {
 			response.put("mensaje", "El autor con ID: ".concat(id.toString().concat(" no existe en la base de datos")));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		return new ResponseEntity<Autor>(autor, HttpStatus.OK); 
+		return new ResponseEntity<>(autor, HttpStatus.OK); 
 	}
 
 	// Crear autor
 	@PostMapping("/autor")
 	public ResponseEntity<?> create(@RequestBody Autor autor, BindingResult result) {
 		
-		Autor nuevoAutor = null;
+		Autor nuevoAutor;
 		Map<String, Object> response = new HashMap<>();
 		
 		// Validamos campos
@@ -77,7 +77,7 @@ public class AutorController {
 				.collect(Collectors.toList());
 			
 			response.put("errores", errores);
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
 		
 		// Manejamos errores
@@ -86,12 +86,12 @@ public class AutorController {
 		} catch(DataAccessException e) {
 			response.put("mensaje", "Error al insertar en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 		response.put("mensaje", "El autor ha sido creado con éxito");
 		response.put("autor", nuevoAutor);
-		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
+		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 
 	// Actualizar autor
@@ -100,7 +100,7 @@ public class AutorController {
 	public ResponseEntity<?> update(@RequestBody Autor autor, BindingResult result ,@PathVariable Long id) {
 		
 		Autor currentAutor = this.autorService.findById(id);
-		Autor nuevoAutor = null;
+		Autor nuevoAutor;
 		Map<String, Object> response = new HashMap<>();
 		
 		// Validamos campos
@@ -112,12 +112,12 @@ public class AutorController {
 				.collect(Collectors.toList());
 			
 			response.put("errores", errores);
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
 		
 		if(currentAutor == null) {
 			response.put("mensaje", "No se puedo editar, el autor con ID: ".concat(id.toString().concat(" no existe en la base de datos")));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
 		
 		try {
@@ -128,12 +128,12 @@ public class AutorController {
 		} catch(DataAccessException e) {
 			response.put("mensaje", "Error al actualizar el autor en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 		response.put("mensaje", "El autor ha sido actualizado con éxito");
 		response.put("cliente", nuevoAutor);
-		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
+		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 
 	// Eliminar autor por ID
@@ -145,7 +145,7 @@ public class AutorController {
 			// Validación de que exista el autor
 			if (currentAutor == null) {
 				response.put("mensaje", "El autor con ID: " + id + " no existe en la base de datos");
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 			}
 
 			try {
@@ -153,12 +153,12 @@ public class AutorController {
 			} catch (DataAccessException e) {
 				response.put("mensaje", "Error al eliminar el autor en la base de datos");
 				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+				return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 
 			response.put("mensaje", "El autor ha sido eliminado con éxito");
 			response.put("autor", currentAutor);
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
+			return new ResponseEntity<>(response, HttpStatus.OK);
 		}
 
 }

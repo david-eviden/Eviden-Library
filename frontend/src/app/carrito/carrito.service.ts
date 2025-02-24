@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { Carrito } from './carrito';
+import { detallesCarrito } from '../detalles-carrito/detalles-carrito';
+import { Libro } from '../libro/libro';
 
 @Injectable({
   providedIn: 'root'
@@ -12,23 +14,38 @@ export class CarritoService {
 
   constructor(private http: HttpClient) {}
 
-  getUsuarios(): Observable<Carrito[]> {
-    return this.http.get(this.urlEndPoint).pipe(
-
-      // Conversión a carritos (response de Object a Usuario[])
+  getCarritos(): Observable<Carrito[]> {
+    return this.http.get<any[]>(this.urlEndPoint).pipe(
       map(response => {
-
-        let carritos = response as Carrito[];
-
-        return carritos.map(carrito => {
-          carrito.usuario = carrito.usuario;
-          carrito.fechaCreacion = carrito.fechaCreacion;
-          carrito.estado = carrito.estado;
-          carrito.detalles = carrito.detalles;
-         
+        console.log('Respuesta del servidor:', response);
+        return response.map(item => {
+          const carrito = new Carrito();
+          if (item.usuario) {
+            carrito.usuario = item.usuario;
+          }
+          carrito.fechaCreacion = new Date(item.fechaCreacion);
+          carrito.estado = item.estado;
+          carrito.detalles = item.detalles?.map((detalle: any) => {
+            const detalleCarrito = new detallesCarrito();
+            detalleCarrito.id = detalle.id;
+            detalleCarrito.cantidad = detalle.cantidad;
+            detalleCarrito.precioUnitario = detalle.precioUnitario;
+            
+            // Mapear el libro correctamente
+            if (detalle.libro) {
+              const libro = new Libro();
+              libro.id = detalle.libro.id;
+              libro.titulo = detalle.libro.titulo;
+              libro.precio = detalle.libro.precio;
+              libro.stock = detalle.libro.stock;
+              detalleCarrito.libro = libro;
+            }
+            
+            return detalleCarrito;
+          }) || [];
           return carrito;
         });
-      }),
+      })
     ); 
   }
 }

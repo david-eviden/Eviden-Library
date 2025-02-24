@@ -35,7 +35,8 @@ import { ValoracionComponent } from './valoracion/valoracion.component';
     DetallesCarritoComponent,
     PedidoComponent,
     DetallesPedidoComponent,
-    ValoracionComponent
+    ValoracionComponent,
+    //AdminComponent
   ],
   imports: [
     BrowserModule,

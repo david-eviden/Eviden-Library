@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -37,16 +37,13 @@ public class Pedido implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-	@JsonBackReference
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
     
-    @Column(nullable = false)
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    @Column(name = "fecha_pedido", nullable = false)
     private Date fechaPedido;
-    
-    @Column(nullable = false)
-    private String estado;
     
     @Column(nullable = false)
     private Double total;
@@ -54,7 +51,64 @@ public class Pedido implements Serializable {
     @Column(nullable = false)
     private String direccionEnvio;
     
-    @JsonManagedReference
+    @Column(nullable = false)
+    private String estado;
+    
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
-    private List<DetallePedido> detalles = new ArrayList<>();
+    public final List<DetallePedido> detalles = new ArrayList<>();
+
+    public void setDetalles(List<DetallePedido> detalles) {
+        this.detalles.clear();
+        this.detalles.addAll(detalles);
+    }
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	public Date getFechaPedido() {
+		return fechaPedido;
+	}
+
+	public void setFechaPedido(Date fechaPedido) {
+		this.fechaPedido = fechaPedido;
+	}
+
+	public Double getTotal() {
+		return total;
+	}
+
+	public void setTotal(Double total) {
+		this.total = total;
+	}
+
+	public String getDireccionEnvio() {
+		return direccionEnvio;
+	}
+
+	public void setDireccionEnvio(String direccionEnvio) {
+		this.direccionEnvio = direccionEnvio;
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public List<DetallePedido> getDetalles() {
+		return detalles;
+	}
+
+    
 }

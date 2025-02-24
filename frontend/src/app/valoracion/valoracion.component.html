@@ -1,16 +1,42 @@
-<div class="autor-container">
-    <h2 class="text-center mb-4">Lista de Valoraciones</h2>
-    <ul class="list-group">
-        <li *ngFor="let valoracion of valoraciones" class="list-group-item d-flex justify-content-between align-items-center">
-            <div>
-                <h5 class="mb-1">{{ valoracion.usuario?.nombre }}</h5>
-                <p class="mb-0 text-muted">{{ valoracion.usuario?.nombre }}</p>
-                <p class="mb-0 text-muted">{{ valoracion.libro?.titulo}}</p>
-                <p class="mb-0 text-muted">{{ valoracion.comentario }}</p>
-                <p class="mb-0 text-muted">{{ valoracion.fecha }}</p>
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Valoraciones de Libros</h2>
+    
+    <div class="alert alert-info" *ngIf="valoraciones.length === 0">
+        No hay valoraciones disponibles.
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-3" *ngFor="let valoracion of valoraciones">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h5 class="card-title">{{ valoracion.libro?.titulo }}</h5>
+                            <h6 class="text-muted">
+                                {{ valoracion.usuario?.nombre }} {{ valoracion.usuario?.apellido }}
+                            </h6>
+                        </div>
+                        <div class="stars-container">
+                            <span class="star-rating">
+                                <i class="bi bi-star-fill text-warning" 
+                                   *ngFor="let star of getStarsArray(valoracion.puntuacion)"></i>
+                                <i class="bi bi-star" 
+                                   *ngFor="let star of getEmptyStarsArray(valoracion.puntuacion)"></i>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <p class="card-text mt-3">
+                        <i class="bi bi-quote"></i>
+                        {{ valoracion.comentario }}
+                        <i class="bi bi-quote"></i>
+                    </p>
+                    
+                    <small class="text-muted">
+                        {{ valoracion.fecha | date:'dd/MM/yyyy' }}
+                    </small>
+                </div>
             </div>
-            
-            <button class="btn btn-primary btn-sm">Ver</button>
-        </li>
-    </ul>
+        </div>
+    </div>
 </div>

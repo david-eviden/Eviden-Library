@@ -1,8 +1,10 @@
-import { Carrito } from "../carrito/carrito";
 import { Libro } from "../libro/libro";
+import { Carrito } from "../carrito/carrito";
 
 export class detallesCarrito {
-    carrito: Carrito = new Carrito();
-    libro: Libro[] = [];
+    id?: number;
+    carrito?: Carrito;
+    libro: Libro = new Libro();
     cantidad: number = 0;
+    precioUnitario: number = 0;
 }

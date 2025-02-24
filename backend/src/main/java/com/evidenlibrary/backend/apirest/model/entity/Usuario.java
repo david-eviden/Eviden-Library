@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -35,9 +36,11 @@ public class Usuario implements Serializable{
 	private Long id;
 	    
 	@Column(nullable = false)
+	@JsonProperty("nombre")
 	private String nombre;
 	
 	@Column(nullable = false)
+	@JsonProperty("apellido")
 	private String apellido;
 	
 	@Column(nullable = true)
@@ -46,6 +49,7 @@ public class Usuario implements Serializable{
 	@Column(nullable = false, unique = true)
 	private String email;
 	    
+	@JsonIgnore
 	@Column(nullable = false)
 	private String password;
 	    
@@ -53,22 +57,20 @@ public class Usuario implements Serializable{
 	private String rol;
 	    
 	@JsonIgnore
-	@JsonManagedReference
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-	private List<Pedido> pedidos = new ArrayList<>();
+	public final List<Pedido> pedidos = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+	@JsonIgnoreProperties({"usuario", "hibernateLazyInitializer", "handler"})
+	public final List<Carrito> carritos = new ArrayList<>();
 	
 	@JsonIgnore
-	@JsonManagedReference
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-	private List<Carrito> carritos = new ArrayList<>();
-	
-	@JsonIgnore
-	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-	private List<Valoracion> valoraciones = new ArrayList<>();
+	public final List<Valoracion> valoraciones = new ArrayList<>();
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE)
-	private List<Favorito> favoritos;
+	public final List<Favorito> favoritos = new ArrayList<>();
 
 	
 	//Getters y setters
@@ -133,34 +135,18 @@ public class Usuario implements Serializable{
 		return pedidos;
 	}
 
-	public void setPedidos(List<Pedido> pedidos) {
-		this.pedidos = pedidos;
-	}
-
 	public List<Carrito> getCarritos() {
 		return carritos;
 	}
 
-	public void setCarritos(List<Carrito> carritos) {
-		this.carritos = carritos;
-	}
 
 	public List<Valoracion> getValoraciones() {
 		return valoraciones;
 	}
 
-	public void setValoraciones(List<Valoracion> valoraciones) {
-		this.valoraciones = valoraciones;
-	}
-
 	public List<Favorito> getFavoritos() {
 		return favoritos;
 	}
-
-	public void setFavoritos(List<Favorito> favoritos) {
-		this.favoritos = favoritos;
-	}
-	
 	
 	
 }

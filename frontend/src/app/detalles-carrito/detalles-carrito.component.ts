@@ -6,9 +6,9 @@ import { DetallesCarritoService } from './detalles-carrito.service';
   selector: 'app-detalles-carrito',
   standalone: false,
   templateUrl: './detalles-carrito.component.html',
-  styleUrl: './detalles-carrito.component.css'
+  styleUrls: ['./detalles-carrito.component.css']
 })
-export class DetallesCarritoComponent implements OnInit{
+export class DetallesCarritoComponent implements OnInit {
   detallesCarrito: detallesCarrito[] = [];
   constructor(private detallesCarritoService: DetallesCarritoService) {}
 

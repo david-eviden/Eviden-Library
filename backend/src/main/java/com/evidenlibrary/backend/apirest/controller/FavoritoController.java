@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
- 
-import com.evidenlibrary.backend.apirest.model.service.FavoritoService;
+
 import com.evidenlibrary.backend.apirest.model.entity.Favorito;
+import com.evidenlibrary.backend.apirest.model.service.FavoritoService;
  
  
 @CrossOrigin(origins = { "http://localhost:4200" })
@@ -44,7 +44,7 @@ public class FavoritoController {
 	@GetMapping("/favorito/{id}")
 	public ResponseEntity<?> show(@PathVariable Long id) {
 		
-		Favorito favorito = null;
+		Favorito favorito;
 		Map<String, Object> response = new HashMap<>();
 		
 		try {
@@ -52,22 +52,22 @@ public class FavoritoController {
 		} catch(DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 		if(favorito == null) {
 			response.put("mensaje", "El favorito con ID: ".concat(id.toString().concat(" no existe en la base de datos")));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
 		
-		return new ResponseEntity<Favorito>(favorito, HttpStatus.OK);
+		return new ResponseEntity<>(favorito, HttpStatus.OK);
 	}
  
 	// Crear favorito
 	@PostMapping("/favorito")
 	public ResponseEntity<?> create(@RequestBody Favorito favorito, BindingResult result) {
 		
-		Favorito nuevoFavorito = null;
+		Favorito nuevoFavorito;
 		Map<String, Object> response = new HashMap<>();
 		
 		// Validamos campos
@@ -78,7 +78,7 @@ public class FavoritoController {
 				.collect(Collectors.toList());
 			
 			response.put("errores", errores);
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
 		
 		// Manejamos errores
@@ -90,12 +90,12 @@ public class FavoritoController {
 		} catch(DataAccessException e) {
 			response.put("mensaje", "Error al insertar en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 		response.put("mensaje", "El favorito ha sido creado con éxito");
 		response.put("favorito", nuevoFavorito);
-		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
+		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
  
 	// Actualizar favorito
@@ -104,7 +104,7 @@ public class FavoritoController {
 	public ResponseEntity<?> update(@RequestBody Favorito favorito, BindingResult result ,@PathVariable Long id) {
 		
 		Favorito currentFavorito = this.favoritoService.findById(id);
-		Favorito nuevoFavorito = null;
+		Favorito nuevoFavorito;
 		Map<String, Object> response = new HashMap<>();
 		
 		// Validamos campos
@@ -116,12 +116,12 @@ public class FavoritoController {
 				.collect(Collectors.toList());
 			
 			response.put("errores", errores);
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
 		
 		if(currentFavorito == null) {
 			response.put("mensaje", "No se puedo editar, el favorito con ID: ".concat(id.toString().concat(" no existe en la base de datos")));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
 		
 		try {
@@ -132,12 +132,12 @@ public class FavoritoController {
 		} catch(DataAccessException e) {
 			response.put("mensaje", "Error al actualizar el favorito en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 		response.put("mensaje", "El favorito ha sido actualizado con éxito");
 		response.put("cliente", nuevoFavorito);
-		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
+		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
  
 	// Eliminar favorito por ID
@@ -151,12 +151,12 @@ public class FavoritoController {
 		} catch(DataAccessException e) {
 			response.put("mensaje", "Error al eliminar el favorito en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 		response.put("mensaje", "El favorito ha sido eliminado con éxito");
 		response.put("cliente", currentFavorito);
-		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
  
 }

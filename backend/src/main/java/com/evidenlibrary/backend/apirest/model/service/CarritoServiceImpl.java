@@ -18,7 +18,21 @@ public class CarritoServiceImpl implements CarritoService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<Carrito> findAll() {
-		return (List<Carrito>) carritoDao.findAll();
+		List<Carrito> carritos = carritoDao.findAll();
+		carritos.forEach(carrito -> {
+			System.out.println("Carrito ID: " + carrito.getId());
+			if (carrito.getUsuario() != null) {
+				System.out.println("Usuario: " + carrito.getUsuario().getNombre());
+			}
+			if (carrito.getDetalles() != null) {
+				carrito.getDetalles().forEach(detalle -> {
+					if (detalle.getLibro() != null) {
+						System.out.println("Libro: " + detalle.getLibro().getTitulo());
+					}
+				});
+			}
+		});
+		return carritos;
 	}
 	
 	@Override
@@ -45,6 +59,12 @@ public class CarritoServiceImpl implements CarritoService {
 	public void delete(Carrito carrito) {
 		carritoDao.delete(carrito);
 		
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Carrito> findByUsuarioId(Long usuarioId) {
+		return carritoDao.findByUsuarioId(usuarioId);
 	}
 
 }

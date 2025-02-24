@@ -44,7 +44,7 @@ public class GeneroController {
 	@GetMapping("/genero/{id}")
 	public ResponseEntity<?> show(@PathVariable Long id) {
 
-		Genero genero = null;
+		Genero genero;
 		Map<String, Object> response = new HashMap<>();
 
 		try {
@@ -52,22 +52,22 @@ public class GeneroController {
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		if (genero == null) {
 			response.put("mensaje", "El genero con ID: ".concat(id.toString().concat(" no existe en la base de datos")));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
 
-		return new ResponseEntity<Genero>(genero, HttpStatus.OK);
+		return new ResponseEntity<>(genero, HttpStatus.OK);
 	}
 
 	// Crear genero
 	@PostMapping("/genero")
 	public ResponseEntity<?> create(@RequestBody Genero genero, BindingResult result) {
 
-		Genero nuevoGenero = null;
+		Genero nuevoGenero;
 		Map<String, Object> response = new HashMap<>();
 
 		// Validamos campos
@@ -77,7 +77,7 @@ public class GeneroController {
 					.collect(Collectors.toList());
 
 			response.put("errores", errores);
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
 
 		// Manejamos errores
@@ -86,12 +86,12 @@ public class GeneroController {
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al insertar en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		response.put("mensaje", "El genero ha sido creado con éxito");
 		response.put("autor", nuevoGenero);
-		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
+		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 
 	// Actualizar genero
@@ -100,7 +100,7 @@ public class GeneroController {
 	public ResponseEntity<?> update(@RequestBody Genero genero, BindingResult result, @PathVariable Long id) {
 
 		Genero currentGenero = this.generoService.findById(id);
-		Genero nuevoGenero = null;
+		Genero nuevoGenero;
 		Map<String, Object> response = new HashMap<>();
 
 		// Validamos campos
@@ -111,13 +111,13 @@ public class GeneroController {
 					.collect(Collectors.toList());
 
 			response.put("errores", errores);
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
 
 		if (currentGenero == null) {
 			response.put("mensaje", "No se puedo editar, el genero con ID: "
 					.concat(id.toString().concat(" no existe en la base de datos")));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
 
 		try {
@@ -128,12 +128,12 @@ public class GeneroController {
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al actualizar el genero en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		response.put("mensaje", "El genero ha sido actualizado con éxito");
 		response.put("cliente", nuevoGenero);
-		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
+		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 
 	// Eliminar genero por ID
@@ -145,7 +145,7 @@ public class GeneroController {
 		// Validación de que exista el genero
 		if (currentGenero == null) {
 			response.put("mensaje", "El genero con ID: " + id + " no existe en la base de datos");
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
 
 		try {
@@ -153,12 +153,12 @@ public class GeneroController {
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al eliminar el genero en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		response.put("mensaje", "El genero ha sido eliminado con éxito");
 		response.put("cliente", currentGenero);
-		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 }

@@ -98,15 +98,23 @@ INSERT INTO carritos (usuario_id, fecha_creacion, estado) VALUES
 (8, '2025-02-17', 'PROCESADO');
 
 -- Detalles de carritos
-INSERT INTO detalles_carrito (carrito_id, libro_id, cantidad) VALUES
-(1, 1, 1), -- Juan: Cien años de soledad
-(1, 7, 1), -- Juan: Harry Potter
-(2, 6, 1), -- María: Juego de tronos
-(2, 15, 1), -- María: Choque de reyes
-(3, 8, 1), -- Carlos: El resplandor
-(3, 9, 1), -- Carlos: Orgullo y prejuicio
-(4, 3, 1), -- Ana: La casa de los espíritus
-(5, 10, 1); -- Pedro: El viejo y el mar
+INSERT INTO detalles_carrito (carrito_id, libro_id, cantidad, precio_unitario) VALUES
+(1, 1, 2, 29.99),
+(1, 3, 1, 24.99),
+(1, 7, 1, 24.99),
+(2, 2, 1, 19.99),
+(2, 4, 2, 22.99),
+(2, 6, 1, 34.99),
+(2, 15, 1, 34.99),
+(3, 8, 2, 19.99),
+(3, 9, 1, 14.99),
+(3, 11, 1, 20.99),
+(4, 3, 1, 24.99),
+(4, 12, 1, 23.99),
+(4, 5, 2, 21.99),
+(5, 10, 1, 16.99),
+(5, 13, 2, 18.99),
+(5, 14, 1, 26.99);
 
 -- Pedidos
 INSERT INTO pedidos (usuario_id, fecha_pedido, estado, total, direccion_envio) VALUES
@@ -118,13 +126,13 @@ INSERT INTO pedidos (usuario_id, fecha_pedido, estado, total, direccion_envio) V
 
 -- Detalles de pedidos
 INSERT INTO detalles_pedido (pedido_id, libro_id, cantidad, precio_unitario) VALUES
-(1, 1, 1, 29.99), -- Juan: Cien años de soledad
+(1, 1, 3, 29.99), -- Juan: Cien años de soledad
 (1, 7, 1, 24.99), -- Juan: Harry Potter
 (2, 6, 1, 34.99), -- María: Juego de tronos
-(2, 15, 1, 34.99), -- María: Choque de reyes
+(2, 15, 2, 34.99), -- María: Choque de reyes
 (3, 8, 1, 19.99), -- Carlos: El resplandor
 (3, 9, 1, 14.99), -- Carlos: Orgullo y prejuicio
-(4, 3, 1, 24.99), -- Ana: La casa de los espíritus
+(4, 3, 2, 24.99), -- Ana: La casa de los espíritus
 (5, 10, 1, 16.99), -- Pedro: El viejo y el mar
 (5, 11, 1, 20.99); -- Pedro: Ficciones
 
@@ -133,11 +141,11 @@ INSERT INTO valoraciones (usuario_id, libro_id, puntuacion, comentario, fecha) V
 (4, 1, 5, 'Una obra maestra del realismo mágico', '2025-02-15'),
 (4, 7, 4, 'Excelente inicio de la saga', '2025-02-15'),
 (5, 6, 5, 'Fantasía épica en su máxima expresión', '2025-02-16'),
-(5, 15, 5, 'Continúa la excelente saga', '2025-02-16'),
+(5, 15, 3, 'Continúa la excelente saga', '2025-02-16'),
 (6, 8, 4, 'Terrorífico y envolvente', '2025-02-17'),
 (6, 9, 5, 'Un clásico imprescindible', '2025-02-17'),
 (7, 3, 4, 'Narrativa cautivadora', '2025-02-17'),
-(8, 10, 5, 'Una historia conmovedora', '2025-02-18'),
+(8, 10, 3, 'Una historia conmovedora', '2025-02-18'),
 (8, 11, 5, 'Borges en su mejor momento', '2025-02-18');
 
 -- Favoritos

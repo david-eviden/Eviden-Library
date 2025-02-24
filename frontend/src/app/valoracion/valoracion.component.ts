@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Valoracion } from './valoracion';
 import { ValoracionService } from './valoracion.service';
 
@@ -8,19 +8,30 @@ import { ValoracionService } from './valoracion.service';
   templateUrl: './valoracion.component.html',
   styleUrl: './valoracion.component.css'
 })
-export class ValoracionComponent {
-  valoraciones: Valoracion[]= [];
-  constructor(private carritoService: ValoracionService) {}
+export class ValoracionComponent implements OnInit {
+  valoraciones: Valoracion[] = [];
+
+  constructor(private valoracionService: ValoracionService) {}
 
   ngOnInit(): void {
-    this.carritoService.getUsuarios().subscribe(
-      (valoraciones: Valoracion[]) => {
+    this.valoracionService.getValoraciones().subscribe(
+      valoraciones => {
         this.valoraciones = valoraciones;
-        console.log('Valoraciones recibidas:', valoraciones);  // Lista de usuarios en la consola
+        console.log('Valoraciones recibidas:', valoraciones);
       },
       error => {
-        console.error('Error al obtener las valoraciones', error);  // Muestra errores si los hay
+        console.error('Error al obtener las valoraciones:', error);
       }
-    )
-  };
+    );
+  }
+
+  // Método helper para generar array de estrellas
+  getStarsArray(puntuacion: number): number[] {
+    return Array(puntuacion).fill(0);
+  }
+
+  // Método helper para generar array de estrellas vacías
+  getEmptyStarsArray(puntuacion: number): number[] {
+    return Array(5 - puntuacion).fill(0);
+  }
 }

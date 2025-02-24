@@ -42,7 +42,7 @@ public class LibroController {
 	@GetMapping("/libro/{id}")
 	public ResponseEntity<?> show(@PathVariable Long id) {
 
-		Libro libro = null;
+		Libro libro;
 		Map<String, Object> response = new HashMap<>();
 
 		try {
@@ -50,22 +50,22 @@ public class LibroController {
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		if (libro == null) {
 			response.put("mensaje", "El libro con ID: ".concat(id.toString().concat(" no existe en la base de datos")));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
 
-		return new ResponseEntity<Libro>(libro, HttpStatus.OK);
+		return new ResponseEntity<>(libro, HttpStatus.OK);
 	}
 
 	// Crear libro
 	@PostMapping("/libro")
 	public ResponseEntity<?> create(@RequestBody Libro libro, BindingResult result) {
 
-		Libro nuevoLibro = null;
+		Libro nuevoLibro;
 		Map<String, Object> response = new HashMap<>();
 
 		// Validamos campos
@@ -75,7 +75,7 @@ public class LibroController {
 					.collect(Collectors.toList());
 
 			response.put("errores", errores);
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
 
 		// Manejamos errores
@@ -84,12 +84,12 @@ public class LibroController {
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al insertar en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		response.put("mensaje", "El libro ha sido creado con éxito");
 		response.put("autor", nuevoLibro);
-		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
+		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 
 	// Actualizar libro
@@ -98,7 +98,7 @@ public class LibroController {
 	public ResponseEntity<?> update(@RequestBody Libro libro, BindingResult result, @PathVariable Long id) {
 
 		Libro currentLibro = this.libroService.findById(id);
-		Libro nuevoLibro = null;
+		Libro nuevoLibro;
 		Map<String, Object> response = new HashMap<>();
 
 		// Validamos campos
@@ -109,13 +109,13 @@ public class LibroController {
 					.collect(Collectors.toList());
 
 			response.put("errores", errores);
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
 
 		if (currentLibro == null) {
 			response.put("mensaje", "No se puedo editar, el libro con ID: "
 					.concat(id.toString().concat(" no existe en la base de datos")));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
 
 		try {
@@ -127,12 +127,12 @@ public class LibroController {
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al actualizar el libro en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		response.put("mensaje", "El libro ha sido actualizado con éxito");
 		response.put("cliente", nuevoLibro);
-		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
+		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 
 	// Eliminar libro por ID
@@ -144,7 +144,7 @@ public class LibroController {
 		// Validación de que exista el libro
 		if (currentLibro == null) {
 			response.put("mensaje", "El libro con ID: " + id + " no existe en la base de datos");
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
 
 		try {
@@ -152,12 +152,12 @@ public class LibroController {
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al eliminar el libro en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		response.put("mensaje", "El libro ha sido eliminado con éxito");
 		response.put("cliente", currentLibro);
-		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 }

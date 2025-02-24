@@ -12,24 +12,21 @@ export class ValoracionService {
 
   constructor(private http: HttpClient) {}
 
-  getUsuarios(): Observable<Valoracion[]> {
-    return this.http.get(this.urlEndPoint).pipe(
-
-      // Conversión a valoracions (response de Object a Valoracion[])
+  getValoraciones(): Observable<Valoracion[]> {
+    return this.http.get<any[]>(this.urlEndPoint).pipe(
       map(response => {
-
-        let valoraciones = response as Valoracion[];
-
-        return valoraciones.map(valoracion => {
-          valoracion.usuario = valoracion.usuario;
-          valoracion.libro = valoracion.libro;
-          valoracion.puntuacion = valoracion.puntuacion;
-          valoracion.comentario = valoracion.comentario;
-          valoracion.fecha = valoracion.fecha;
-         
+        console.log('Respuesta del servidor:', response);
+        return response.map(item => {
+          const valoracion = new Valoracion();
+          valoracion.id = item.id;
+          valoracion.usuario = item.usuario;
+          valoracion.libro = item.libro;
+          valoracion.puntuacion = item.puntuacion;
+          valoracion.comentario = item.comentario;
+          valoracion.fecha = new Date(item.fecha);
           return valoracion;
         });
-      }),
+      })
     ); 
   }
 }

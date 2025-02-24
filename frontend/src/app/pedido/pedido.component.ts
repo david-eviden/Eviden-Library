@@ -13,7 +13,7 @@ export class PedidoComponent {
   constructor(private pedidoService: PedidoService) {}
 
   ngOnInit(): void {
-    this.pedidoService.getUsuarios().subscribe(
+    this.pedidoService.getPedidos().subscribe(
       (pedidos: Pedido[]) => {
         this.pedidos = pedidos;
         console.log('Pedidos recibidos:', pedidos); 

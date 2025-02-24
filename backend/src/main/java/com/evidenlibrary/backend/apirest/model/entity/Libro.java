@@ -15,8 +15,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -55,7 +55,7 @@ public class Libro implements Serializable {
         inverseJoinColumns = @JoinColumn(name = "autor_id")
     )
     @JsonIgnore
-    private Set<Autor> autores = new HashSet<>();
+    public final Set<Autor> autores = new HashSet<>();
     
     @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinTable(
@@ -64,11 +64,11 @@ public class Libro implements Serializable {
         inverseJoinColumns = @JoinColumn(name = "genero_id")
     )
     @JsonIgnore
-    private Set<Genero> generos = new HashSet<>();
+    public final Set<Genero> generos = new HashSet<>();
     
     @OneToMany(mappedBy = "libro", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
-    private List<Valoracion> valoraciones = new ArrayList<>();
+    public final List<Valoracion> valoraciones = new ArrayList<>();
 
     
     // Getter/Setter
@@ -102,24 +102,12 @@ public class Libro implements Serializable {
 		return autores;
 	}
 
-	public void setAutores(Set<Autor> autores) {
-		this.autores = autores;
-	}
-
 	public Set<Genero> getGeneros() {
 		return generos;
 	}
 
-	public void setGeneros(Set<Genero> generos) {
-		this.generos = generos;
-	}
-
 	public List<Valoracion> getValoraciones() {
 		return valoraciones;
-	}
-
-	public void setValoraciones(List<Valoracion> valoraciones) {
-		this.valoraciones = valoraciones;
 	}
 
 	public Long getId() {
