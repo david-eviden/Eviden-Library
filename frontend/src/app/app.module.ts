@@ -18,6 +18,8 @@ import { DetallesCarritoComponent } from './detalles-carrito/detalles-carrito.co
 import { PedidoComponent } from './pedido/pedido.component';
 import { DetallesPedidoComponent } from './detalles-pedido/detalles-pedido.component';
 import { ValoracionComponent } from './valoracion/valoracion.component';
+import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
+import { KeycloakAuthService } from './keycloak.service';
 
 
 @NgModule({
@@ -42,9 +44,10 @@ import { ValoracionComponent } from './valoracion/valoracion.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    RouterModule
+    RouterModule,
+    KeycloakAngularModule
 ],
-  providers: [],
+  providers: [KeycloakAuthService, KeycloakService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

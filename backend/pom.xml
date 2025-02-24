@@ -85,7 +85,18 @@
     		<scope>runtime</scope>
 		</dependency>
 		-->
-
+		<!--KeyCloak-->
+		
+		<dependency>
+		    <groupId>org.keycloak</groupId>
+		    <artifactId>keycloak-spring-boot-starter</artifactId>
+		    <version>25.0.3</version>
+		 </dependency>
+		 <!-- Dependencia para usar la seguridad en Spring Boot -->
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter-security</artifactId>
+	    </dependency>
 	</dependencies>
 
 	    <build>
