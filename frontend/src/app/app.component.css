@@ -1,5 +1,16 @@
 * {
     font-family: 'Times New Roman', Times, serif;
-    height: 100%;
     margin: 0;
+}
+
+:host {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+router-outlet + * {
+    flex: 1;
+    padding-top: 60px; /* Adjust based on your header height */
+    padding-bottom: 20px; /* Adjust based on your footer height */
 }

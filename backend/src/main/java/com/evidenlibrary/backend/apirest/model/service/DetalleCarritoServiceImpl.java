@@ -19,7 +19,7 @@ public class DetalleCarritoServiceImpl implements DetalleCarritoService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<DetalleCarrito> findAll() {
-		return (List<DetalleCarrito>) detalleCarritoDao.findAll();
+		return detalleCarritoDao.findAll();
 	}
 
 	@Override
@@ -29,23 +29,27 @@ public class DetalleCarritoServiceImpl implements DetalleCarritoService {
 	}
 
 	@Override
+	@Transactional
+	public DetalleCarrito save(DetalleCarrito detalleCarrito) {
+		return detalleCarritoDao.save(detalleCarrito);
+	}
+
+	@Override
+	@Transactional
+	public void delete(DetalleCarrito detalleCarrito) {
+		detalleCarritoDao.delete(detalleCarrito);
+	}
+
+	@Override
 	@Transactional(readOnly = true)
+	public List<DetalleCarrito> findByCarritoId(Long carritoId) {
+		return detalleCarritoDao.findByCarritoId(carritoId);
+	}
+
+	@Override
 	public List<Libro> findLibrosByCarritoId(Long id) {
 		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	@Transactional
-	public DetalleCarrito save(DetalleCarrito detalles) {
-		return detalleCarritoDao.save(detalles);
-	}
-
-	@Override
-	@Transactional
-	public void delete(DetalleCarrito detalles) {
-		detalleCarritoDao.delete(detalles);
-
+		throw new UnsupportedOperationException("Unimplemented method 'findLibrosByCarritoId'");
 	}
 
 }

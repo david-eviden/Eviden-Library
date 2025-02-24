@@ -40,7 +40,7 @@ public class Genero implements Serializable{
     
     @JsonBackReference
     @ManyToMany(mappedBy = "generos")
-    private Set<Libro> libros = new HashSet<>();
+    public final Set<Libro> libros = new HashSet<>();
 
     // Getter/Setter
 	public Long getId() {
@@ -70,11 +70,4 @@ public class Genero implements Serializable{
 	public Set<Libro> getLibros() {
 		return libros;
 	}
-
-	public void setLibros(Set<Libro> libros) {
-		this.libros = libros;
-	}
-    
-
-    
 }

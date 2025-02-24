@@ -10,8 +10,10 @@ public interface DetallePedidoService {
 	
 	public DetallePedido findById(Long id);
 	
-	public DetallePedido save(DetallePedido detalles);
+	public DetallePedido save(DetallePedido detallePedido);
 	
-	public void delete(DetallePedido detalles);
+	public void delete(DetallePedido detallePedido);
+	
+	public List<DetallePedido> findByPedidoId(Long pedidoId);
 	
 }

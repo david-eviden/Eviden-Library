@@ -10,9 +10,9 @@ public interface ValoracionService {
 	
 	public Valoracion findById(Long id);
 	
-	public List<Valoracion> findValoracionByLibroId(Long id);
+	public List<Valoracion> findByLibroId(Long libroId);
 	
-	public List<Valoracion> findValoracionByUsuarioId(Long id);
+	public List<Valoracion> findByUsuarioId(Long usuarioId);
 	
 	public Valoracion save(Valoracion valoracion);
 	
