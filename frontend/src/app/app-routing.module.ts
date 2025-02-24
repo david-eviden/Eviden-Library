@@ -19,6 +19,7 @@ const routes: Routes = [
   //{ path: 'admin', component: AdminComponent },
   { path: 'libros', component: LibroComponent },
   { path: 'libro/:id', component: DetallesLibroComponent },
+  { path: 'libro/:id/comprar', component: DetallesLibroComponent },
   { path: 'autores', component: AutorComponent },
   { path: 'usuarios', component: UsuarioComponent },
   { path: 'generos', component: GenerosComponent },

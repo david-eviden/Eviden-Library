@@ -26,4 +26,15 @@ export class LibroComponent implements OnInit{
     )
   };
 
+  // Método para navegar a detalles con View Transitions
+  getDetallesLibro(id: number): void {
+    if ((document as any).startViewTransition) {
+      (document as any).startViewTransition(() => {
+        this.router.navigate(['/libro', id]);
+      });
+    } else {
+      // Fallback para navegadores que no soportan View Transitions
+      this.router.navigate(['/libro', id]);
+    }
+  }
 }

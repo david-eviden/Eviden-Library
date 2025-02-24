@@ -1,1 +1,66 @@
-/* You can add global styles to this file, and also import other style files */
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+router-outlet + * {
+  flex: 1;
+  padding-top: 60px;
+  padding-bottom: 20px;
+}
+
+/* ViewTransitions - Efecto Zoom */
+@keyframes zoom-in {
+  from {
+    transform: scale(0.85);
+  }
+}
+
+@keyframes zoom-out {
+  to {
+    transform: scale(1.15);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+/* Transición principal */
+::view-transition-old(root) {
+  animation: 300ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
+    300ms cubic-bezier(0.4, 0, 0.2, 1) both zoom-out;
+}
+
+::view-transition-new(root) {
+  animation: 300ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in,
+    300ms cubic-bezier(0.4, 0, 0.2, 1) both zoom-in;
+}
+
+/* Transición específica para la imagen */
+::view-transition-old(libro-imagen-*),
+::view-transition-new(libro-imagen-*) {
+  height: 100%;
+  object-fit: cover;
+  transform-origin: center;
+  mix-blend-mode: normal;
+}
+
+/* Ajustes para el resto de elementos del libro */
+::view-transition-old(libro-titulo-*),
+::view-transition-old(libro-precio-*),
+::view-transition-old(libro-autor-*),
+::view-transition-new(libro-titulo-*),
+::view-transition-new(libro-precio-*),
+::view-transition-new(libro-autor-*) {
+  mix-blend-mode: normal;
+}

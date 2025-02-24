@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Libro } from '../libro/libro';
 import { DetallesLibroService } from './detalles-libro.service';
 
@@ -15,6 +15,7 @@ export class DetallesLibroComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute, // Para obtener los parámetros de la ruta
+    private router: Router,
     private libroService: DetallesLibroService // Servicio para obtener los detalles del libro
   ) {}
 
@@ -26,5 +27,17 @@ export class DetallesLibroComponent implements OnInit {
     this.libroService.obtenerLibroPorId(libroId).subscribe((libro) => {
       this.libro = libro;
     });
+  }
+
+  // Método para volver atrás con View Transitions
+  goBack(): void {
+    if ((document as any).startViewTransition) {
+      (document as any).startViewTransition(() => {
+        this.router.navigate(['/libros']);
+      });
+    } else {
+      // Navegadores que no soportan View Transitions
+      this.router.navigate(['/libros']);
+    }
   }
 }

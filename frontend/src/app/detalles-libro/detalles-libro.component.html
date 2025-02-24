@@ -1,37 +1,65 @@
 <div class="container my-5">
-    <h2 class="text-center mb-4">Detalles del Libro</h2>
-
-    <!-- Sección de detalles del libro -->
-    <div class="row">
-        <div class="col-md-4">
-            <!-- Imagen del libro -->
-            <img src="{{ libro.imagen }}" class="img-fluid" alt="Imagen de {{ libro.titulo }}">
+    <div class="card shadow book-details">
+        <div class="card-header bg-transparent border-0">
+            <h2 class="text-center my-3">Detalles del Libro</h2>
         </div>
-
-        <div class="col-md-8">
-            <!-- Información del libro -->
-            <h3>{{ libro.titulo }}</h3>
-            <p class="text-muted">Por <strong>{{ libro.autores[0].nombre }} {{ libro.autores[0].apellido }}</strong></p>
-
-            <!-- Descripción del libro -->
-            <p><strong>Descripción:</strong></p>
-            <!--<p>{{ libro.descripcion }}</p>-->
-
-            <!-- Precio y Stock -->
+        
+        <div class="card-body">
             <div class="row">
-                <div class="col">
-                    <p class="fw-bold">Precio: {{ libro.precio | currency:'EUR':'symbol':'1.2-2' }}</p>
-                </div>
-                <div class="col">
-                    <p class="fw-bold">Stock disponible: {{ libro.stock }}</p>
-                </div>
-            </div>
+                <div class="col-md-4 text-center mb-4 mb-md-0">
+                    <!-- Imagen del libro con efecto de elevación -->
+                    <div class="book-image-container">
+                        <img [src]="libro.imagen" 
+                             [style.viewTransitionName]="'libro-imagen-' + libro.id"
+                             class="img-fluid book-cover" 
+                             alt="Imagen de {{ libro.titulo }}">
 
-            <!-- Botones de acción -->
-            <div class="d-flex justify-content-between">
-                <button class="btn btn-primary">Añadir al carrito</button>
-                <a [routerLink]="['/libro', libro.id, 'comprar']" class="btn btn-success">Comprar ahora</a>
+                    </div>
+                </div>
+                
+                <div class="col-md-8">
+                    <!-- Información del libro -->
+                    <h3 class="book-title" [style.viewTransitionName]="'libro-titulo-' + libro.id">{{ libro.titulo }}</h3>
+                    <p class="text-muted autor">
+                        Por <strong [style.viewTransitionName]="'libro-autor-' + libro.id">{{ libro.autores[0].nombre }} {{ libro.autores[0].apellido }}</strong>
+                    </p>
+                    
+                    <!-- Detalles adicionales -->
+                    <div class="additional-info mb-4">
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <div class="info-card">
+                                    <div class="info-title">Precio</div>
+                                    <div class="info-value" [style.viewTransitionName]="'libro-precio-' + libro.id">
+                                        {{ libro.precio | currency:'EUR':'symbol':'1.2-2' }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="info-card" [ngClass]="{'text-danger': libro.stock < 5}">
+                                    <div class="info-title">Stock</div>
+                                    <div class="info-value">
+                                        {{ libro.stock }}
+                                        <small *ngIf="libro.stock < 5" class="stock-warning">¡Últimas unidades!</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Botones de acción -->
+                    <div class="d-flex flex-column flex-sm-row justify-content-between gap-2">
+                        <button class="btn btn-primary btn-lg">
+                            <i class="bi bi-cart-plus me-2"></i>Añadir al carrito
+                        </button>
+                        <a [routerLink]="['/libro', libro.id, 'comprar']" class="btn btn-success btn-lg">
+                            <i class="bi bi-credit-card me-2"></i>Comprar ahora
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+                
+                
