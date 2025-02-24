@@ -49,7 +49,7 @@ INSERT INTO libros (titulo, precio, stock) VALUES
 ('El viejo y el mar', 16.99, 40),
 ('Ficciones', 20.99, 30),
 ('Paula', 23.99, 25),
-('62/Modelo para armar', 18.99, 20),
+('Modelo para armar', 18.99, 20),
 ('Conversación en la catedral', 26.99, 30),
 ('Choque de reyes', 34.99, 45);
 

@@ -1,5 +1,5 @@
 .navbar {
-  position: fixed;
+  position: relative;
   top: 0;
   left: 0;
   width: 100%;
@@ -31,6 +31,12 @@
   box-sizing: border-box;
 }
 
+@media (max-width: 768px) {
+  .badge {
+    display: none;
+  }
+}
+
 @media (max-width: 700px) {
   .navbar .busqueda {
     width: 100px;
@@ -42,7 +48,7 @@
   }
 }
 
-@media (max-width: 575.98px) {
+@media (max-width: 576px) {
   .navbar .busqueda {
     min-width: 120px;
   }
@@ -79,6 +85,10 @@
   .btn-link {
     font-size: 0.9rem;
     padding: 0.25rem 0.5rem;
+  }
+
+  .badge {
+    display:inline-block;
   }
 }
 
