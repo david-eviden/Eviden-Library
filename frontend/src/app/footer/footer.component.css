@@ -1,14 +1,3 @@
-html, body {
-    height: 100%;
-    margin: 0;
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
 main {
     flex: 1 0 auto;
 }
@@ -16,12 +5,16 @@ main {
 .footer {
     flex-shrink: 0;
     width: 100%;
-    margin-top: auto;
+    margin-top: 25px;
     padding-bottom: 10px;
 }
 
 h5 {
     text-decoration: underline;
+}
+
+.registrado {
+    padding-top: 15px;
 }
 
 @media (max-width: 763px) {
@@ -56,6 +49,7 @@ h5 {
 
     .busqueda-news {
         max-width: 250px;
+        min-width: 200px;
         margin: 0 auto;
     }
 

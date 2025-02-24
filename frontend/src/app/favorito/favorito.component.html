@@ -1,5 +1,8 @@
-<div class="favorito-container">
+<div class="container my-5">
     <h2 class="text-center mb-4">Lista de Favoritos</h2>
+    <div class="alert alert-info" *ngIf="favoritos.length === 0">
+      No hay favoritos guardados.
+  </div>
     <div class="accordion" id="favoritosAccordion">
       <div class="card" *ngFor="let grupo of favoritosAgrupados; let i = index">
         <div class="card-header bg-white">

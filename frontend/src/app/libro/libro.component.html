@@ -1,5 +1,8 @@
 <div class="container my-5">
     <h2 class="text-center mb-4">Catálogo de Libros</h2>
+    <div class="alert alert-info" *ngIf="libros.length === 0">
+        No hay libros disponibles en el catálogo.
+    </div>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         <div class="col" *ngFor="let libro of libros">
             <div class="card h-100 shadow-sm">

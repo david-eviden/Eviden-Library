@@ -1,5 +1,8 @@
-<div class="autor-container">
+<div class="container my-5">
     <h2 class="text-center mb-4">Lista de Pedidos</h2>
+    <div class="alert alert-info" *ngIf="pedidos.length === 0">
+        No hay pedidos disponibles.
+    </div>
     <ul class="list-group">
         <li *ngFor="let pedido of pedidos" class="list-group-item">
             <div class="mb-3">

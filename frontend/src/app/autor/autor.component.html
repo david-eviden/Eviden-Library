@@ -1,5 +1,8 @@
-<div class="autor-container">
-    <h2>Lista de Autores</h2>
+<div class="container my-5">
+    <h2 class="text-center mb-4">Lista de Autores</h2>
+    <div class="alert alert-info" *ngIf="autores.length === 0">
+        No hay autores registrados
+    </div>
     <ul>
         <li *ngFor="let autor of autores">
             <h4>{{ autor.nombre }}</h4>
