@@ -8,8 +8,8 @@
             <div class="carousel-item" *ngFor="let fragmento of fragmentos; let i = index" [class.active]="i === 0">
                 <div class="row g-4 justify-content-center book-grid">
                     <div class="col-12 col-sm-6 col-md-4 col-lg-2-4 book-item" *ngFor="let book of fragmento">
-                        <div class="card h-100">
-                            <img [src]="book.image" class="card-img-top" alt="Portada del libro">
+                        <div class="card h-100" (click)="verDetallesLibro(book.id)">
+                        <img [src]="book.image" class="card-img-top" alt="Portada del libro">
                             <div class="card-body">
                                 <h5 class="card-title">{{ book.title }}</h5>
                                 <p class="card-text">{{ book.author }}</p>
@@ -70,7 +70,7 @@
         <h2>Ficción literaria</h2>
         <div class="category-books">
             <div class="book" *ngFor="let book of fragmentos[0]">
-                <div class="book-card mx-4">
+                <div class="book-card">
                     <div class="book-img">
                         <img [src]="book.image" alt="Portada del libro">
                     </div>

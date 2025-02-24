@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LibroService } from './libro.service';
 import { Libro } from './libro';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-libro',
@@ -9,17 +10,18 @@ import { Libro } from './libro';
   styleUrls: ['./libro.component.css']
 })
 export class LibroComponent implements OnInit{
+
   libros : Libro[]= [];
-  constructor(private libroService: LibroService) {}
+  constructor(private libroService: LibroService, private router: Router) {}
 
   ngOnInit(): void {
     this.libroService.getLibros().subscribe(
       (libros: Libro[]) => {
         this.libros = libros;
-        console.log('Libros recibidos:', libros);
+        console.log('Detalles del libro recibidos:', libros);
       },
       error => {
-        console.error('Error al obtener los libros', error);
+        console.error('Error al obtener los detalles del libro', error);
       }
     )
   };

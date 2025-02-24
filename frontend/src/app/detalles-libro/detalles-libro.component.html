@@ -1,0 +1,37 @@
+<div class="container my-5">
+    <h2 class="text-center mb-4">Detalles del Libro</h2>
+
+    <!-- Sección de detalles del libro -->
+    <div class="row">
+        <div class="col-md-4">
+            <!-- Imagen del libro -->
+            <img src="{{ libro.imagen }}" class="img-fluid" alt="Imagen de {{ libro.titulo }}">
+        </div>
+
+        <div class="col-md-8">
+            <!-- Información del libro -->
+            <h3>{{ libro.titulo }}</h3>
+            <p class="text-muted">Por <strong>{{ libro.autores[0].nombre }} {{ libro.autores[0].apellido }}</strong></p>
+
+            <!-- Descripción del libro -->
+            <p><strong>Descripción:</strong></p>
+            <!--<p>{{ libro.descripcion }}</p>-->
+
+            <!-- Precio y Stock -->
+            <div class="row">
+                <div class="col">
+                    <p class="fw-bold">Precio: {{ libro.precio | currency:'EUR':'symbol':'1.2-2' }}</p>
+                </div>
+                <div class="col">
+                    <p class="fw-bold">Stock disponible: {{ libro.stock }}</p>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-primary">Añadir al carrito</button>
+                <a [routerLink]="['/libro', libro.id, 'comprar']" class="btn btn-success">Comprar ahora</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -18,6 +18,7 @@ import { DetallesCarritoComponent } from './detalles-carrito/detalles-carrito.co
 import { PedidoComponent } from './pedido/pedido.component';
 import { DetallesPedidoComponent } from './detalles-pedido/detalles-pedido.component';
 import { ValoracionComponent } from './valoracion/valoracion.component';
+import { DetallesLibroComponent } from './detalles-libro/detalles-libro.component';
 
 
 @NgModule({
@@ -36,6 +37,7 @@ import { ValoracionComponent } from './valoracion/valoracion.component';
     PedidoComponent,
     DetallesPedidoComponent,
     ValoracionComponent,
+    DetallesLibroComponent,
     //AdminComponent
   ],
   imports: [

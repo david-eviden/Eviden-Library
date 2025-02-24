@@ -54,7 +54,6 @@ public class Libro implements Serializable {
         joinColumns = @JoinColumn(name = "libro_id"),
         inverseJoinColumns = @JoinColumn(name = "autor_id")
     )
-    @JsonIgnore
     public final Set<Autor> autores = new HashSet<>();
     
     @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
