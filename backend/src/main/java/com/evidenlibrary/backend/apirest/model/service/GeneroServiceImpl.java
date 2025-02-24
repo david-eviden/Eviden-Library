@@ -61,7 +61,7 @@ public class GeneroServiceImpl implements GeneroService {
             libroDao.save(libro); // Guardar el libro actualizado
         }
 		// Eliminar el género
-		generoDao.delete(genero);;
+		generoDao.delete(genero);
 	}
 
 }

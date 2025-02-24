@@ -15,4 +15,6 @@ public interface CarritoService {
 	public Carrito save(Carrito carrito);
 	
 	public void delete(Carrito carrito);
+	
+	public List<Carrito> findByUsuarioId(Long usuarioId);
 }

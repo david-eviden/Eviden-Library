@@ -1,9 +1,16 @@
-<div class="autor-container">
-    <h2>Lista de Libros</h2>
-    <ul>
-        <li *ngFor="let libro of libros">
-            <h4>{{ libro.titulo }}</h4>
-            <p>{{ libro.precio }}</p>
-        </li>
-    </ul>
+<div class="container my-5">
+    <h2 class="text-center mb-4">Catálogo de Libros</h2>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <div class="col" *ngFor="let libro of libros">
+            <div class="card h-100 shadow-sm">
+                <img src="{{ libro.imagen }}" class="card-img-top" alt="{{ libro.imagen }}">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ libro.titulo }}</h5>
+                    <!-- <p class="card-text text-muted mb-2">{{ libro.autor }}</p>-->
+                    <p class="card-text fw-bold mt-auto">{{ libro.precio | currency:'EUR':'symbol':'1.2-2' }}</p>
+                    <button class="btn btn-primary mt-2">Añadir al carrito</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

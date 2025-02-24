@@ -7,26 +7,42 @@
                 <i class="bi bi-list me-2"></i>
             </button>
             <ul class="dropdown-menu">
-                <!-- Enlace para cada categoría -->
-                <!-- <li *ngFor="let categoria of categorias">
-                    <a class="dropdown-item" [routerLink]="'/categorias/' + categoria.id">{{ categoria.nombre }}</a>
-                </li> -->
+                <!-- Categorías -->
                 <li *ngFor="let categoria of categorias">
                     <a class="dropdown-item" href="#">{{ categoria.nombre }}</a>
                 </li>
 
-                <!-- páginas-->
+                <!-- Páginas principales -->
+                <li><hr class="dropdown-divider"></li>
                 <li>
-                    <a class="dropdown-item" [routerLink]="['/libros']">Libros</a>
+                    <a class="dropdown-item" routerLink="/principal" routerLinkActive="active">Principal</a>
                 </li>
                 <li>
-                    <a class="dropdown-item" [routerLink]="['/autores']">Autores</a>
+                    <a class="dropdown-item" routerLink="/libros" routerLinkActive="active">Libros</a>
                 </li>
                 <li>
-                    <a class="dropdown-item" [routerLink]="['/usuarios']">Usuarios</a>
+                    <a class="dropdown-item" routerLink="/autores" routerLinkActive="active">Autores</a>
                 </li>
                 <li>
-                    <a class="dropdown-item" [routerLink]="['/generos']">Géneros</a>
+                    <a class="dropdown-item" routerLink="/usuarios" routerLinkActive="active">Usuarios</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" routerLink="/generos" routerLinkActive="active">Géneros</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" routerLink="/favoritos" routerLinkActive="active">Favoritos</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" routerLink="/carrito" routerLinkActive="active">Carrito</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" routerLink="/pedidos" routerLinkActive="active">Pedidos</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" routerLink="/valoraciones" routerLinkActive="active">Valoraciones</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" routerLink="/admin" routerLinkActive="active">Admin</a>
                 </li>
             </ul>
         </div>
@@ -34,7 +50,7 @@
         <!-- Barra de búsqueda -->
         <div class="d-flex flex-grow-1 justify-content-center mx-3">
             <form class="d-flex w-100" role="search">
-                <input class="form-control me-2" type="search" placeholder="Busca por autor, título, ISBN"
+                <input class="form-control me-2 busqueda" type="search" placeholder="Busca por autor, título, ISBN"
                     aria-label="Search">
                 <button class="btn btn-outline-secondary" type="submit">Buscar</button>
             </form>
@@ -44,11 +60,11 @@
         <div class="d-flex justify-content-end">
             <!-- Mi cuenta -->
             <a href="#" class="btn btn-link text-decoration-none text-dark">
-                <i class="bi bi-person-circle"></i> Mi cuenta
+                <i class="bi bi-person-circle"></i> Perfil
             </a>
             <!-- Favs -->
-            <a href="#" class="btn btn-link text-dark">
-                <i class="bi bi-heart-fill"></i>
+            <a href="#" class="btn btn-link text-decoration-none text-dark">
+                <i class="bi bi-heart-fill"></i>Favoritos
             </a>
             <!-- Carrito -->
             <a href="#" class="btn btn-link text-dark">

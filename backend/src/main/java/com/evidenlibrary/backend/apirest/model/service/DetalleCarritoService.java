@@ -13,8 +13,10 @@ public interface DetalleCarritoService {
 	
 	public List<Libro> findLibrosByCarritoId(Long id);
 	
-	public DetalleCarrito save(DetalleCarrito detalles);
+	public DetalleCarrito save(DetalleCarrito detalleCarrito);
 
 	
-	public void delete(DetalleCarrito detalles);
+	public void delete(DetalleCarrito detalleCarrito);
+
+	public List<DetalleCarrito> findByCarritoId(Long carritoId);
 }
