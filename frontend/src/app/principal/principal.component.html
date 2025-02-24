@@ -1,16 +1,13 @@
-<!--Ranking mejor valorados-->
+<!-- Ranking mejor valorados-->
 <div class="container mt-5 pt-5">
     <h2 class="text-center mb-4">Ranking Mejor Valorados</h2>
 
     <!-- Carrusel-->
     <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
-
-            <!-- sliders -->
             <div class="carousel-item" *ngFor="let fragmento of fragmentos; let i = index" [class.active]="i === 0">
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 justify-content-center">
-                    <!-- card -->
-                    <div class="col mb-4" *ngFor="let book of fragmento">
+                <div class="row g-4 justify-content-center book-grid">
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-2-4 book-item" *ngFor="let book of fragmento">
                         <div class="card h-100">
                             <img [src]="book.image" class="card-img-top" alt="Portada del libro">
                             <div class="card-body">
@@ -21,17 +18,14 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
         <!-- Controles del Carrusel -->
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
-            data-bs-slide="prev">
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"
-            data-bs-slide="next">
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
         </button>

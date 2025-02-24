@@ -34,6 +34,11 @@
     object-fit: cover;
 }
 
+.col-lg-2-4 {
+    flex: 0 0 20%;
+    max-width: 20%;
+}
+
 .container {
     padding-bottom: 50px;
 }
@@ -106,14 +111,9 @@
     transition: transform 0.2s ease-in-out;
 }
 
-@media (min-width: 993px) {
-    .row-cols-lg-5 > * {
-        flex: 0 0 20%;
-        max-width: 20%;
-    }
-}
+/* Responsive */
 
-@media (max-width: 768px) and (max-width: 992px) {
+@media (max-width: 992px) {
     .category {
         flex-basis: 100%;
     }
@@ -122,20 +122,29 @@
         padding-left: 0;
     }
 
-    .row-cols-md-3 > * {
-        flex: 0 0 33.333333%;
-        max-width: 33.333333%;
+    .col-lg-2-4 {
+        flex: 0 0 50%;
+        max-width: 50%;
     }
 }
 
-@media (max-width: 576px) and (max-width: 768px) {
+@media (max-width: 768px) {
     .category h2 {
         font-size: 1.5rem;
     }
 
-    .row-cols-sm-2 > * {
-        flex: 0 0 50%;
-        max-width: 50%;
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 10%;
+        background-color: rgba(0, 0, 0, 0);
+        height: 100%;
+        top: 0;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        background-color: rgba(128, 128, 128, 0.7);
+        padding: 15px;
     }
 }
 
@@ -143,5 +152,53 @@
     .row-cols-1 > * {
         flex: 0 0 100%;
         max-width: 100%;
+    }
+
+    .row-cols-sm-2 > * {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+
+    .category h2 {
+        font-size: 1.5rem;
+    }
+
+    .col-lg-2-4 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .book-grid {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: hidden;
+    }
+
+    .book-item {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .carousel-item .row {
+        flex-wrap: nowrap;
+    }
+
+    .card {
+        margin: 0 auto;
+        max-width: 280px;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 10%;
+        background-color: rgba(0, 0, 0, 0);
+        height: 100%;
+        top: 0;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        background-color: rgba(128, 128, 128, 0.7);
+        padding: 15px;
     }
 }
