@@ -33,7 +33,7 @@ export class LibroComponent implements OnInit{
         this.router.navigate(['/libro', id]);
       });
     } else {
-      // Fallback para navegadores que no soportan View Transitions
+      // Para navegadores que no soportan View Transitions
       this.router.navigate(['/libro', id]);
     }
   }

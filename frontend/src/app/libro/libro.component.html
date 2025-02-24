@@ -6,7 +6,7 @@
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         <div class="col" *ngFor="let libro of libros">
             <div class="card h-100 shadow-sm">
-                <img [src]="libro.imagen" class="card-img-top" 
+                <img [src]="'/img/libroEjemplo.jpg'" class="card-img-top" 
                      [alt]="'Imagen de ' + libro.titulo"
                      [style.viewTransitionName]="'libro-imagen-' + libro.id"
                      (click)="getDetallesLibro(libro.id)">
