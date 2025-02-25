@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     // Si el usuario ya está autenticado, redirige al home o página protegida
-    if (this.keycloakAuthService.isAuthenticated()) {
+    if (this.keycloakAuthService.isAuthenticated.value) {
       this.router.navigate(['/']);
     }
   }

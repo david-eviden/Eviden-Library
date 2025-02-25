@@ -22,7 +22,9 @@ import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { KeycloakAuthService } from './login/keycloak.service';
 import { LoginComponent } from './login/login.component';
 
-
+export function kcFactory(kcService: KeycloakAuthService){
+  return () => kcService.initKeycloak();
+}
 @NgModule({
   declarations: [
     AppComponent,
@@ -49,7 +51,7 @@ import { LoginComponent } from './login/login.component';
     RouterModule,
     KeycloakAngularModule
 ],
-  providers: [KeycloakAuthService, KeycloakService],
+  providers: [HttpClientModule,KeycloakAuthService, KeycloakService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

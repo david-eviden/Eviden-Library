@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { KeycloakAuthService } from './login/keycloak.service';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+
 
 @Component({
   selector: 'app-root',
@@ -9,28 +12,38 @@ import { KeycloakAuthService } from './login/keycloak.service';
 })
 export class AppComponent implements OnInit{
   title = 'frontend';
+  isAuthenticated: boolean = false;
+  private authSubscription: Subscription | undefined;
 
-  constructor(private keycloakAuthService: KeycloakAuthService) {}
+  constructor(private keycloakAuthService: KeycloakAuthService, private router: Router) {}
 
   ngOnInit(): void {
-    this.keycloakAuthService.init().then(() => {
-      // Lógica posterior a la inicialización, como redirección o carga de datos
-    }).catch(error => {
-      console.error('Error en la inicialización de Keycloak:', error);
+    // Inicializa Keycloak cuando el componente se carga
+    this.keycloakAuthService.initKeycloak().then(() => {
+      // Nos suscribimos al observable isAuthenticated$ directamente
+      this.authSubscription = this.keycloakAuthService.isAuthenticated$.subscribe(
+        (isAuthenticated: boolean) => {
+          this.isAuthenticated = isAuthenticated;
+          if (this.isAuthenticated) {
+            console.log('Usuario autenticado');
+          } else {
+            console.log('Usuario no autenticado');
+          }
+        }
+      );
     });
-
-    // Hacer la solicitud para obtener datos protegidos
-    this.keycloakAuthService.getData().subscribe(
-      (data: any) => {
-        console.log('Datos obtenidos:', data);
-      },
-      (error: any) => {
-        console.error('Error en la solicitud:', error);
-      }
-    );
   }
+  
 
   onLogout(): void {
     this.keycloakAuthService.logout();
+    this.router.navigate(['/']); //Redirigir despeus del logout
+  }
+
+  ngOnDestroy(): void {
+    // desuscribimos del observable cuando el componente se destruye
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
   }
 }

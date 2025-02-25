@@ -1,64 +1,80 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { KeycloakService } from 'keycloak-angular';
+import { KeycloakService } from 'keycloak-js';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class KeycloakAuthService {
 
-  constructor(private http: HttpClient, private keycloakService: KeycloakService) {}
+  public keycloakInitialized = new BehaviorSubject<boolean>(false); // Para saber si Keycloak está inicializado
+  public isAuthenticated = new BehaviorSubject<boolean>(false); // Para gestionar si el usuario está autenticado
 
-//Inicializa la configuración de Keycloak
-  async init(): Promise<void> {
-    await this.keycloakService.init({
-      config: {
-        url: 'http://localhost:9090',  // URL de tu servidor Keycloak
-        realm: 'EVIDEN-LIBRARY',  // Nombre realm
-        clientId: 'admin',           // ID de tu cliente
-      },
-      initOptions: {
-        onLoad: 'login-required',            // Obligamos al login si no está autenticado
-        checkLoginIframe: false              // Evitar problemas con iframes
-      },
-      enableBearerInterceptor: true,    // Habilita el interceptor de tokens para incluir el token en las solicitudes
-      bearerExcludedUrls: ['/assets']   // Excluye las URLs que no necesitan autenticación (por ejemplo, los recursos estáticos)
-    });
-  }
+  constructor(private keycloakService: KeycloakService) {}
 
-  getData() {
-    const token = this.keycloakService.getToken();  // Obtener el token desde Keycloak
+  // Método para inicializar Keycloak solo cuando se necesite
+  async initKeycloak(): Promise<void> {
+    console.log("keycloak inicializado");
+    if (!this.keycloakInitialized.value) {
+      try {
+        await this.keycloakService.init({
+          config: {
+            url: 'http://localhost:9090', // URL de tu servidor Keycloak
+            realm: 'eviden', // Nombre realm
+            clientId: 'user1', // ID de tu cliente
+          },
+          initOptions: {
+            onLoad: 'check-sso', // No obligar a hacer login inmediatamente
+            checkLoginIframe: false,
+          },
+        });
 
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,  // Incluir el token en el header de la solicitud
-    });
-
-    return this.http.get('http://localhost:9090/api/resource', { headers });
-  }
-
-  // Verificar si el usuario está autenticado
-  isAuthenticated(): boolean {
-    return this.keycloakService.isLoggedIn(); //token existe y es válido
-  }
-
-  getToken(): string {
-    const token = this.keycloakService.getKeycloakInstance().token;
-  
-    if (!token) {
-      throw new Error('Token no disponible. El usuario no está autenticado.');
+        this.keycloakInitialized.next(true);
+        this.isAuthenticated.next(this.keycloakService.isLoggedIn());
+      } catch (error) {
+        console.error('Error al inicializar Keycloak:', error);
+      }
     }
-
-    return token;
   }
 
+  // Método para login
   login(): void {
-    this.keycloakService.login({
-      redirectUri: window.location.origin  //Redirige a la página de inicio después de la autenticación
-    });
+    this.keycloakService.login();
   }
-  
 
+  // Método para logout
   logout(): void {
     this.keycloakService.logout();
+  }
+
+  // Método para obtener el token
+  getToken(): Promise<string | null> {
+    try{
+      const token = this.keycloakService.getToken();
+      if (token) {
+        return token;
+      } else {
+        console.error('Token no disponible');
+        return Promise.resolve(null); // Retorna null si el token no está disponible
+      }
+    }catch (error){
+      console.error('Error al obtener el token:', error);
+      return Promise.resolve(null);
+    }
+  }
+
+  // Método para verificar si está autenticado
+  get isAuthenticated$() {
+    return this.isAuthenticated.asObservable();
+  }
+
+  // Método para actualizar el estado de autenticación
+  setAuthenticated(isAuthenticated: boolean): void {
+    this.isAuthenticated.next(isAuthenticated);
+  }
+
+  // Obtener si Keycloak está completamente inicializado
+  isInitialized$() {
+    return this.keycloakInitialized.asObservable();
   }
 }

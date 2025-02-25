@@ -8,7 +8,7 @@ export class LoginGuardian implements CanActivate{
     constructor(private keycloakAuthService: KeycloakAuthService, private router: Router){}
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot){
-        if(this.keycloakAuthService.isAuthenticated()){
+        if(this.keycloakAuthService.isAuthenticated.value){
             return true;
         }else{
             this.router.navigate(['login']);//redirige a login si no está logueado
