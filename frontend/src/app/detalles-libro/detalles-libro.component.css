@@ -5,7 +5,6 @@
     border: none;
 }
 
-/* Título del libro */
 .book-title {
     font-size: 2rem;
     font-weight: 700;
@@ -13,19 +12,21 @@
     margin-bottom: 0.5rem;
 }
 
-/* Autor */
+h2 {
+    text-decoration: underline;
+}
+
 .autor {
     font-size: 1.1rem;
     margin-bottom: 1.5rem;
 }
 
-/* Contenedor de la imagen */
+/* Imagen */
 .book-image-container {
     position: relative;
     padding: 15px;
 }
 
-/* Imagen con efecto de sombra */
 .book-cover {
     max-height: 400px;
     border-radius: 8px;

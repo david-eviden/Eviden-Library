@@ -18,6 +18,7 @@ const routes: Routes = [
   { path: 'principal', component: PrincipalComponent },
   //{ path: 'admin', component: AdminComponent },
   { path: 'libros', component: LibroComponent },
+  { path: 'libros/page/:page', component: LibroComponent},
   { path: 'libro/:id', component: DetallesLibroComponent },
   { path: 'libro/:id/comprar', component: DetallesLibroComponent },
   { path: 'autores', component: AutorComponent },
