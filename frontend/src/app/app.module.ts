@@ -19,7 +19,8 @@ import { PedidoComponent } from './pedido/pedido.component';
 import { DetallesPedidoComponent } from './detalles-pedido/detalles-pedido.component';
 import { ValoracionComponent } from './valoracion/valoracion.component';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
-import { KeycloakAuthService } from './keycloak.service';
+import { KeycloakAuthService } from './login/keycloak.service';
+import { LoginComponent } from './login/login.component';
 
 
 @NgModule({
@@ -38,6 +39,7 @@ import { KeycloakAuthService } from './keycloak.service';
     PedidoComponent,
     DetallesPedidoComponent,
     ValoracionComponent,
+    LoginComponent,
     //AdminComponent
   ],
   imports: [

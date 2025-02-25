@@ -9,7 +9,7 @@ export class KeycloakAuthService {
 
   constructor(private http: HttpClient, private keycloakService: KeycloakService) {}
 
-    //Inicializa la configuración de Keycloak
+//Inicializa la configuración de Keycloak
   async init(): Promise<void> {
     await this.keycloakService.init({
       config: {
@@ -36,9 +36,27 @@ export class KeycloakAuthService {
     return this.http.get('http://localhost:9090/api/resource', { headers });
   }
 
-  getToken(): string {
-    return this.keycloakService.getKeycloakInstance().token;
+  // Verificar si el usuario está autenticado
+  isAuthenticated(): boolean {
+    return this.keycloakService.isLoggedIn(); //token existe y es válido
   }
+
+  getToken(): string {
+    const token = this.keycloakService.getKeycloakInstance().token;
+  
+    if (!token) {
+      throw new Error('Token no disponible. El usuario no está autenticado.');
+    }
+
+    return token;
+  }
+
+  login(): void {
+    this.keycloakService.login({
+      redirectUri: window.location.origin  //Redirige a la página de inicio después de la autenticación
+    });
+  }
+  
 
   logout(): void {
     this.keycloakService.logout();

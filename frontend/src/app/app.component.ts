@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { KeycloakAuthService } from './keycloak.service';
+import { KeycloakAuthService } from './login/keycloak.service';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +13,12 @@ export class AppComponent implements OnInit{
   constructor(private keycloakAuthService: KeycloakAuthService) {}
 
   ngOnInit(): void {
-    this.keycloakAuthService.init();
+    this.keycloakAuthService.init().then(() => {
+      // Lógica posterior a la inicialización, como redirección o carga de datos
+    }).catch(error => {
+      console.error('Error en la inicialización de Keycloak:', error);
+    });
+
     // Hacer la solicitud para obtener datos protegidos
     this.keycloakAuthService.getData().subscribe(
       (data: any) => {
