@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -48,13 +49,24 @@ public class Libro implements Serializable {
     @Column(nullable = false)
     private Integer stock;
     
-    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @Column(nullable = false)
+    private String descripcion;
+    
+    public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	@ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinTable(
         name = "libro_autor",
         joinColumns = @JoinColumn(name = "libro_id"),
         inverseJoinColumns = @JoinColumn(name = "autor_id")
     )
-    @JsonIgnore
+    @JsonManagedReference
     public final Set<Autor> autores = new HashSet<>();
     
     @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
@@ -67,7 +79,6 @@ public class Libro implements Serializable {
     public final Set<Genero> generos = new HashSet<>();
     
     @OneToMany(mappedBy = "libro", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonIgnore
     public final List<Valoracion> valoraciones = new ArrayList<>();
 
     

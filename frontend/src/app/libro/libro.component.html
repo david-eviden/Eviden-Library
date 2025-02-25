@@ -1,13 +1,30 @@
-<div class="container my-5">
+<div class="container my-3">
     <h2 class="text-center mb-4">Catálogo de Libros</h2>
+    <div class="alert alert-info" *ngIf="libros.length === 0">
+        No hay libros disponibles en el catálogo.
+    </div>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         <div class="col" *ngFor="let libro of libros">
             <div class="card h-100 shadow-sm">
-                <img src="{{ libro.imagen }}" class="card-img-top" alt="{{ libro.imagen }}">
+                <img [src]="'/img/libroEjemplo.jpg'" class="card-img-top" 
+                     [id]="'imagen-libro-' + libro.id" 
+                     [alt]="'Imagen de ' + libro.titulo"
+                     (click)="getDetallesLibro(libro.id)">
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">{{ libro.titulo }}</h5>
-                    <!-- <p class="card-text text-muted mb-2">{{ libro.autor }}</p>-->
-                    <p class="card-text fw-bold mt-auto">{{ libro.precio | currency:'EUR':'symbol':'1.2-2' }}</p>
+                    <p class="card-text text-muted mb-2">
+                        <span *ngIf="libro.autores && libro.autores.length > 0">
+                            Por <strong>
+                                {{ libro.autores[0].nombre }} {{ libro.autores[0].apellido }}
+                            </strong>
+                        </span>
+                        <span *ngIf="!libro.autores || libro.autores.length === 0">
+                            Autor desconocido
+                        </span>
+                    </p>
+                    <p class="card-text fw-bold mt-auto">
+                        {{ libro.precio | currency:'EUR':'symbol':'1.2-2' }}
+                    </p>
                     <button class="btn btn-primary mt-2">Añadir al carrito</button>
                 </div>
             </div>

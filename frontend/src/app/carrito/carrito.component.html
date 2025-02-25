@@ -38,9 +38,9 @@
                         <ul class="list-group">
                             <li class="list-group-item" *ngFor="let detalle of carrito.detalles">
                                 <ng-container *ngIf="detalle.libro; else noLibro">
-                                    {{ detalle.libro.titulo }} - Cantidad: {{ detalle.cantidad }}
+                                    {{ detalle.libro.titulo }}
                                     <span class="float-end">
-                                        {{ detalle.precioUnitario | currency:'EUR' }}
+                                        {{ detalle.precioUnitario | currency:'EUR' }} x {{ detalle.cantidad }} ({{detalle.precioUnitario*detalle.cantidad | currency:'EUR'}})
                                     </span>
                                 </ng-container>
                                 <ng-template #noLibro>

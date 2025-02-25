@@ -23,6 +23,7 @@ export class ValoracionService {
           valoracion.libro = item.libro;
           valoracion.puntuacion = item.puntuacion;
           valoracion.comentario = item.comentario;
+          valoracion.libroDetalles = item.libroDetalles;
           valoracion.fecha = new Date(item.fecha);
           return valoracion;
         });

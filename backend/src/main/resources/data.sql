@@ -36,22 +36,23 @@ INSERT INTO autores (nombre, biografia) VALUES
 ('Ernest Hemingway', 'Escritor estadounidense, premio Nobel de Literatura');
 
 -- Libros
-INSERT INTO libros (titulo, precio, stock) VALUES
-('Cien años de soledad', 29.99, 50),
-('El Aleph', 19.99, 30),
-('La casa de los espíritus', 24.99, 40),
-('Rayuela', 22.99, 25),
-('La ciudad y los perros', 21.99, 35),
-('Juego de tronos', 34.99, 60),
-('Harry Potter y la piedra filosofal', 24.99, 100),
-('El resplandor', 19.99, 45),
-('Orgullo y prejuicio', 14.99, 55),
-('El viejo y el mar', 16.99, 40),
-('Ficciones', 20.99, 30),
-('Paula', 23.99, 25),
-('62/Modelo para armar', 18.99, 20),
-('Conversación en la catedral', 26.99, 30),
-('Choque de reyes', 34.99, 45);
+INSERT INTO libros (titulo, precio, stock, descripcion) VALUES
+('Cien años de soledad', 29.99, 2, 'Una novela épica de Gabriel García Márquez que narra la historia de la familia Buendía en el mítico pueblo de Macondo. Un clásico de la literatura latinoamericana que explora el amor, la soledad y el destino, todo en un marco de realismo mágico.'),
+('El Aleph', 19.99, 4, 'Una colección de relatos de Jorge Luis Borges que aborda temas como el infinito, los laberintos, el tiempo y la literatura misma, con la típica maestría filosófica y literaria del autor.'),
+('La casa de los espíritus', 24.99, 15, 'Isabel Allende presenta una saga familiar en la que lo sobrenatural se entrelaza con los eventos políticos y sociales de Chile. Un relato de amores, tragedias y esperanzas en el contexto histórico de América Latina.'),
+('Rayuela', 22.99, 25, 'Julio Cortázar crea una obra revolucionaria, experimentando con la estructura narrativa. El protagonista, Horacio Oliveira, vive un romance intelectual con La Maga mientras navega por la incomodidad de su existencia.'),
+('La ciudad y los perros', 21.99, 35, 'Mario Vargas Llosa presenta una crítica profunda de la vida en un internado militar en Lima, explorando temas de violencia, lealtad y la lucha de poder entre jóvenes estudiantes en un contexto de dictadura.'),
+('Juego de tronos', 34.99, 8, 'El primer libro de la famosa saga "Canción de Hielo y Fuego" de George R.R. Martin, donde intrigas políticas, traiciones y luchas por el poder definen un mundo medieval de fantasía.'),
+('Harry Potter y la piedra filosofal', 24.99, 35, 'La historia que introduce al joven mago Harry Potter en su mundo de magia, amistad y aventura, cuando descubre que es un "niño elegido" para enfrentar las fuerzas oscuras del mal.'),
+('El resplandor', 19.99, 3, 'Una novela de terror psicológico escrita por Stephen King, que relata la historia de una familia que se ve atrapada en un hotel aislado por el invierno, donde las fuerzas oscuras que acechan comienzan a manifestarse.'),
+('Orgullo y prejuicio', 14.99, 55, 'La famosa novela de Jane Austen, que relata la historia de Elizabeth Bennet y su relación con el orgulloso pero intrigante Sr. Darcy. Una historia sobre el amor, los prejuicios y la lucha por la autonomía femenina.'),
+('El viejo y el mar', 16.99, 40, 'Una novela breve pero profunda de Ernest Hemingway sobre un viejo pescador cubano y su lucha solitaria contra un enorme marlín, que simboliza su enfrentamiento con la naturaleza y la vida misma.'),
+('Ficciones', 20.99, 30, 'Una serie de relatos breves de Jorge Luis Borges que exploran mundos paralelos, laberintos y la incertidumbre de la realidad, creando una obra maestra literaria de la literatura contemporánea.'),
+('Paula', 23.99, 25, 'La novela de Isabel Allende sobre la vida de su hija Paula, quien sufrió una enfermedad terminal. Una obra profundamente personal que mezcla la narración de su vida con la reflexión sobre la maternidad y la muerte.'),
+('Modelo para armar', 18.99, 20, 'Una novela de Juan José Saer que explora la vida cotidiana de un grupo de personas en un pequeño pueblo argentino, atrapados en sus recuerdos y en sus deseos frustrados.'),
+('Conversación en la catedral', 26.99, 30, 'Mario Vargas Llosa presenta una compleja narrativa sobre el Perú de mediados del siglo XX, donde se mezclan la política, la corrupción y la vida personal de un periodista y un amigo que intentan desentrañar la realidad de su país.'),
+('Choque de reyes', 34.99, 45, 'El segundo libro de la serie "Canción de Hielo y Fuego", donde los reinos de Westeros continúan en guerra. La lucha por el Trono de Hierro intensifica las traiciones, alianzas y secretos en un mundo lleno de magia y violencia.');
+
 
 -- Relaciones Libro-Autor
 INSERT INTO libro_autor (libro_id, autor_id) VALUES
@@ -146,7 +147,17 @@ INSERT INTO valoraciones (usuario_id, libro_id, puntuacion, comentario, fecha) V
 (6, 9, 5, 'Un clásico imprescindible', '2025-02-17'),
 (7, 3, 4, 'Narrativa cautivadora', '2025-02-17'),
 (8, 10, 3, 'Una historia conmovedora', '2025-02-18'),
-(8, 11, 5, 'Borges en su mejor momento', '2025-02-18');
+(8, 11, 5, 'Borges en su mejor momento', '2025-02-18'),
+(5, 1, 4, 'Una obra literaria que no deja indiferente', '2025-02-19'),
+(5, 2, 4, 'Fascinante colección de relatos, siempre sorprendente', '2025-02-19'),
+(6, 4, 5, 'Rayuela es una obra que me marcó profundamente', '2025-02-19'),
+(6, 7, 5, 'Harry Potter siempre ha sido una de mis sagas favoritas', '2025-02-19'),
+(7, 6, 4, 'A pesar de ser muy largo, vale la pena', '2025-02-19'),
+(7, 9, 4, 'Orgullo y prejuicio es un clásico que no pasa de moda', '2025-02-19'),
+(8, 2, 5, 'Es imposible no quedar atrapado por el estilo de Borges', '2025-02-19'),
+(8, 5, 4, 'Una obra profunda, llena de contexto histórico', '2025-02-19'),
+(4, 10, 4, 'Una novela profunda y reflexiva', '2025-02-20'),
+(4, 12, 5, 'Paula es un libro que toca el alma', '2025-02-20');
 
 -- Favoritos
 INSERT INTO favoritos (usuario_id, libro_id, fecha_agregado) VALUES

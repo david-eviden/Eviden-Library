@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.CascadeType;
@@ -61,7 +60,7 @@ public class Usuario implements Serializable{
 	public final List<Pedido> pedidos = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-	@JsonIgnoreProperties({"usuario", "hibernateLazyInitializer", "handler"})
+	@JsonIgnore
 	public final List<Carrito> carritos = new ArrayList<>();
 	
 	@JsonIgnore

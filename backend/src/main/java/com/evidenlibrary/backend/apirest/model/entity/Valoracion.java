@@ -52,6 +52,14 @@ public class Valoracion implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date fecha;
 
+    // Método para obtener detalles del libro sin eliminar @JsonBackReference
+    public Long getLibroDetalles() {
+        if (libro != null) {
+            return libro.getId();
+        }
+        return (long) 0;
+    }
+    
 	public Usuario getUsuario() {
 		return usuario;
 	}

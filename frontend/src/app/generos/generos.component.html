@@ -1,5 +1,8 @@
-<div class="container mt-5">
+<div class="container my-3">
     <h2 class="text-center mb-4">Lista de Géneros</h2>
+    <div class="alert alert-info" *ngIf="generos.length === 0">
+        No hay géneros disponibles en el catálogo.
+    </div>
     <ul class="list-group">
         <li *ngFor="let genero of generos" class="list-group-item">
             <h5>{{ genero.nombre }}</h5>

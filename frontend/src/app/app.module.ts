@@ -11,13 +11,14 @@ import { AutorComponent } from './autor/autor.component';
 import { LibroComponent } from './libro/libro.component';
 import { GenerosComponent } from './generos/generos.component';
 import { UsuarioComponent } from './usuario/usuario.component';
-import { RouterModule } from '@angular/router';
+import { RouterModule, withViewTransitions } from '@angular/router';
 import { FavoritoComponent } from './favorito/favorito.component';
 import { CarritoComponent } from './carrito/carrito.component';
 import { DetallesCarritoComponent } from './detalles-carrito/detalles-carrito.component';
 import { PedidoComponent } from './pedido/pedido.component';
 import { DetallesPedidoComponent } from './detalles-pedido/detalles-pedido.component';
 import { ValoracionComponent } from './valoracion/valoracion.component';
+import { DetallesLibroComponent } from './detalles-libro/detalles-libro.component';
 
 
 @NgModule({
@@ -36,6 +37,7 @@ import { ValoracionComponent } from './valoracion/valoracion.component';
     PedidoComponent,
     DetallesPedidoComponent,
     ValoracionComponent,
+    DetallesLibroComponent,
     //AdminComponent
   ],
   imports: [

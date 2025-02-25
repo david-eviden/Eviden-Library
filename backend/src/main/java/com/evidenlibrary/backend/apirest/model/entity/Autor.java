@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
@@ -41,7 +41,7 @@ public class Autor implements Serializable {
     private String biografia;
 
     @ManyToMany(mappedBy = "autores", fetch = FetchType.LAZY)
-    @JsonIgnore
+    @JsonBackReference
     private final Set<Libro> libros = new HashSet<>();
 
     @JsonProperty("libros")
