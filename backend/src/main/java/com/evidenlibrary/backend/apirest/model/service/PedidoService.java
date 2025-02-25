@@ -10,7 +10,7 @@ public interface PedidoService {
 	
 	public Pedido findById(Long id);
 	
-	public List<Pedido> findPedidosByUsuarioId(Long id);
+	public List<Pedido> findPedidosByUsuarioId(Long usuarioId);
 	
 	public Pedido save(Pedido pedido);
 	

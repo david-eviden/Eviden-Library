@@ -18,7 +18,7 @@ public class PedidoServiceImpl implements PedidoService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<Pedido> findAll() {
-		return (List<Pedido>) pedidoDao.findAll();
+		return pedidoDao.findAll();
 	}
 
 	@Override

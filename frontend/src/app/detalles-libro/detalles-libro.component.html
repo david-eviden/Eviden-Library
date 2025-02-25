@@ -1,0 +1,110 @@
+<div class="container my-5">
+    <div class="card shadow book-details">
+        <div class="card-header bg-transparent border-0">
+            <h2 class="text-center my-3">Detalles del Libro</h2>
+        </div>
+        
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 text-center mb-4 mb-md-0">
+                    <div class="book-image-container">
+                        <img [src]="'/img/libroEjemplo.jpg'" 
+                             [id]="'imagen-libro-' + libro.id" 
+                             [style.viewTransitionName]="'libro-imagen-' + libro.id"
+                             class="img-fluid book-cover" 
+                             alt="Imagen de {{ libro.titulo }}">
+
+                    </div>
+                </div>
+                
+                <div class="col-md-8">
+                    <!-- Información del libro -->
+                    <h3 class="book-title">{{ libro.titulo }}</h3>
+                    <p class="text-muted autor">
+                        Por <strong>{{ libro.autores[0].nombre }} {{ libro.autores[0].apellido }}</strong>
+                    </p>
+                    <p class="text-muted descripcion">
+                       {{ libro.descripcion }}
+                    </p>
+                    
+                    <!-- Detalles adicionales -->
+                    <div class="additional-info mb-4">
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <div class="info-card">
+                                    <div class="info-title">Precio</div>
+                                    <div class="info-value" [style.viewTransitionName]="'libro-precio-' + libro.id">
+                                        {{ libro.precio | currency:'EUR':'symbol':'1.2-2' }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="info-card" [ngClass]="{'text-danger': libro.stock < 5}">
+                                    <div class="info-title">Stock</div>
+                                    <div class="info-value">
+                                        {{ libro.stock }}
+                                        <small *ngIf="libro.stock < 5" class="stock-warning">¡Últimas unidades!</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Botones de acción -->
+                    <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 mt-custom">
+                        <button class="btn btn-primary btn-lg">
+                            <i class="bi bi-cart-plus me-2"></i>Añadir al carrito
+                        </button>
+                        <a [routerLink]="['/libro', libro.id, 'comprar']" class="btn btn-success btn-lg">
+                            <i class="bi bi-credit-card me-2"></i>Comprar ahora
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Valoraciones-->
+
+            <div class="row">
+                <div class="card-header bg-transparent text-center">
+                    <h3 class="mb-0">Valoraciones</h3>
+                </div>
+                <div class="card-body">
+                    <div *ngIf="libro.valoraciones.length === 0" class="alert alert-info">
+                        Este libro aún no tiene valoraciones.
+                    </div>
+                <div class="card mb-3" *ngFor="let valoracion of libro.valoraciones">
+                <a [routerLink]="['/usuario', valoracion.usuario?.id]">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5 class="card-title">{{ valoracion.usuario?.nombre }} {{ valoracion.usuario?.apellido }}</h5>
+                                <h6 class="text-muted">
+                                    {{ valoracion.usuario?.email }}
+                                </h6>
+                            </div>
+                            <div class="stars-container">
+                                <span class="star-rating">
+                                    <i class="bi bi-star-fill text-warning" 
+                                       *ngFor="let star of getStarsArray(valoracion.puntuacion)"></i>
+                                    <i class="bi bi-star" 
+                                       *ngFor="let star of getEmptyStarsArray(valoracion.puntuacion)"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <p class="card-text mt-3">
+                            <i class="bi bi-quote"></i>
+                            {{ valoracion.comentario }}
+                            <i class="bi bi-quote"></i>
+                        </p>
+
+                        <small class="text-muted">
+                            {{ valoracion.fecha | date:'dd/MM/yyyy' }}
+                        </small>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+

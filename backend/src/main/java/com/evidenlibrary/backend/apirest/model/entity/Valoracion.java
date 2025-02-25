@@ -51,4 +51,58 @@ public class Valoracion implements Serializable {
     @Column(nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date fecha;
+
+    // Método para obtener detalles del libro sin eliminar @JsonBackReference
+    public Long getLibroDetalles() {
+        if (libro != null) {
+            return libro.getId();
+        }
+        return (long) 0;
+    }
+    
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	public Libro getLibro() {
+		return libro;
+	}
+
+	public void setLibro(Libro libro) {
+		this.libro = libro;
+	}
+
+	public Integer getPuntuacion() {
+		return puntuacion;
+	}
+
+	public void setPuntuacion(Integer puntuacion) {
+		this.puntuacion = puntuacion;
+	}
+
+	public String getComentario() {
+		return comentario;
+	}
+
+	public void setComentario(String comentario) {
+		this.comentario = comentario;
+	}
+
+	public Date getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
+
+	public Long getId() {
+		return id;
+	}
+    
+    
 }
