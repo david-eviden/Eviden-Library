@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { LibroService } from './libro.service';
 import { Libro } from './libro';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-libro',
@@ -12,9 +13,37 @@ import { Router } from '@angular/router';
 export class LibroComponent implements OnInit{
 
   libros : Libro[]= [];
-  constructor(private libroService: LibroService, private router: Router) {}
+  paginador: any;
+
+  constructor(private libroService: LibroService, private router: Router, private activatedRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
+
+    // Obtenemos el numero de pagina del observable
+    this.activatedRoute.paramMap.subscribe(params => {
+      let page: number = +params.get('page')!;
+
+      if(!page) {
+        page = 0;
+      }
+
+      this.libroService.getLibros(page)
+      .pipe(
+        tap(response => {
+          console.log('LibrosComponent: tap 3');
+          (response.content as Libro[]).forEach( libro => {
+            console.log(libro.titulo);
+          });
+        })
+      ).subscribe(response => {
+        this.libros = response.content as Libro[];
+        this.paginador = response;
+      });
+    });
+
+  
+    /* Sin paginacion */
+    /*
     this.libroService.getLibros().subscribe(
       (libros: Libro[]) => {
         this.libros = libros;
@@ -23,7 +52,7 @@ export class LibroComponent implements OnInit{
       error => {
         console.error('Error al obtener los detalles del libro', error);
       }
-    )
+    ) */
   };
 
   // Método para navegar a detalles con View Transitions

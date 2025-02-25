@@ -19,6 +19,7 @@ import { PedidoComponent } from './pedido/pedido.component';
 import { DetallesPedidoComponent } from './detalles-pedido/detalles-pedido.component';
 import { ValoracionComponent } from './valoracion/valoracion.component';
 import { DetallesLibroComponent } from './detalles-libro/detalles-libro.component';
+import { PaginatorComponent } from './paginator/paginator.component';
 
 
 @NgModule({
@@ -38,6 +39,7 @@ import { DetallesLibroComponent } from './detalles-libro/detalles-libro.componen
     DetallesPedidoComponent,
     ValoracionComponent,
     DetallesLibroComponent,
+    PaginatorComponent,
     //AdminComponent
   ],
   imports: [
