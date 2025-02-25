@@ -2,11 +2,16 @@ package com.evidenlibrary.backend.apirest.model.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.evidenlibrary.backend.apirest.model.entity.Libro;
 
 public interface LibroService {
 
 	public List<Libro> findAll();
+	
+	public Page<Libro> findAllPaginado(Pageable pageable); // Paginación
 	
 	public Libro findById(Long id);
 	
