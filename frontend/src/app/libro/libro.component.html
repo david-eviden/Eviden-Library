@@ -7,18 +7,22 @@
         <div class="col" *ngFor="let libro of libros">
             <div class="card h-100 shadow-sm">
                 <img [src]="'/img/libroEjemplo.jpg'" class="card-img-top" 
+                     [id]="'imagen-libro-' + libro.id" 
                      [alt]="'Imagen de ' + libro.titulo"
-                     [style.viewTransitionName]="'libro-imagen-' + libro.id"
                      (click)="getDetallesLibro(libro.id)">
                 <div class="card-body d-flex flex-column">
-                    <h5 class="card-title" [style.viewTransitionName]="'libro-titulo-' + libro.id">{{ libro.titulo }}</h5>
+                    <h5 class="card-title">{{ libro.titulo }}</h5>
                     <p class="card-text text-muted mb-2">
-                        <span *ngFor="let autor of libro.autores" 
-                              [style.viewTransitionName]="'libro-autor-' + libro.id">
-                            {{ autor.nombre }} {{ autor.apellido }}
+                        <span *ngIf="libro.autores && libro.autores.length > 0">
+                            Por <strong>
+                                {{ libro.autores[0].nombre }} {{ libro.autores[0].apellido }}
+                            </strong>
+                        </span>
+                        <span *ngIf="!libro.autores || libro.autores.length === 0">
+                            Autor desconocido
                         </span>
                     </p>
-                    <p class="card-text fw-bold mt-auto" [style.viewTransitionName]="'libro-precio-' + libro.id">
+                    <p class="card-text fw-bold mt-auto">
                         {{ libro.precio | currency:'EUR':'symbol':'1.2-2' }}
                     </p>
                     <button class="btn btn-primary mt-2">Añadir al carrito</button>

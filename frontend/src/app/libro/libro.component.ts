@@ -28,13 +28,18 @@ export class LibroComponent implements OnInit{
 
   // Método para navegar a detalles con View Transitions
   getDetallesLibro(id: number): void {
-    if ((document as any).startViewTransition) {
-      (document as any).startViewTransition(() => {
+    const imagenLibro = document.getElementById(`imagen-libro-${id}`);
+
+    // Comprobar si el navegador soporta la API de View Transitions
+    if (document.startViewTransition && imagenLibro) {
+      // Iniciar la transición de la imagen
+      document.startViewTransition(() => {
+        // Aquí, la imagen es la que se moverá de una página a otra
         this.router.navigate(['/libro', id]);
       });
     } else {
-      // Para navegadores que no soportan View Transitions
+      // Si el navegador no soporta View Transitions, se hace la navegación normalmente
       this.router.navigate(['/libro', id]);
     }
+    }
   }
-}

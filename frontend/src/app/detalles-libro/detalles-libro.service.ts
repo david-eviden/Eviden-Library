@@ -40,7 +40,14 @@ export class DetallesLibroService  implements OnInit{
   }
   
   obtenerLibroPorId(id: number): Observable<Libro> {
-    return this.http.get<Libro>(`${this.urlEndPoint}/${id}`);
+    return this.http.get<Libro>(`${this.urlEndPoint}/${id}`).pipe(
+      map(libro => {
+        if (!libro.autores) {
+          libro.autores = [];
+        }
+        return libro;
+      })
+    );
   }
   
 }

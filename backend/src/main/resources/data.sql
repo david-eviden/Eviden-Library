@@ -37,14 +37,14 @@ INSERT INTO autores (nombre, biografia) VALUES
 
 -- Libros
 INSERT INTO libros (titulo, precio, stock) VALUES
-('Cien años de soledad', 29.99, 50),
-('El Aleph', 19.99, 30),
-('La casa de los espíritus', 24.99, 40),
+('Cien años de soledad', 29.99, 2),
+('El Aleph', 19.99, 4),
+('La casa de los espíritus', 24.99, 15),
 ('Rayuela', 22.99, 25),
 ('La ciudad y los perros', 21.99, 35),
-('Juego de tronos', 34.99, 60),
-('Harry Potter y la piedra filosofal', 24.99, 100),
-('El resplandor', 19.99, 45),
+('Juego de tronos', 34.99, 8),
+('Harry Potter y la piedra filosofal', 24.99, 35),
+('El resplandor', 19.99, 3),
 ('Orgullo y prejuicio', 14.99, 55),
 ('El viejo y el mar', 16.99, 40),
 ('Ficciones', 20.99, 30),

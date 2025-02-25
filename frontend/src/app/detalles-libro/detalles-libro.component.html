@@ -9,7 +9,8 @@
                 <div class="col-md-4 text-center mb-4 mb-md-0">
                     <!-- Imagen del libro con efecto de elevación -->
                     <div class="book-image-container">
-                        <img [src]="libro.imagen" 
+                        <img [src]="'/img/libroEjemplo.jpg'" 
+                             [id]="'imagen-libro-' + libro.id" 
                              [style.viewTransitionName]="'libro-imagen-' + libro.id"
                              class="img-fluid book-cover" 
                              alt="Imagen de {{ libro.titulo }}">
@@ -19,9 +20,9 @@
                 
                 <div class="col-md-8">
                     <!-- Información del libro -->
-                    <h3 class="book-title" [style.viewTransitionName]="'libro-titulo-' + libro.id">{{ libro.titulo }}</h3>
+                    <h3 class="book-title">{{ libro.titulo }}</h3>
                     <p class="text-muted autor">
-                        Por <strong [style.viewTransitionName]="'libro-autor-' + libro.id">{{ libro.autores[0].nombre }} {{ libro.autores[0].apellido }}</strong>
+                        Por <strong>{{ libro.autores[0].nombre }} {{ libro.autores[0].apellido }}</strong>
                     </p>
                     
                     <!-- Detalles adicionales -->

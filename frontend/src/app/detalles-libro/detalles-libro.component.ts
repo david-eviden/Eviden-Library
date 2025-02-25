@@ -29,6 +29,7 @@ export class DetallesLibroComponent implements OnInit {
     });
   }
 
+  /*
   // Método para volver atrás con View Transitions
   goBack(): void {
     if ((document as any).startViewTransition) {
@@ -39,5 +40,5 @@ export class DetallesLibroComponent implements OnInit {
       // Navegadores que no soportan View Transitions
       this.router.navigate(['/libros']);
     }
-  }
+  } */
 }
