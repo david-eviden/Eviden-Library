@@ -22,6 +22,7 @@ const routes: Routes = [
   { path: 'libro/:id/comprar', component: DetallesLibroComponent },
   { path: 'autores', component: AutorComponent },
   { path: 'usuarios', component: UsuarioComponent },
+  //{ path: 'usuario/:id', component: DetallesUsuarioComponent },
   { path: 'generos', component: GenerosComponent },
   { path: 'favoritos', component: FavoritoComponent },
   { path: 'carrito', component: CarritoComponent },
