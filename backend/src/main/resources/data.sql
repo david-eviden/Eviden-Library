@@ -146,7 +146,17 @@ INSERT INTO valoraciones (usuario_id, libro_id, puntuacion, comentario, fecha) V
 (6, 9, 5, 'Un clásico imprescindible', '2025-02-17'),
 (7, 3, 4, 'Narrativa cautivadora', '2025-02-17'),
 (8, 10, 3, 'Una historia conmovedora', '2025-02-18'),
-(8, 11, 5, 'Borges en su mejor momento', '2025-02-18');
+(8, 11, 5, 'Borges en su mejor momento', '2025-02-18'),
+(5, 1, 4, 'Una obra literaria que no deja indiferente', '2025-02-19'),
+(5, 2, 4, 'Fascinante colección de relatos, siempre sorprendente', '2025-02-19'),
+(6, 4, 5, 'Rayuela es una obra que me marcó profundamente', '2025-02-19'),
+(6, 7, 5, 'Harry Potter siempre ha sido una de mis sagas favoritas', '2025-02-19'),
+(7, 6, 4, 'A pesar de ser muy largo, vale la pena', '2025-02-19'),
+(7, 9, 4, 'Orgullo y prejuicio es un clásico que no pasa de moda', '2025-02-19'),
+(8, 2, 5, 'Es imposible no quedar atrapado por el estilo de Borges', '2025-02-19'),
+(8, 5, 4, 'Una obra profunda, llena de contexto histórico', '2025-02-19'),
+(4, 10, 4, 'Una novela profunda y reflexiva', '2025-02-20'),
+(4, 12, 5, 'Paula es un libro que toca el alma', '2025-02-20');
 
 -- Favoritos
 INSERT INTO favoritos (usuario_id, libro_id, fecha_agregado) VALUES

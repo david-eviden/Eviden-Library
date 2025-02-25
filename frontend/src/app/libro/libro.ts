@@ -1,4 +1,5 @@
 import { Autor } from "../autor/autor";
+import { Valoracion } from "../valoracion/valoracion";
 
 export class Libro {
     id: number = 0;
@@ -6,5 +7,7 @@ export class Libro {
     stock: number = 0;
     titulo: string = "";
     imagen: string = "";
+    descripcion: String = "";
+    valoraciones: Valoracion[] = [];
     autores: Autor[] = [];
 }
