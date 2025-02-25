@@ -49,10 +49,18 @@ public class Libro implements Serializable {
     @Column(nullable = false)
     private Integer stock;
     
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String descripcion;
     
-    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	@ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinTable(
         name = "libro_autor",
         joinColumns = @JoinColumn(name = "libro_id"),

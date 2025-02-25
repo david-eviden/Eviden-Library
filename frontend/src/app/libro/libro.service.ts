@@ -26,6 +26,7 @@ export class LibroService {
           libro.titulo = libro.titulo?.toUpperCase();
           libro.precio = libro.precio;
           libro.stock = libro.stock;
+          libro.descripcion = libro.descripcion;
           
           return libro;
         });

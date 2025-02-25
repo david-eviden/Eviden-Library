@@ -126,6 +126,25 @@
     transform: translateY(-2px);
 }
 
+.card-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Asegura que ocupe toda la altura disponible */
+}
+
+.d-flex {
+    margin-top: auto; /* Empuja los botones al fondo */
+}
+
+.mt-custom {
+    padding-top: 10px;
+    padding-bottom: 25px;
+}
+
+.descripcion {
+    font-style: italic;
+}
+
 /* Responsividad para móviles */
 @media (max-width: 767.98px) {
     .book-title {
