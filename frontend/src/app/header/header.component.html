@@ -1,23 +1,26 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-        
+
         <!-- Primera fila: dropdown, búsqueda y botones -->
         <div class="nav-row d-flex justify-content-between align-items-center w-100">
-            
+
             <!-- Menú de categorías -->
             <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
                     <i class="bi bi-list me-2"></i>
                 </button>
                 <ul class="dropdown-menu">
-                    
+
                     <!-- Categorías -->
                     <li *ngFor="let categoria of categorias">
                         <a class="dropdown-item" href="#">{{ categoria.nombre }}</a>
                     </li>
 
                     <!-- Páginas principales -->
-                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
                     <li>
                         <a class="dropdown-item" routerLink="/principal" routerLinkActive="active">Principal</a>
                     </li>
@@ -52,12 +55,7 @@
             </div>
 
             <!-- Barra de búsqueda -->
-            <div class="d-flex flex-grow-1 justify-content-center mx-3">
-                <form class="d-flex w-100" role="search">
-                    <input class="form-control me-2 busqueda" type="search" placeholder="Busca por autor, título, ISBN" aria-label="Search">
-                    <button class="btn btn-outline-secondary" type="submit">Buscar</button>
-                </form>
-            </div>
+            <app-search></app-search>
 
             <!-- Iconos de usuario, favoritos y carrito (visibles en pantallas grandes) -->
             <div class="d-none d-sm-flex gap-3">

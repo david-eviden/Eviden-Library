@@ -26,6 +26,12 @@ public class LibroServiceImpl implements LibroService {
 	public Libro findById(Long id) {
 		return libroDao.findById(id).orElse(null);
 	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public Libro findByTitulo(String titulo) {
+		return libroDao.findByTitulo(titulo).orElse(null);
+	}
 
 	@Override
 	@Transactional(readOnly = true)

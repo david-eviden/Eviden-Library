@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
@@ -17,5 +18,4 @@ export class HeaderComponent {
     { nombre: 'Literatura Infantil' },
     { nombre: 'Biografías' },
   ];
-
 }

@@ -12,4 +12,5 @@ export class AppComponent {
   title = 'frontend';
 
   constructor(private router: Router) {}
+
 }
