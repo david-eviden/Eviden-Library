@@ -50,11 +50,12 @@ public class LibroController {
 	@GetMapping("/libro/{id}")
 	public ResponseEntity<?> show(@PathVariable Long id) {
 
-		Libro libro;
+		Libro libro = new Libro();
 		Map<String, Object> response = new HashMap<>();
 
 		try {
 			libro = libroService.findById(id);
+		    
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));

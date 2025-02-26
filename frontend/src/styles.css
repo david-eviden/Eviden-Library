@@ -1,4 +1,4 @@
-/* Generales 
+/* Generales */
 :host {
   display: flex;
   flex-direction: column;
@@ -95,7 +95,6 @@ router-outlet + * {
 
 /* ----- Morph ----- */
 
-/*
 @keyframes morph-in {
   from {
     transform: scale(0.8);
@@ -117,7 +116,7 @@ router-outlet + * {
 }
 ::view-transition-new(root) {
   animation: 500ms cubic-bezier(0, 0, 0.2, 1) 100ms both morph-in;
-} */
+} 
 
 /* ----- Caida rebote ----- */
 

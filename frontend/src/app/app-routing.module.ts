@@ -12,11 +12,12 @@ import { FavoritoComponent } from './favorito/favorito.component';
 import { PedidoComponent } from './pedido/pedido.component';
 import { ValoracionComponent } from './valoracion/valoracion.component';
 import { DetallesLibroComponent } from './detalles-libro/detalles-libro.component';
+import { AdminComponent } from './admin/admin.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/principal', pathMatch: 'full' }, // Defecto
   { path: 'principal', component: PrincipalComponent },
-  //{ path: 'admin', component: AdminComponent },
+  { path: 'admin', component: AdminComponent },
   { path: 'libros', component: LibroComponent },
   { path: 'libros/page/:page', component: LibroComponent},
   { path: 'libro/:id', component: DetallesLibroComponent },
