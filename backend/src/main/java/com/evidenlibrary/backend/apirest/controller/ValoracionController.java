@@ -104,6 +104,22 @@ public class ValoracionController {
         response.put("valoracion", nuevaValoracion);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+    
+    @PostMapping("/valoracion/libro/{libroId}")
+    public ResponseEntity<?> createByLibroId(@PathVariable Long libroId) {
+        List<Valoracion> valoraciones;
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            valoraciones = valoracionService.findByLibroId(libroId);
+        } catch (DataAccessException e) {
+            response.put("mensaje", "Error al realizar la consulta en la base de datos");
+            response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(valoraciones, HttpStatus.OK);
+    }
 
     @PutMapping("/valoracion/{id}")
     public ResponseEntity<?> update(@RequestBody Valoracion valoracion, @PathVariable Long id) {

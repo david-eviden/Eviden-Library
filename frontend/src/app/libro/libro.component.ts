@@ -3,6 +3,7 @@ import { LibroService } from './libro.service';
 import { Libro } from './libro';
 import { ActivatedRoute, Router } from '@angular/router';
 import { tap } from 'rxjs';
+import swal from 'sweetalert2';
 
 @Component({
   selector: 'app-libro',
@@ -29,12 +30,13 @@ export class LibroComponent implements OnInit{
 
       this.libroService.getLibros(page)
       .pipe(
+        /*
         tap(response => {
           console.log('LibrosComponent: tap 3');
           (response.content as Libro[]).forEach( libro => {
             console.log(libro.titulo);
           });
-        })
+        })*/
       ).subscribe(response => {
         this.libros = response.content as Libro[];
         this.paginador = response;
@@ -70,5 +72,88 @@ export class LibroComponent implements OnInit{
       // Si el navegador no soporta View Transitions, se hace la navegación normalmente
       this.router.navigate(['/libro', id]);
     }
-    }
   }
+
+  // Formulario
+
+  delete(libro: Libro): void {
+    // Mensaje confirmacion eliminar
+    swal({
+
+      title: `¿Estás seguro de eliminar el libro "${libro.titulo}?"`,
+      text: "¡Esta operación no es reversible!",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "¡Sí, eliminalo!",
+      cancelButtonText: "No, cancelar",
+      buttonsStyling: true,
+      reverseButtons: true
+
+    }).then((result) => {
+
+      if (result.value) {
+
+        this.libroService.delete(libro.id).subscribe(
+          response => {
+            // Filtramos para que no muestre el libro eliminado
+            this.libros = this.libros.filter(cli => cli !== libro);
+
+            swal(
+              '¡Eliminado!',
+              `El libro "${libro.titulo}" ha sido eliminado con éxito`,
+              'success'
+            );
+          }
+        );
+
+      } else if(result.dismiss === swal.DismissReason.cancel) {
+
+        swal(
+          'Cancelado',
+          'Tu libro está a salvo :)',
+          'error'
+        )
+
+      }
+    });
+  }
+
+  deleteAll(): void {
+    // Mensaje confirmacion eliminar todos
+    swal({
+      title: '¿Estás seguro de eliminar todos los libros?',
+      text: "¡Esta operación no es reversible!",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "¡Sí, eliminar todos!",
+      cancelButtonText: "No, cancelar",
+      buttonsStyling: true,
+      reverseButtons: true
+    }).then((result) => {
+      if (result.value) {
+        this.libroService.deleteAll().subscribe(
+          response => {
+            // Vaciamos el array de libros
+            this.libros = [];
+  
+            swal(
+              '¡Eliminados!',
+              'Todos los libros han sido eliminados :(',
+              'success'
+            );
+          }
+        );
+      } else if (result.dismiss === swal.DismissReason.cancel) {
+        swal(
+          'Cancelado',
+          'Tus libros están a salvo :)',
+          'error'
+        )
+      }
+    });
+  }
+}

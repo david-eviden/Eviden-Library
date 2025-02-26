@@ -43,7 +43,7 @@ public class LibroController {
     // Obtener libros (paginado)
     @GetMapping("/libros/page/{page}")
     public Page<Libro> index(@PathVariable Integer page) {
-        return libroService.findAllPaginado(PageRequest.of(page, 9));
+        return libroService.findAllPaginado(PageRequest.of(page, 6));
     }
 
 	// Obtener libros por ID

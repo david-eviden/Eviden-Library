@@ -1,0 +1,152 @@
+<div class="container py-5">
+    <ul class="alert alert-danger" *ngIf="errors?.length != 0">
+        <div class="container">
+            <li *ngFor="let err of errors">{{ err }}</li>
+        </div>
+    </ul>
+
+    <div class="card shadow-lg">
+        <div class="card-header">
+            <h5>Crear un Libro</h5>
+        </div>
+        <div class="card-body">
+            <form #librosForm="ngForm">
+                <!-- Campo Titulo -->
+                <div class="form-group row mb-4">
+                    <label for="titulo" class="col-sm-3 col-form-label">Título:</label>
+                    <div class="col-sm-9">
+                        <input type="text" 
+                               class="form-control form-control-lg" 
+                               [(ngModel)]="libro.titulo" 
+                               name="titulo" 
+                               #titulo="ngModel" required>
+                        <div class="alert alert-danger mt-2" *ngIf="titulo.invalid && (titulo.dirty || titulo.touched)">
+                            <div *ngIf="titulo.errors?.['required']">
+                                El título es requerido
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campo Descripción -->
+                <div class="form-group row mb-4">
+                    <label for="descripcion" class="col-sm-3 col-form-label">Descripción:</label>
+                    <div class="col-sm-9">
+                        <textarea 
+                               class="form-control form-control-lg" 
+                               [(ngModel)]="libro.descripcion" 
+                               name="descripcion" 
+                               #descripcion="ngModel" rows="3"></textarea>
+                        <div class="alert alert-danger mt-2" *ngIf="descripcion.invalid && (descripcion.dirty || descripcion.touched)">
+                            <div *ngIf="descripcion.errors?.['required']">
+                                La descripción es requerida
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campo Precio -->
+                <div class="form-group row mb-4">
+                    <label for="precio" class="col-sm-3 col-form-label">Precio:</label>
+                    <div class="col-sm-9">
+                        <input type="number" 
+                               class="form-control form-control-lg" 
+                               [(ngModel)]="libro.precio" 
+                               name="precio" 
+                               #precio="ngModel" required>
+                        <div class="alert alert-danger mt-2" *ngIf="precio.invalid && (precio.dirty || precio.touched)">
+                            <div *ngIf="precio.errors?.['required']">
+                                El precio es requerido
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campo Stock -->
+                <div class="form-group row mb-4">
+                    <label for="stock" class="col-sm-3 col-form-label">Stock:</label>
+                    <div class="col-sm-9">
+                        <input type="number" 
+                               class="form-control form-control-lg" 
+                               [(ngModel)]="libro.stock" 
+                               name="stock" 
+                               #stock="ngModel" required>
+                        <div class="alert alert-danger mt-2" *ngIf="stock.invalid && (stock.dirty || stock.touched)">
+                            <div *ngIf="stock.errors?.['required']">
+                                El stock es requerido
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campo Imagen -->
+                <div class="form-group row mb-4">
+                    <label for="imagen" class="col-sm-3 col-form-label">Imagen URL:</label>
+                    <div class="col-sm-9">
+                        <input type="text" 
+                               class="form-control form-control-lg" 
+                               [(ngModel)]="libro.imagen" 
+                               name="imagen" 
+                               #imagen="ngModel">
+                        <div class="alert alert-danger mt-2" *ngIf="imagen.invalid && (imagen.dirty || imagen.touched)">
+                            <div *ngIf="imagen.errors?.['required']">
+                                La imagen es requerida
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campo Autor -->
+                <div class="form-group row mb-4">
+                    <label for="autor" class="col-sm-3 col-form-label">Autor:</label>
+                    <div class="col-sm-9">
+                        <input type="text"
+                               class="form-control form-control-lg"
+                               [(ngModel)]="libro.autores[0]"
+                               name="autor"
+                               #autor="ngModel" required>
+                        <div class="alert alert-danger mt-2" *ngIf="autor.invalid && (autor.dirty || autor.touched)">
+                            <div *ngIf="autor.errors?.['required']">
+                                El autor es requerido
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campo Autor
+                <div class="form-group row mb-4">
+                    <label for="autor" class="col-sm-3 col-form-label">Autor:</label>
+                    <div class="col-sm-9">
+                        <select
+                            class="form-select form-select-lg"
+                            [(ngModel)]="libro.autores"
+                            name="autor"
+                            #autor="ngModel"
+                            required>
+                            <option value="">Seleccione un autor</option>
+                            <option *ngFor="let autor of autores" [value]="libro.autores">{{ autor.nombre }}</option>
+                        </select>
+                        <div class="alert alert-danger mt-2" *ngIf="autor.invalid && (autor.dirty || autor.touched)">
+                            <div *ngIf="autor.errors?.['required']">
+                                Debe seleccionar un autor
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+                <!-- Botones de acción -->
+                <div class="form-group row mt-5">
+                    <div class="col-sm-9 offset-sm-3">
+                        <button class="btn btn-success me-3" role="button" (click)="create()" *ngIf="!libro.id" [disabled]="!librosForm.form.valid">
+                            <i class="bi bi-plus-lg"></i> Crear
+                        </button>
+            
+                        <button class="btn btn-warning" role="button" (click)="update()" *ngIf="libro.id" [disabled]="!librosForm.form.valid">
+                            <i class="bi bi-pencil"></i> Editar
+                        </button>            
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

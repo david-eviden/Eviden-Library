@@ -21,6 +21,9 @@ import { ValoracionComponent } from './valoracion/valoracion.component';
 import { DetallesLibroComponent } from './detalles-libro/detalles-libro.component';
 import { PaginatorComponent } from './paginator/paginator.component';
 import { AdminComponent } from './admin/admin.component';
+import { DetallesFavoritoComponent } from './detalles-favorito/detalles-favorito.component';
+import { FormLibroComponent } from './form-libro/form-libro.component';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -42,13 +45,15 @@ import { AdminComponent } from './admin/admin.component';
     DetallesLibroComponent,
     PaginatorComponent,
     AdminComponent,
-    //AdminComponent
+    DetallesFavoritoComponent,
+    FormLibroComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    RouterModule
+    RouterModule,
+    FormsModule
 ],
   providers: [],
   bootstrap: [AppComponent]

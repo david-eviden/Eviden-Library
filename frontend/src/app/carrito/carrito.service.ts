@@ -42,7 +42,7 @@ export class CarritoService {
             }
             
             return detalleCarrito;
-          }) || [];
+          }) || []; 
           return carrito;
         });
       })
