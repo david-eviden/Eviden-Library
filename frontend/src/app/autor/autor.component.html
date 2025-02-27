@@ -1,12 +1,28 @@
 <div class="container my-3">
     <h2 class="text-center mb-4">Lista de Autores</h2>
-    <div class="alert alert-info" *ngIf="autores.length === 0">
-        No hay autores registrados
+    
+    <!-- Botón para crear autor -->
+    <div class="text-center mb-4">
+        <button class="btn btn-primary btn-lg rounded-pill" type="button" [routerLink]="['/autor/form']">
+            <i class="bi bi-journal-check me-2"></i>Crear autor
+        </button>
     </div>
-    <ul>
-        <li *ngFor="let autor of autores">
-            <h4>{{ autor.nombre }}</h4>
-            <p>{{ autor.biografia }}</p>
+
+    <!-- Mensaje si no hay autores -->
+    <div class="alert alert-info" *ngIf="autores.length === 0">
+        No hay autores registrados.
+    </div>
+
+    <!-- Lista de autores -->
+    <ul class="list-unstyled">
+        <li *ngFor="let autor of autores" class="mb-3 p-3 border rounded shadow-sm d-flex justify-content-between align-items-start">
+            <div>
+                <h4 class="mb-2">{{ autor.nombre }}</h4>
+                <p class="text-muted">{{ autor.biografia }}</p>
+            </div>
+            <button type="button" name="editar" [routerLink]="['/autor/form', autor.id]" class="btn btn-secondary btn-lg ms-3 d-flex align-items-center text-nowrap">
+                <i class="bi bi-pencil me-2"></i>Editar
+            </button>
         </li>
-    </ul>
+    </ul>    
 </div>

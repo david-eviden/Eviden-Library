@@ -26,6 +26,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.*;
+
 @Entity
 @Table(name = "libros")
 @Data
@@ -41,15 +43,21 @@ public class Libro implements Serializable {
     private Long id;
     
     @Column(nullable = false, unique = true)
+    @Size(max=25, message="no pude tener mas de 25 caracteres")
+    @NotEmpty(message = "no puede estar vacío")
     private String titulo;
     
     @Column(nullable = false)
+    @NotEmpty(message = "no puede estar vacío")
     private Double precio;
     
     @Column(nullable = false)
+    @NotEmpty(message = "no puede estar vacío")
     private Integer stock;
     
     @Column(nullable = false)
+    @Size(min=10, max=250, message="debe tener entre 10 y 250 caracteres")
+    @NotEmpty(message = "no puede estar vacío")
     private String descripcion;
     
     @Column(nullable = true)
@@ -61,7 +69,6 @@ public class Libro implements Serializable {
         joinColumns = @JoinColumn(name = "libro_id"),
         inverseJoinColumns = @JoinColumn(name = "autor_id")
     )
-	@JsonManagedReference
     public final Set<Autor> autores = new HashSet<>();
     
     @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
@@ -70,17 +77,34 @@ public class Libro implements Serializable {
         joinColumns = @JoinColumn(name = "libro_id"),
         inverseJoinColumns = @JoinColumn(name = "genero_id")
     )
+    @JsonManagedReference
     @JsonIgnore
     public final Set<Genero> generos = new HashSet<>();
     
     @OneToMany(mappedBy = "libro", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     public final List<Valoracion> valoraciones = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "libro", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore
+    public final List<Favorito> favoritos = new ArrayList<>();
 
     
     // Getter/Setter
     
     public String getDescripcion() {
 		return descripcion;
+	}
+
+	public String getImagen() {
+		return imagen;
+	}
+
+	public void setImagen(String imagen) {
+		this.imagen = imagen;
+	}
+
+	public List<Favorito> getFavoritos() {
+		return favoritos;
 	}
 
 	public void setDescripcion(String descripcion) {

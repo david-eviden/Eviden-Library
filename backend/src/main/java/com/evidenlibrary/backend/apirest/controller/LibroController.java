@@ -23,11 +23,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.evidenlibrary.backend.apirest.model.entity.Libro;
 import com.evidenlibrary.backend.apirest.model.service.LibroService;
 
-@CrossOrigin(origins = { "http://localhost:4200" })
+@CrossOrigin(origins = { "http://localhost:4200" }, methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE}, allowedHeaders = "*")
 @RestController
 @RequestMapping("/api")
 public class LibroController {
@@ -110,46 +111,56 @@ public class LibroController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<?> update(@RequestBody Libro libro, BindingResult result, @PathVariable Long id) {
 
-		Libro currentLibro = this.libroService.findById(id);
-		Libro nuevoLibro;
-		Map<String, Object> response = new HashMap<>();
+	    Libro currentLibro = this.libroService.findById(id);
+	    Libro nuevoLibro;
+	    Map<String, Object> response = new HashMap<>();
 
-		// Validamos campos
-		if (result.hasErrors()) {
+	    // Validamos campos
+	    if (result.hasErrors()) {
+	        List<String> errores = result.getFieldErrors().stream()
+	                .map(err -> "El campo '" + err.getField() + "' " + err.getDefaultMessage())
+	                .collect(Collectors.toList());
 
-			List<String> errores = result.getFieldErrors().stream()
-					.map(err -> "El campo '" + err.getField() + "' " + err.getDefaultMessage())
-					.collect(Collectors.toList());
+	        response.put("errores", errores);
+	        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	    }
 
-			response.put("errores", errores);
-			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-		}
+	    if (currentLibro == null) {
+	        response.put("mensaje", "No se pudo editar, el libro con ID: "
+	                .concat(id.toString().concat(" no existe en la base de datos")));
+	        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+	    }
 
-		if (currentLibro == null) {
-			response.put("mensaje", "No se puedo editar, el libro con ID: "
-					.concat(id.toString().concat(" no existe en la base de datos")));
-			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-		}
+	    try {
+	        // Verificamos si el campo es nulo antes de actualizarlo
+	        if (libro.getPrecio() != null) {
+	            currentLibro.setPrecio(libro.getPrecio());
+	        }
+	        if (libro.getStock() != null) {
+	            currentLibro.setStock(libro.getStock());
+	        }
+	        if (libro.getTitulo() != null && !libro.getTitulo().isEmpty()) {
+	            currentLibro.setTitulo(libro.getTitulo());
+	        }
+	        if (libro.getDescripcion() != null && !libro.getDescripcion().isEmpty()) {
+	            currentLibro.setDescripcion(libro.getDescripcion());
+	        }
+	        
+	        // Guardamos el libro actualizado
+	        nuevoLibro = libroService.save(currentLibro);
+	    } catch (DataAccessException e) {
+	        response.put("mensaje", "Error al actualizar el libro en la base de datos");
+	        response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+	        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
 
-		try {
-			currentLibro.setPrecio(libro.getPrecio());
-			currentLibro.setStock(libro.getStock());
-			currentLibro.setTitulo(libro.getTitulo());
-
-			nuevoLibro = libroService.save(currentLibro);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el libro en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-		response.put("mensaje", "El libro ha sido actualizado con éxito");
-		response.put("cliente", nuevoLibro);
-		return new ResponseEntity<>(response, HttpStatus.CREATED);
+	    response.put("mensaje", "El libro ha sido actualizado con éxito");
+	    response.put("libro", nuevoLibro);
+	    return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 
 	// Eliminar libro por ID
-	@DeleteMapping("/libros/{id}")
+	@DeleteMapping("/libro/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		Libro currentLibro = this.libroService.findById(id);
 		Map<String, Object> response = new HashMap<>();

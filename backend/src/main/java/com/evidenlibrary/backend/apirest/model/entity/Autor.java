@@ -41,7 +41,6 @@ public class Autor implements Serializable {
     private String biografia;
 
     @ManyToMany(mappedBy = "autores", fetch = FetchType.LAZY)
-    @JsonBackReference
     private final Set<Libro> libros = new HashSet<>();
 
     @JsonProperty("libros")

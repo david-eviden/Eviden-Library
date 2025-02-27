@@ -1,15 +1,19 @@
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { Autor } from './autor';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'  //disponible a nivel global
 })
 export class AutorService {
-  private urlEndPoint: string = 'http://localhost:8080/api/autores'; 
+  private urlEndPoint: string = 'http://localhost:8080/api/autores';
+    private urlEndPoint1: string = 'http://localhost:8080/api/autor'; 
+    private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   getAutores(): Observable<Autor[]> {
 
@@ -28,5 +32,73 @@ export class AutorService {
         });
       }),
     );
+  }
+
+  // Crear autor
+  create(autor: Autor) : Observable<any> {
+    return this.http.post<any>(this.urlEndPoint1, autor, {headers: this.httpHeaders}).pipe(
+      catchError(e => {
+
+        // Validamos
+        if(e.status==400) {
+          return throwError(e);
+        }
+
+        // Controlamos otros errores
+        this.router.navigate(['/autores']);
+        console.log(e.error.mensaje);
+        swal(e.error.mensaje, e.error.error, 'error');
+        return throwError(e);
+      })
+    );
+  }
+
+  // Obtener
+  getAutor(id: number): Observable<Autor> {
+    // pipe para canalizar errores
+    return this.http.get<Autor>(`${this.urlEndPoint1}/${id}`).pipe(
+      catchError(e => {
+        this.router.navigate(['/autores']);
+        console.log(e.error.mensaje);
+        swal('Error al obtener el autor', e.error.mensaje, 'error');
+        return throwError(e);
+      })
+    );
+  }
+
+  // Update
+  updateAutor(autor: Autor): Observable<any> {
+    return this.http.put<any>(`${this.urlEndPoint1}/${autor.id}`, autor, {headers: this.httpHeaders}).pipe(
+      catchError(e => {
+
+        // Validamos
+        if(e.status==400) {
+          return throwError(e);
+        }
+
+        // Controlamos otros errores
+        this.router.navigate(['/autores']);
+        console.log(e.error.mensaje);
+        swal(e.error.mensaje, e.error.error, 'error');
+        return throwError(e);
+      })
+    );
+  }
+
+  // Delete
+  delete(id: number): Observable<Autor> {
+    return this.http.delete<Autor>(`${this.urlEndPoint}/${id}`, {headers: this.httpHeaders}).pipe(
+      catchError(e => {
+        this.router.navigate(['/autores']);
+        console.log(e.error.mensaje);
+        swal(e.error.mensaje, e.error.error, 'error');
+        return throwError(e);
+      })
+    );;
+  }
+
+  // Delete todos
+  deleteAll(): Observable<void> {
+    return this.http.delete<void>(`${this.urlEndPoint}/deleteAll`);
   }
 }

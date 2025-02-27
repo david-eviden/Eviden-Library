@@ -137,7 +137,7 @@ public class AutorController {
 	}
 
 	// Eliminar autor por ID
-		@DeleteMapping("/autores/{id}")
+		@DeleteMapping("/autor/{id}")
 		public ResponseEntity<?> delete(@PathVariable Long id) {
 			Autor currentAutor = this.autorService.findById(id);
 			Map<String, Object> response = new HashMap<>();
