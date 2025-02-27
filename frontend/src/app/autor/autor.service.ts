@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
 import { Autor } from './autor';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import swal from 'sweetalert2';
@@ -10,41 +10,41 @@ import { Router } from '@angular/router';
 })
 export class AutorService {
   private urlEndPoint: string = 'http://localhost:8080/api/autores';
-    private urlEndPoint1: string = 'http://localhost:8080/api/autor'; 
-    private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
+  private urlEndPoint1: string = 'http://localhost:8080/api/autor'; 
+  private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
+
+  // Creamos un BehaviorSubject para la lista de autores
+  private autoresSubject = new BehaviorSubject<Autor[]>([]);
+  autores$ = this.autoresSubject.asObservable();  // Observable al que nos suscribimos en los componentes
 
   constructor(private http: HttpClient, private router: Router) {}
 
+  // Obtener lista de autores
   getAutores(): Observable<Autor[]> {
-
     return this.http.get(this.urlEndPoint).pipe(
-
-      // Conversión a autores (response de Object a Autor[])
       map(response => {
-
         let autores = response as Autor[];
-
         return autores.map(autor => {
           autor.nombre = autor.nombre;
           autor.biografia = autor.biografia;
-         
           return autor;
         });
       }),
+      tap(autores => {
+        // Al obtener la lista, actualizamos el BehaviorSubject
+        this.autoresSubject.next(autores);
+      })
     );
   }
 
   // Crear autor
-  create(autor: Autor) : Observable<any> {
+  create(autor: Autor): Observable<any> {
     return this.http.post<any>(this.urlEndPoint1, autor, {headers: this.httpHeaders}).pipe(
       catchError(e => {
-
-        // Validamos
-        if(e.status==400) {
+        if (e.status == 400) {
           return throwError(e);
         }
 
-        // Controlamos otros errores
         this.router.navigate(['/autores']);
         console.log(e.error.mensaje);
         swal(e.error.mensaje, e.error.error, 'error');
@@ -53,9 +53,8 @@ export class AutorService {
     );
   }
 
-  // Obtener
+  // Obtener autor individual
   getAutor(id: number): Observable<Autor> {
-    // pipe para canalizar errores
     return this.http.get<Autor>(`${this.urlEndPoint1}/${id}`).pipe(
       catchError(e => {
         this.router.navigate(['/autores']);
@@ -66,17 +65,14 @@ export class AutorService {
     );
   }
 
-  // Update
+  // Actualizar autor
   updateAutor(autor: Autor): Observable<any> {
     return this.http.put<any>(`${this.urlEndPoint1}/${autor.id}`, autor, {headers: this.httpHeaders}).pipe(
       catchError(e => {
-
-        // Validamos
-        if(e.status==400) {
+        if (e.status == 400) {
           return throwError(e);
         }
 
-        // Controlamos otros errores
         this.router.navigate(['/autores']);
         console.log(e.error.mensaje);
         swal(e.error.mensaje, e.error.error, 'error');
@@ -85,20 +81,25 @@ export class AutorService {
     );
   }
 
-  // Delete
+  // Eliminar autor
   delete(id: number): Observable<Autor> {
-    return this.http.delete<Autor>(`${this.urlEndPoint}/${id}`, {headers: this.httpHeaders}).pipe(
+    return this.http.delete<Autor>(`${this.urlEndPoint1}/${id}`, {headers: this.httpHeaders}).pipe(
       catchError(e => {
         this.router.navigate(['/autores']);
         console.log(e.error.mensaje);
         swal(e.error.mensaje, e.error.error, 'error');
         return throwError(e);
+      }),
+      tap(() => {
+        // Después de eliminar, actualizamos la lista de autores
+        this.getAutores().subscribe();  // Refrescamos la lista llamando a getAutores()
       })
-    );;
+    );
   }
 
-  // Delete todos
+  // Eliminar todos los autores
   deleteAll(): Observable<void> {
     return this.http.delete<void>(`${this.urlEndPoint}/deleteAll`);
   }
 }
+
