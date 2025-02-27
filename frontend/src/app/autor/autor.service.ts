@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
 import { Autor } from './autor';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'  //disponible a nivel global
 })
-export class AutorService {
+export class AutorService implements OnInit{
   private urlEndPoint: string = 'http://localhost:8080/api/autores';
   private urlEndPoint1: string = 'http://localhost:8080/api/autor'; 
   private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
@@ -18,6 +18,8 @@ export class AutorService {
   autores$ = this.autoresSubject.asObservable();  // Observable al que nos suscribimos en los componentes
 
   constructor(private http: HttpClient, private router: Router) {}
+  
+  ngOnInit(): void {}
 
   // Obtener lista de autores
   getAutores(): Observable<Autor[]> {

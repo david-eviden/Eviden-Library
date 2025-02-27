@@ -7,11 +7,12 @@
 
     <div class="card shadow-lg">
         <div class="card-header">
-            <h5>Crear un Autor</h5>
+            <h5 *ngIf="!autor.id">Crear un Autor</h5>
+            <h4 *ngIf="autor.id">Editar un Autor</h4>
         </div>
         <div class="card-body">
             <form #autorsForm="ngForm">
-                <!-- Campo Titulo -->
+                <!-- Campo Nombre -->
                 <div class="form-group row mb-4">
                     <label for="nombre" class="col-sm-3 col-form-label">Nombre:</label>
                     <div class="col-sm-9">
@@ -22,13 +23,13 @@
                                #nombre="ngModel" required>
                         <div class="alert alert-danger mt-2" *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)">
                             <div *ngIf="nombre.errors?.['required']">
-                                El título es requerido
+                                El nombre es requerido
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Campo Descripción -->
+                <!-- Campo Biografía -->
                 <div class="form-group row mb-4">
                     <label for="biografia" class="col-sm-3 col-form-label">Biografía:</label>
                     <div class="col-sm-9">
@@ -39,7 +40,7 @@
                                #biografia="ngModel" rows="3"></textarea>
                         <div class="alert alert-danger mt-2" *ngIf="biografia.invalid && (biografia.dirty || biografia.touched)">
                             <div *ngIf="biografia.errors?.['required']">
-                                La descripción es requerida
+                                La biografía es requerida
                             </div>
                         </div>
                     </div>

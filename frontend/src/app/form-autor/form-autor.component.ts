@@ -22,7 +22,9 @@ export class FormAutorComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
   ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.cargarAutor();
+  }
 
   // Crear autor
   public create(): void {
