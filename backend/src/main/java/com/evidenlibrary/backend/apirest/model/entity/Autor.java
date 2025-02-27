@@ -5,7 +5,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
@@ -35,9 +37,13 @@ public class Autor implements Serializable {
     private Long id;
 
     @Column(nullable = false,unique = true)
+    @Size(min=5, max=50, message="debe tener entre 5 y 50 caracteres")
+    @NotEmpty(message = "no puede estar vacío")
     private String nombre;
 
     @Column(nullable = false)
+    @Size(min=10, max=250, message="debe tener entre 10 y 250 caracteres")
+    @NotEmpty(message = "no puede estar vacío")
     private String biografia;
 
     @ManyToMany(mappedBy = "autores", fetch = FetchType.LAZY)

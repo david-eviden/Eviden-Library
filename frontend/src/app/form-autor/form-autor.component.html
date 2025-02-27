@@ -20,10 +20,16 @@
                                class="form-control form-control-lg" 
                                [(ngModel)]="autor.nombre" 
                                name="nombre" 
-                               #nombre="ngModel" required>
+                               #nombre="ngModel" minlength="5" maxlength="50" required>
                         <div class="alert alert-danger mt-2" *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)">
                             <div *ngIf="nombre.errors?.['required']">
                                 El nombre es requerido
+                            </div>
+                            <div *ngIf="nombre.errors?.['minlength']">
+                                El nombre debe tener al menos 5 caracteres
+                            </div>
+                            <div *ngIf="nombre.errors?.['maxlength']">
+                                El nombre debe tener menos de 50 caracteres
                             </div>
                         </div>
                     </div>
@@ -37,10 +43,16 @@
                                class="form-control form-control-lg" 
                                [(ngModel)]="autor.biografia" 
                                name="biografia" 
-                               #biografia="ngModel" rows="3"></textarea>
+                               #biografia="ngModel" rows="3" minlength="10" maxlength="250" required></textarea>
                         <div class="alert alert-danger mt-2" *ngIf="biografia.invalid && (biografia.dirty || biografia.touched)">
                             <div *ngIf="biografia.errors?.['required']">
                                 La biografía es requerida
+                            </div>
+                            <div *ngIf="nombre.errors?.['minlength']">
+                                La biografía debe tener al menos 10 caracteres
+                            </div>
+                            <div *ngIf="nombre.errors?.['maxlength']">
+                                La biografía debe tener menos de 250 caracteres
                             </div>
                         </div>
                     </div>
