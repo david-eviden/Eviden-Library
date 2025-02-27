@@ -38,6 +38,7 @@ export class SearchComponent {
   isSelected(type:string): boolean{
     return this.selectedTypes.includes(type);
   }
+  
   onSearch(term:string): void {
     if(term.trim()){
       this.searchService.search(term).subscribe({

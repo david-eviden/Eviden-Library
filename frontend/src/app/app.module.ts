@@ -20,7 +20,8 @@ import { DetallesPedidoComponent } from './detalles-pedido/detalles-pedido.compo
 import { ValoracionComponent } from './valoracion/valoracion.component';
 import { DetallesLibroComponent } from './detalles-libro/detalles-libro.component';
 import { SearchComponent } from './search/search.component';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule } from '@angular/forms';
+import { ResultadoBusquedaComponent } from './resultado-busqueda/resultado-busqueda.component'; 
 
 
 @NgModule({
@@ -41,6 +42,7 @@ import { FormsModule } from '@angular/forms';
     ValoracionComponent,
     DetallesLibroComponent,
     SearchComponent,
+    ResultadoBusquedaComponent,
     //AdminComponent
   ],
   imports: [
