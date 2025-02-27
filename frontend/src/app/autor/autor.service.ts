@@ -21,8 +21,7 @@ export class AutorService {
         let autores = response as Autor[];
 
         return autores.map(autor => {
-          autor.nombre = autor.nombre?.toUpperCase();
-          autor.apellido = autor.apellido;
+          autor.nombre = autor.nombre;
           autor.biografia = autor.biografia;
          
           return autor;

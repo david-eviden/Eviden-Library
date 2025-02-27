@@ -77,3 +77,9 @@
   padding-left: 20px;
   margin-bottom: 0;
 }
+
+@media (max-width: 767px) {
+  .card-img-top {
+    height: 200px;
+  }
+}

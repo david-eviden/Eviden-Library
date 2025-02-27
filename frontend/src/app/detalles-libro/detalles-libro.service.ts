@@ -1,9 +1,11 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { DetallesLibro } from './detalles-libro';
 import { Libro } from '../libro/libro';
 import { Valoracion } from '../valoracion/valoracion';
+import { Router } from '@angular/router';
+import swal from 'sweetalert2';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +13,9 @@ import { Valoracion } from '../valoracion/valoracion';
 export class DetallesLibroService  implements OnInit{
 
   private urlEndPoint: string = 'http://localhost:8080/api/libro'; 
+    private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
   ngOnInit(): void {}
 
   // Observable para que sea asíncrono (se actualice en tiempo real)
@@ -48,5 +51,68 @@ export class DetallesLibroService  implements OnInit{
         return libro;
       })
     );
+  }
+
+  // Crear libro
+  create(libro: Libro) : Observable<any> {
+    return this.http.post<any>(this.urlEndPoint, libro, {headers: this.httpHeaders}).pipe(
+      catchError(e => {
+
+        // Validamos
+        if(e.status==400) {
+          return throwError(e);
+        }
+
+        // Controlamos otros errores
+        this.router.navigate(['/libros']);
+        console.log(e.error.mensaje);
+        swal(e.error.mensaje, e.error.error, 'error');
+        return throwError(e);
+      })
+    );
+  }
+
+  // Obtener
+  getLibro(id: number): Observable<Libro> {
+    // pipe para canalizar errores
+    return this.http.get<Libro>(`${this.urlEndPoint}/${id}`).pipe(
+      catchError(e => {
+        this.router.navigate(['/libros']);
+        console.log(e.error.mensaje);
+        swal('Error al obtener el libro', e.error.mensaje, 'error');
+        return throwError(e);
+      })
+    );
+  }
+
+  // Update
+  updateLibro(libro: Libro): Observable<any> {
+    return this.http.put<any>(`${this.urlEndPoint}/${libro.id}`, libro, {headers: this.httpHeaders}).pipe(
+      catchError(e => {
+
+        // Validamos
+        if(e.status==400) {
+          return throwError(e);
+        }
+
+        // Controlamos otros errores
+        this.router.navigate(['/libros']);
+        console.log(e.error.mensaje);
+        swal(e.error.mensaje, e.error.error, 'error');
+        return throwError(e);
+      })
+    );
+  }
+
+  // Delete
+  delete(id: number): Observable<Libro> {
+    return this.http.delete<Libro>(`${this.urlEndPoint}/${id}`, {headers: this.httpHeaders}).pipe(
+      catchError(e => {
+        this.router.navigate(['/libros']);
+        console.log(e.error.mensaje);
+        swal(e.error.mensaje, e.error.error, 'error');
+        return throwError(e);
+      })
+    );;
   }
 }

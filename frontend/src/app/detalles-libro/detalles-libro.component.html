@@ -21,7 +21,7 @@
                     <!-- Información del libro -->
                     <h3 class="book-title">{{ libro.titulo }}</h3>
                     <p class="text-muted autor">
-                        Por <strong>{{ libro.autores[0].nombre }} {{ libro.autores[0].apellido }}</strong>
+                        Por <strong>{{ libro.autores[0].nombre }}</strong>
                     </p>
                     <p class="text-muted descripcion">
                        {{ libro.descripcion }}
@@ -50,7 +50,7 @@
                         </div>
                     </div>
                     
-                    <!-- Botones de acción -->
+                    <!-- Botones de acción (solo si cliente)-->
                     <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 mt-custom">
                         <button class="btn btn-primary btn-lg">
                             <i class="bi bi-cart-plus me-2"></i>Añadir al carrito
@@ -58,6 +58,16 @@
                         <a [routerLink]="['/libro', libro.id, 'comprar']" class="btn btn-success btn-lg">
                             <i class="bi bi-credit-card me-2"></i>Comprar ahora
                         </a>
+                    </div>
+
+                    <!-- Botones de acción (solo si admin) -->
+                    <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 mb-5">
+                        <button type="button" name="editar" [routerLink]="['/libro/form', libro.id]" class="btn btn-secondary btn-lg">
+                            <i class="bi bi-pencil me-2"></i>Editar libro
+                        </button>
+                        <button type="button" name="eliminar" (click)="delete(libro)" class="btn btn-danger btn-lg">
+                            <i class="bi bi-trash3 me-2"></i>Eliminar libro
+                        </button>
                     </div>
                 </div>
             </div>

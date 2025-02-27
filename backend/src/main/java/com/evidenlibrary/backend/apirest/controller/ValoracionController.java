@@ -105,6 +105,7 @@ public class ValoracionController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
     
+    /*
     @PostMapping("/valoracion/libro/{libroId}")
     public ResponseEntity<?> createByLibroId(@PathVariable Long libroId) {
         List<Valoracion> valoraciones;
@@ -119,7 +120,7 @@ public class ValoracionController {
         }
 
         return new ResponseEntity<>(valoraciones, HttpStatus.OK);
-    }
+    } */
 
     @PutMapping("/valoracion/{id}")
     public ResponseEntity<?> update(@RequestBody Valoracion valoracion, @PathVariable Long id) {

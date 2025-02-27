@@ -81,7 +81,7 @@
 
                 <!-- Campo Imagen -->
                 <div class="form-group row mb-4">
-                    <label for="imagen" class="col-sm-3 col-form-label">Imagen URL:</label>
+                    <label for="imagen" class="col-sm-3 col-form-label">Imagen:</label>
                     <div class="col-sm-9">
                         <input type="text" 
                                class="form-control form-control-lg" 
@@ -100,11 +100,17 @@
                 <div class="form-group row mb-4">
                     <label for="autor" class="col-sm-3 col-form-label">Autor:</label>
                     <div class="col-sm-9">
-                        <input type="text"
-                               class="form-control form-control-lg"
-                               [(ngModel)]="libro.autores[0]"
-                               name="autor"
-                               #autor="ngModel" required>
+                        <select
+                            class="form-select form-select-lg"
+                            [(ngModel)]="libro.autores[0].nombre"
+                            name="autor"
+                            #autor="ngModel"
+                            required
+                            (change)="opcionCrearAutor()">
+                            <option value="">Seleccione un autor</option>
+                            <option *ngFor="let autor of autores" [value]="autor.nombre">{{ autor.nombre }}</option>
+                            <option value="crearAutor">+ Añadir un autor</option>
+                        </select>
                         <div class="alert alert-danger mt-2" *ngIf="autor.invalid && (autor.dirty || autor.touched)">
                             <div *ngIf="autor.errors?.['required']">
                                 El autor es requerido
@@ -112,27 +118,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Campo Autor
-                <div class="form-group row mb-4">
-                    <label for="autor" class="col-sm-3 col-form-label">Autor:</label>
-                    <div class="col-sm-9">
-                        <select
-                            class="form-select form-select-lg"
-                            [(ngModel)]="libro.autores"
-                            name="autor"
-                            #autor="ngModel"
-                            required>
-                            <option value="">Seleccione un autor</option>
-                            <option *ngFor="let autor of autores" [value]="libro.autores">{{ autor.nombre }}</option>
-                        </select>
-                        <div class="alert alert-danger mt-2" *ngIf="autor.invalid && (autor.dirty || autor.touched)">
-                            <div *ngIf="autor.errors?.['required']">
-                                Debe seleccionar un autor
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
 
                 <!-- Botones de acción -->
                 <div class="form-group row mt-5">

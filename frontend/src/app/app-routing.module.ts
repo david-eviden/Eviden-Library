@@ -14,6 +14,7 @@ import { ValoracionComponent } from './valoracion/valoracion.component';
 import { DetallesLibroComponent } from './detalles-libro/detalles-libro.component';
 import { AdminComponent } from './admin/admin.component';
 import { FormLibroComponent } from './form-libro/form-libro.component';
+import { FormAutorComponent } from './form-autor/form-autor.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/principal', pathMatch: 'full' }, // Defecto
@@ -23,9 +24,11 @@ const routes: Routes = [
   { path: 'libros/page/:page', component: LibroComponent},
   { path: 'libro/:id', component: DetallesLibroComponent },
   { path: 'libro/:id/comprar', component: DetallesLibroComponent },
-  { path: 'formlibro', component: FormLibroComponent },
-  { path: 'formlibro/:id', component: FormLibroComponent },
+  { path: 'libro/form', component: FormLibroComponent },
+  { path: 'libro/form/:id', component: FormLibroComponent },
   { path: 'autores', component: AutorComponent },
+  { path: 'autor/form', component: FormAutorComponent },
+  { path: 'autor/form/:id', component: FormAutorComponent },
   { path: 'usuarios', component: UsuarioComponent },
   //{ path: 'usuario/:id', component: DetallesUsuarioComponent },
   { path: 'generos', component: GenerosComponent },

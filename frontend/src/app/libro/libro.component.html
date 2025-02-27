@@ -13,9 +13,7 @@
                     <h5 class="card-title">{{ libro.titulo }}</h5>
                     <p class="card-text text-muted mb-2">
                         <span *ngIf="libro.autores && libro.autores.length > 0">
-                            Por <strong>
-                                {{ libro.autores[0].nombre }} {{ libro.autores[0].apellido }}
-                            </strong>
+                            Por <strong>{{ libro.autores[0].nombre }}</strong>
                         </span>
                         <span *ngIf="!libro.autores || libro.autores.length === 0">
                             Autor desconocido

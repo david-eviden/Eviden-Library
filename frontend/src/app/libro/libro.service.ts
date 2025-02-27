@@ -11,6 +11,7 @@ import swal from 'sweetalert2';
 })
 export class LibroService {
   private urlEndPoint: string = 'http://localhost:8080/api/libros'; 
+  private urlEndPoint1: string = 'http://localhost:8080/api/libro'; 
   private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
 
   constructor(private http: HttpClient, private router: Router) {}
@@ -94,7 +95,7 @@ export class LibroService {
   // Obtener
   getLibro(id: number): Observable<Libro> {
     // pipe para canalizar errores
-    return this.http.get<Libro>(`${this.urlEndPoint}/${id}`).pipe(
+    return this.http.get<Libro>(`${this.urlEndPoint1}/${id}`).pipe(
       catchError(e => {
         this.router.navigate(['/libros']);
         console.log(e.error.mensaje);

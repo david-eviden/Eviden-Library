@@ -4,6 +4,7 @@ import swal from 'sweetalert2';
 import { Libro } from '../libro/libro';
 import { LibroService } from '../libro/libro.service';
 import { Autor } from '../autor/autor';
+import { AutorService } from '../autor/autor.service';
 
 @Component({
   selector: 'app-form-libro',
@@ -14,17 +15,24 @@ import { Autor } from '../autor/autor';
 export class FormLibroComponent implements OnInit {
 
   public libro: Libro = new Libro();
-
   public errors: string[] = [];
+  autores: Autor[] = [];
 
-  constructor(private libroService: LibroService, private router: Router, private activatedRoute: ActivatedRoute) { }
+  constructor(
+    private libroService: LibroService, 
+    public router: Router, 
+    private activatedRoute: ActivatedRoute,
+    private autorService: AutorService,
+  ) { }
 
   ngOnInit(): void {
     this.cargarLibro();
 
     if (!this.libro.autores) {
-      this.libro.autores = [{ nombre: '', apellido: '', biografia: '' }];
+      this.libro.autores = [{ id: 0, nombre: '', biografia: '' }];
     }
+
+    this.cargarAutores();
   }
 
   // Crear libro
@@ -47,7 +55,7 @@ export class FormLibroComponent implements OnInit {
     );
   }
 
-  // Obtner libro por ID
+  // Obtener libro por ID
   public cargarLibro(): void {
     this.activatedRoute.params.subscribe(params => {
       let id = params['id'];
@@ -79,5 +87,25 @@ export class FormLibroComponent implements OnInit {
     );
   }
 
-  // Delete en libros.component.ts
+  // Delete en detalles-libro.component.ts
+
+  // Obtener autores
+  public cargarAutores(): void {
+    this.autorService.getAutores().subscribe(
+      (autores) => {
+        this.autores = autores;
+      },
+      (err) => {
+        console.error('Error al cargar los autores', err);
+      }
+    );
+  }
+
+  // Crear autor desde formulario
+  opcionCrearAutor() {
+    if (this.libro.autores[0].nombre === 'crearAutor') {
+      this.router.navigate(['/autor/form']);
+      this.libro.autores[0].nombre = '';
+    }
+  }
 }

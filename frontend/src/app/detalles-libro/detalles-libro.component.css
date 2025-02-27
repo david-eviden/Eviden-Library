@@ -91,19 +91,6 @@ h2 {
 .btn {
     border-radius: 30px;
     font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
-}
-
-.btn-primary:hover {
-    background-color: #0056b3;
-    border-color: #0056b3;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 10px rgba(0, 87, 178, 0.3);
 }
 
 .btn-success {
@@ -111,11 +98,29 @@ h2 {
     border-color: #28a745;
 }
 
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(33, 136, 56, 0.3);
+}
+
 .btn-success:hover {
     background-color: #218838;
     border-color: #218838;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 10px rgba(33, 136, 56, 0.3);
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn-danger:hover {
+    background-color: #e01212;
+    border-color: #c41e1e;
+}
+
+.btn-secondary:hover {
+    background-color: #444444;
+    border-color: #404040; 
 }
 
 /* Efecto de transición para hover en badges */
@@ -130,7 +135,7 @@ h2 {
 .card-body {
     display: flex;
     flex-direction: column;
-    height: 100%; /* Asegura que ocupe toda la altura disponible */
+    height: 100%; 
 }
 
 .d-flex {

@@ -1,5 +1,5 @@
 export class Autor {
+    id = 0;
     nombre: string= "" ;
-    apellido: string = "" ;
     biografia: string= "";
 }

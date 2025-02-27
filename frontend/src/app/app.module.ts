@@ -24,6 +24,7 @@ import { AdminComponent } from './admin/admin.component';
 import { DetallesFavoritoComponent } from './detalles-favorito/detalles-favorito.component';
 import { FormLibroComponent } from './form-libro/form-libro.component';
 import { FormsModule } from '@angular/forms';
+import { FormAutorComponent } from './form-autor/form-autor.component';
 
 
 @NgModule({
@@ -47,6 +48,7 @@ import { FormsModule } from '@angular/forms';
     AdminComponent,
     DetallesFavoritoComponent,
     FormLibroComponent,
+    FormAutorComponent,
   ],
   imports: [
     BrowserModule,

@@ -4,6 +4,9 @@ import { Libro } from '../libro/libro';
 import { DetallesLibroService } from './detalles-libro.service';
 import { Valoracion } from '../valoracion/valoracion';
 import { ValoracionService } from '../valoracion/valoracion.service';
+import swal from 'sweetalert2';
+import { tap } from 'rxjs';
+
 
 @Component({
   selector: 'app-detalles-libro',
@@ -64,4 +67,48 @@ export class DetallesLibroComponent implements OnInit {
       this.router.navigate(['/libros']);
     }
   } */
+
+  
+  // Formulario
+
+  delete(libro: Libro): void {
+    // Mensaje confirmacion eliminar
+    swal({
+
+      title: `¿Estás seguro de eliminar el libro "${libro.titulo}"?`,
+      text: "¡Esta operación no es reversible!",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "¡Sí, eliminalo!",
+      cancelButtonText: "No, cancelar",
+      buttonsStyling: true,
+      reverseButtons: true
+
+    }).then((result) => {
+
+      if (result.value) {
+
+        this.libroService.delete(libro.id).subscribe(
+          response => {
+            swal(
+              '¡Eliminado!',
+              `El libro "${libro.titulo}" ha sido eliminado con éxito`,
+              'success'
+            );
+          }
+        );
+
+      } else if(result.dismiss === swal.DismissReason.cancel) {
+
+        swal(
+          'Cancelado',
+          'Tu libro está a salvo :)',
+          'error'
+        )
+
+      }
+    });
+  }
 }

@@ -95,8 +95,8 @@ INSERT INTO carritos (usuario_id, fecha_creacion, estado) VALUES
 (4, '2025-02-18', 'ACTIVO'),
 (5, '2025-02-18', 'ACTIVO'),
 (6, '2025-02-18', 'ACTIVO'),
-(7, '2025-02-17', 'PROCESADO'),
-(8, '2025-02-17', 'PROCESADO');
+(7, '2025-02-17', 'ACTIVO'),
+(8, '2025-02-17', 'ACTIVO');
 
 -- Detalles de carritos
 INSERT INTO detalles_carrito (carrito_id, libro_id, cantidad, precio_unitario) VALUES
@@ -123,7 +123,12 @@ INSERT INTO pedidos (usuario_id, fecha_pedido, estado, total, direccion_envio) V
 (5, '2025-02-16', 'ENVIADO', 69.98, 'Avenida Principal 456'),
 (6, '2025-02-17', 'EN_PROCESO', 34.98, 'Plaza Central 789'),
 (7, '2025-02-17', 'PENDIENTE', 24.99, 'Callejón Real 321'),
-(8, '2025-02-18', 'EN_PROCESO', 26.99, 'Calle Nueva 654');
+(8, '2025-02-18', 'EN_PROCESO', 26.99, 'Calle Nueva 654'),
+(4, '2025-02-20', 'EN_PROCESO', 49.98, 'Calle Mayor 123'),
+(5, '2025-02-21', 'PENDIENTE', 39.98, 'Avenida Principal 456'),
+(6, '2025-02-22', 'ENVIADO', 44.98, 'Plaza Central 789'),
+(7, '2025-02-22', 'ENTREGADO', 34.99, 'Callejón Real 321'),
+(8, '2025-02-23', 'EN_PROCESO', 59.97, 'Calle Nueva 654');
 
 -- Detalles de pedidos
 INSERT INTO detalles_pedido (pedido_id, libro_id, cantidad, precio_unitario) VALUES
@@ -135,7 +140,27 @@ INSERT INTO detalles_pedido (pedido_id, libro_id, cantidad, precio_unitario) VAL
 (3, 9, 1, 14.99), -- Carlos: Orgullo y prejuicio
 (4, 3, 2, 24.99), -- Ana: La casa de los espíritus
 (5, 10, 1, 16.99), -- Pedro: El viejo y el mar
-(5, 11, 1, 20.99); -- Pedro: Ficciones
+(5, 11, 1, 20.99), -- Pedro: Ficciones
+(1, 3, 2, 24.99), -- Juan: La casa de los espíritus
+(1, 10, 1, 16.99), -- Juan: El viejo y el mar
+(2, 5, 1, 21.99), -- María: La ciudad y los perros
+(2, 4, 2, 22.99), -- María: Rayuela
+(3, 15, 1, 34.99), -- Carlos: Choque de reyes
+(3, 12, 1, 23.99), -- Carlos: Paula
+(4, 6, 1, 34.99), -- Ana: Juego de tronos
+(5, 2, 2, 19.99), -- Pedro: El Aleph
+(5, 1, 1, 29.99), -- Pedro: Cien años de soledad
+(6, 3, 1, 24.99),  -- La casa de los espíritus
+(6, 5, 1, 21.99),  -- La ciudad y los perros
+(7, 2, 1, 19.99),  -- El Aleph
+(7, 4, 1, 22.99),  -- Rayuela
+(8, 6, 1, 34.99),  -- Juego de tronos
+(8, 8, 1, 19.99),  -- El resplandor
+(9, 7, 1, 24.99),  -- Harry Potter y la piedra filosofal
+(9, 9, 1, 14.99),  -- Orgullo y prejuicio
+(10, 1, 1, 29.99), -- Cien años de soledad
+(10, 10, 1, 16.99), -- El viejo y el mar
+(10, 11, 1, 20.99); -- Ficciones
 
 -- Valoraciones
 INSERT INTO valoraciones (usuario_id, libro_id, puntuacion, comentario, fecha) VALUES
@@ -157,7 +182,17 @@ INSERT INTO valoraciones (usuario_id, libro_id, puntuacion, comentario, fecha) V
 (8, 2, 5, 'Es imposible no quedar atrapado por el estilo de Borges', '2025-02-19'),
 (8, 5, 4, 'Una obra profunda, llena de contexto histórico', '2025-02-19'),
 (4, 10, 4, 'Una novela profunda y reflexiva', '2025-02-20'),
-(4, 12, 5, 'Paula es un libro que toca el alma', '2025-02-20');
+(4, 12, 5, 'Paula es un libro que toca el alma', '2025-02-20'),
+(4, 3, 5, 'Un relato fascinante que te atrapa desde la primera página', '2025-02-20'),
+(4, 10, 4, 'Una reflexión profunda sobre la vida y la muerte', '2025-02-20'),
+(5, 5, 5, 'Una historia impresionante, con una crítica social profunda', '2025-02-21'),
+(5, 4, 4, 'Una obra que siempre invita a la reflexión', '2025-02-21'),
+(6, 15, 5, 'La saga continúa con gran nivel de detalle y giros inesperados', '2025-02-22'),
+(6, 12, 4, 'Una obra conmovedora sobre la vida y la muerte', '2025-02-22'),
+(7, 6, 5, 'Un libro que cada vez que lo releo, me sorprende', '2025-02-22'),
+(8, 2, 5, 'Borges siempre te transporta a un mundo de infinitas posibilidades', '2025-02-23'),
+(8, 1, 4, 'Un clásico que sigue siendo relevante, a pesar del tiempo', '2025-02-23');
+
 
 -- Favoritos
 INSERT INTO favoritos (usuario_id, libro_id, fecha_agregado) VALUES
@@ -169,4 +204,13 @@ INSERT INTO favoritos (usuario_id, libro_id, fecha_agregado) VALUES
 (6, 9, '2025-02-17'),
 (7, 3, '2025-02-17'),
 (8, 10, '2025-02-18'),
-(8, 11, '2025-02-18');
+(8, 11, '2025-02-18'),
+(4, 3, '2025-02-20'),
+(4, 10, '2025-02-20'),
+(5, 5, '2025-02-21'),
+(5, 4, '2025-02-21'),
+(6, 15, '2025-02-22'),
+(6, 12, '2025-02-22'),
+(7, 6, '2025-02-22'),
+(8, 2, '2025-02-23'),
+(8, 1, '2025-02-23');
