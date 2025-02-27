@@ -10,14 +10,7 @@ export class SearchService {
 
   constructor(private http: HttpClient) {}
 
-  // Método para buscar libros por texto (busca en título, autor y género)
-  buscarLibros(query: string): Observable<any[]> {
-    const params = new HttpParams().set('query', query);
-    return this.http.get<any[]>(`${this.urlEndPoint}`, { params }).pipe(
-      map(response => {
-        // Si la respuesta está anidada, ajusta según la estructura de tu API
-        return response;
-      })
-    );
-}
+  search(query: string): Observable<any>{
+    return this.http.get(`${this.urlEndPoint}?query=${encodeURIComponent(query)}`);
+  }
 }
