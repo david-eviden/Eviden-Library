@@ -20,6 +20,7 @@ import com.evidenlibrary.backend.apirest.model.entity.Autor;
 import com.evidenlibrary.backend.apirest.model.entity.Libro;
 import com.evidenlibrary.backend.apirest.model.service.AutorService;
 import com.evidenlibrary.backend.apirest.model.service.LibroService;
+import com.evidenlibrary.backend.apirest.model.service.SearchService;
 
 @CrossOrigin(origins = { "http://localhost:4200" })
 @RestController
@@ -31,13 +32,11 @@ public class SearchController {
 	
 	@GetMapping("/search")
     public ResponseEntity<?> search(@RequestParam String query) {
-		String lowerCaseQuery = query.toLowerCase();
 
-		List<Libro> resultados = libroService.findAll()
-		    Map<String,Object> results = new HashMap<>();
-			results.put("libros", searchService.searchLibros(query));
-			results.put("autores", searchService.searchAutores(query));
-			results.put("generos", searchService.searchGeneros(query));
-			return ResponseEntity.ok(results);
+		Map<String,Object> results = new HashMap<>();
+		results.put("libros", searchService.searchLibros(query));
+		results.put("autores", searchService.searchAutores(query));
+		results.put("generos", searchService.searchGeneros(query));
+		return ResponseEntity.ok(results);
 	}
 }

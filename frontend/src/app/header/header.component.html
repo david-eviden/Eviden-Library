@@ -55,7 +55,7 @@
             </div>
 
             <!-- Barra de búsqueda -->
-            <app-search></app-search>
+            <app-search (search)="onSearch($event)"></app-search>
 
             <!-- Iconos de usuario, favoritos y carrito (visibles en pantallas grandes) -->
             <div class="d-none d-sm-flex gap-3">

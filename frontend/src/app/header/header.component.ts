@@ -18,4 +18,8 @@ export class HeaderComponent {
     { nombre: 'Literatura Infantil' },
     { nombre: 'Biografías' },
   ];
+
+  onSearch(searchTerm: string){
+    console.log('Busqueda: ', searchTerm);
+  }
 }

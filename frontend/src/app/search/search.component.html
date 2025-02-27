@@ -1,19 +1,8 @@
-<div class="d-flex flex-grow-1 justify-content-center mx-3">ç
-    <form class="d-flex w-100 gap-2" role="search" (ngSubmit)="onSearch()">
-        <div class="d-flex gap-2 align-items-center">
-            <div class="btn-group" role="group">
-                <button *nfFor="let option os searchOptions" type="button" class="btn btn-sm"
-                    [class.btn-primary]="isSelected(option.value)"
-                    [class.btn-outline-primary]="!isSelected(option.value)" (click)="toggleSearchType(option.value)">
-                    {{option.label}}
-                </button>
-            </div>
-        </div>
-        <input class="form-control busqueda" type="search"
-            [placeholder]="'Buscar en '+(selectedTypes.length > 1 ? 'multiples categorías': selectedTypes[0])"
-            [(ngModel)]="searchTerm" name="searchTerm" aria-label="Seacrh">
-        <button class="btn btn-outline-secondary" type="submit"
-            [disabled]="!searchTerm.trim() || selectedTypes.length === 0">
+<div class="d-flex felx-grow-1 justify-content-center mx-3">
+    <form class="d-flex w-100" role="search" (ngSubmit)="onSearch()">
+        <input class="form-control me-2" type="seacrh" placeholder="Buscar libros, autores, géneros,..."
+            [(ngModel)]="searchTerm" name="seacrhTerm" aria-label="Search">
+        <button class="btn btn-outline-primary" type="submit">
             Buscar
         </button>
     </form>
