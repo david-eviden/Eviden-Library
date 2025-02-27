@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
@@ -57,10 +56,6 @@ public class LibroController {
 
 		try {
 			libro = libroService.findById(id);
-		    
-	        if (libro != null) {
-	            Hibernate.initialize(libro.getAutores());
-	        }
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
@@ -102,7 +97,7 @@ public class LibroController {
 		}
 
 		response.put("mensaje", "El libro ha sido creado con éxito");
-		response.put("autor", nuevoLibro);
+		response.put("libro", nuevoLibro);
 		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 
@@ -182,6 +177,23 @@ public class LibroController {
 		response.put("mensaje", "El libro ha sido eliminado con éxito");
 		response.put("cliente", currentLibro);
 		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+	
+	// Eliminar todos los libros
+	@DeleteMapping("/libros")
+	public ResponseEntity<?> deleteAll() {
+		Map<String, Object> response = new HashMap<>();
+
+		try {
+		    libroService.deleteAll();
+		} catch(DataAccessException e) {
+		    response.put("mensaje", "Error al eliminar los libros en la base de datos");
+		    response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+		    return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		response.put("mensaje", "Todos los libros han sido eliminados con éxito");
+		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}
 
 }

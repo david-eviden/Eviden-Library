@@ -43,7 +43,7 @@ public class Libro implements Serializable {
     private Long id;
     
     @Column(nullable = false, unique = true)
-    @Size(max=25, message="no pude tener mas de 25 caracteres")
+    @Size(min=2,max=25, message="debe tener entre 2 y 25 caracteres")
     @NotEmpty(message = "no puede estar vacío")
     private String titulo;
     
@@ -69,7 +69,6 @@ public class Libro implements Serializable {
         joinColumns = @JoinColumn(name = "libro_id"),
         inverseJoinColumns = @JoinColumn(name = "autor_id")
     )
-	@JsonManagedReference
     public final Set<Autor> autores = new HashSet<>();
     
     @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)

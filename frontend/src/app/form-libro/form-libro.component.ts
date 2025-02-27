@@ -5,6 +5,8 @@ import { Libro } from '../libro/libro';
 import { LibroService } from '../libro/libro.service';
 import { Autor } from '../autor/autor';
 import { AutorService } from '../autor/autor.service';
+import { GeneroService } from '../generos/generos.service';
+import { Genero } from '../generos/generos';
 
 @Component({
   selector: 'app-form-libro',
@@ -14,25 +16,32 @@ import { AutorService } from '../autor/autor.service';
 })
 export class FormLibroComponent implements OnInit {
 
-  public libro: Libro = new Libro();
+  public libro: any = { id: 0, autores: [{ nombre: '' }] };
   public errors: string[] = [];
   autores: Autor[] = [];
+  autorSeleccionadoId = ""
+  generos: Genero[] = [];
+  
 
   constructor(
     private libroService: LibroService, 
     public router: Router, 
     private activatedRoute: ActivatedRoute,
     private autorService: AutorService,
+    private generoService: GeneroService,
   ) { }
 
   ngOnInit(): void {
-    this.cargarLibro();
-
+    this.cargarLibro()
+    this.cargarAutores()
+    this.cargarGeneros()
     if (!this.libro.autores) {
-      this.libro.autores = [{ id: 0, nombre: '', biografia: '' }];
+      this.libro.autores = [{ id: 0, nombre: "", biografia: "" }]
     }
 
-    this.cargarAutores();
+    if (!this.libro.generos) {
+      this.libro.generos = [{ id: 0, nombre: "", descripcion: "" }]
+    }
   }
 
   // Crear libro
@@ -101,11 +110,35 @@ export class FormLibroComponent implements OnInit {
     );
   }
 
+  // Obtener géneros
+  public cargarGeneros(): void {
+    this.generoService.getGeneros().subscribe(
+      (generos) => {
+        this.generos = generos
+      },
+      (err) => {
+        console.error("Error al cargar los géneros", err)
+      },
+    )
+  }
+  
   // Crear autor desde formulario
   opcionCrearAutor() {
     if (this.libro.autores[0].nombre === 'crearAutor') {
-      this.router.navigate(['/autor/form']);
-      this.libro.autores[0].nombre = '';
+      setTimeout(() => {
+        this.router.navigate(['/autor/form']);
+      }, 0);
+      this.libro.autores[0].nombre = '';  
+    }
+  }
+
+  // Crear género desde formulario
+  opcionCrearGenero() {
+    if (this.libro.generos[0].nombre === "crearGenero") {
+      setTimeout(() => {
+        this.router.navigate(["/genero/form"])
+      }, 0)
+      this.libro.generos[0].nombre = ""
     }
   }
 }

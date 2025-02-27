@@ -8,7 +8,7 @@
     <div class="card shadow-lg">
         <div class="card-header">
             <h5 *ngIf="!libro.id">Crear un Libro</h5>
-            <h5 *ngIf="!libro.id">Editar un Libro</h5>
+            <h5 *ngIf="libro.id">Editar un Libro</h5>
         </div>
         <div class="card-body">
             <form #librosForm="ngForm">
@@ -20,10 +20,16 @@
                                class="form-control form-control-lg" 
                                [(ngModel)]="libro.titulo" 
                                name="titulo" 
-                               #titulo="ngModel" required>
+                               #titulo="ngModel" maxlenght="25" minlength="2" required>
                         <div class="alert alert-danger mt-2" *ngIf="titulo.invalid && (titulo.dirty || titulo.touched)">
                             <div *ngIf="titulo.errors?.['required']">
                                 El título es requerido
+                            </div>
+                            <div *ngIf="titulo.errors?.['maxlength']">
+                                El título debe estar entre 2 y 25 caracteres
+                            </div>
+                            <div *ngIf="titulo.errors?.['minlength']">
+                                El título debe estar entre 2 y 25 caracteres
                             </div>
                         </div>
                     </div>
@@ -37,10 +43,16 @@
                                class="form-control form-control-lg" 
                                [(ngModel)]="libro.descripcion" 
                                name="descripcion" 
-                               #descripcion="ngModel" rows="3"></textarea>
+                               #descripcion="ngModel" rows="3" minlength="10" maxlength="250" required></textarea>
                         <div class="alert alert-danger mt-2" *ngIf="descripcion.invalid && (descripcion.dirty || descripcion.touched)">
                             <div *ngIf="descripcion.errors?.['required']">
                                 La descripción es requerida
+                            </div>
+                            <div *ngIf="descripcion.errors?.['maxlength']">
+                                La descripcion debe estar entre 25 y 250 caracteres
+                            </div>
+                            <div *ngIf="descripcion.errors?.['minlength']">
+                                La descripcion debe estar entre 25 y 250 caracteres
                             </div>
                         </div>
                     </div>
@@ -115,6 +127,29 @@
                         <div class="alert alert-danger mt-2" *ngIf="autor.invalid && (autor.dirty || autor.touched)">
                             <div *ngIf="autor.errors?.['required']">
                                 El autor es requerido
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campo Género -->
+                <div class="form-group row mb-4">
+                    <label for="genero" class="col-sm-3 col-form-label">Género:</label>
+                    <div class="col-sm-9">
+                        <select
+                            class="form-select form-select-lg"
+                            [(ngModel)]="libro.generos[0].nombre"
+                            name="genero"
+                            #genero="ngModel"
+                            required
+                            (change)="opcionCrearGenero()">
+                            <option value="">Seleccione un género</option>
+                            <option *ngFor="let genero of generos" [value]="genero.nombre">{{ genero.nombre }}</option>
+                            <option value="crearGenero">+ Añadir un género</option>
+                        </select>
+                        <div class="alert alert-danger mt-2" *ngIf="genero.invalid && (genero.dirty || genero.touched)">
+                            <div *ngIf="genero.errors?.['required']">
+                                El género es requerido
                             </div>
                         </div>
                     </div>

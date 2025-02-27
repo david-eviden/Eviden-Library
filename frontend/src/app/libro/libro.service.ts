@@ -75,7 +75,7 @@ export class LibroService {
 
   // Crear libro
   create(libro: Libro) : Observable<any> {
-    return this.http.post<any>(this.urlEndPoint, libro, {headers: this.httpHeaders}).pipe(
+    return this.http.post<any>(this.urlEndPoint1, libro, {headers: this.httpHeaders}).pipe(
       catchError(e => {
 
         // Validamos
@@ -138,7 +138,7 @@ export class LibroService {
 
   // Delete todos
   deleteAll(): Observable<void> {
-    return this.http.delete<void>(`${this.urlEndPoint}/deleteAll`);
+    return this.http.delete<void>(`${this.urlEndPoint}`);
   }
 
 }

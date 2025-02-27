@@ -62,7 +62,7 @@
 
                     <!-- Botones de acción (solo si admin) -->
                     <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 mb-5">
-                        <button type="button" name="editar" [routerLink]="['/libro/form', libro.id]" class="btn btn-secondary btn-lg">
+                        <button type="button" name="editar" [routerLink]="['/libros/form', libro.id]" class="btn btn-secondary btn-lg">
                             <i class="bi bi-pencil me-2"></i>Editar libro
                         </button>
                         <button type="button" name="eliminar" (click)="delete(libro)" class="btn btn-danger btn-lg">

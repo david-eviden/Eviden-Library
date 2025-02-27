@@ -73,4 +73,42 @@ export class LibroComponent implements OnInit{
       this.router.navigate(['/libro', id]);
     }
   }
+
+  deleteAll(): void {
+    // Mensaje confirmacion eliminar todos
+    swal({
+      title: '¿Estás seguro de eliminar todos los libros?',
+      text: "¡Esta operación no es reversible!",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "¡Sí, eliminar todos!",
+      cancelButtonText: "No, cancelar",
+      buttonsStyling: true,
+      reverseButtons: true
+    }).then((result) => {
+      if (result.value) {
+        this.libroService.deleteAll().subscribe(
+          response => {
+            // Vaciamos el array de libros
+            this.libros = [];
+  
+            swal(
+              '¡Eliminados!',
+              'Todos los libros han sido eliminados :(',
+              'success'
+            );
+          }
+        );
+      } else if (result.dismiss === swal.DismissReason.cancel) {
+        swal(
+          'Cancelado',
+          'Tus libros están a salvo :)',
+          'error'
+        )
+      }
+    });
+  }
+
 }
