@@ -23,4 +23,6 @@ public interface LibroService {
 	public void delete(Libro libro);
 	
 	public void deleteAll();
+
+	Libro findByTitulo(String titulo);
 }
