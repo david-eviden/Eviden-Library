@@ -1,9 +1,5 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { Libro } from '../libro/libro';
-import { SearchService } from './search.service';
-import { debounce, debounceTime, distinctUntilChanged, Observable, switchMap, tap } from 'rxjs';
-import { FormControl, ReactiveFormsModule } from '@angular/forms'; 
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Search } from './search';
 
 @Component({
   selector: 'app-search',
@@ -12,36 +8,38 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './search.component.css'
 })
 export class SearchComponent implements OnInit {
-  searchControl = new FormControl('');
-  librosFiltrados: Observable<Libro[]> | undefined;
-  isLoading = false;
-
-  constructor(private searchService: SearchService) {}
-
   ngOnInit(): void {
-    this.librosFiltrados = this.searchControl.valueChanges.pipe(
-      //300ms después de que el usuario djee de escribir
-      debounceTime(300),
-      //continua si el valor ha cambiado
-      distinctUntilChanged(),
-      //inidcador de carga
-      tap(()=>this.isLoading = true),
+    throw new Error('Method not implemented.');
+  }
+  searchTerm: string = '';
+  selectedTypes: string[] = ['libro'];//Por defecto busco libros
 
-      switchMap(value = > {
-        /* if (!value || value.length < 2) {
-          // No busca si hay menos de 2 caracteres
-          this.isLoading = false;
-          return of([]);
-        } */
-        return this.searchService.buscarLibros(value).pipe(
-          catchError(() => {
-            this.isLoading = false;
-            return of([]);
-          })
-        );
-      }),
-      tap(() => this.isLoading = false) // Desactiva el indicador de carga
-    );
+  searchOptions = [
+    {value:'libro', label: 'Libros'},
+    {value:'usuario', label: 'Usuarios'},
+    {value:'genero', label: 'Géneros'}
+  ];
+
+  @Output() search = new EventEmitter<Search>();
+
+  toggleSearchType(type: string): void{
+    const index = this.selectedTypes.indexOf(type);
+    if (index === -1){
+      this.selectedTypes.push(type);
+    }else{
+      this.selectedTypes = this.selectedTypes.filter(t => t !== type);
+    }
   }
 
+  isSelected(type:string): boolean{
+    return this.selectedTypes.includes(type);
+  }
+  onSearch(): void{
+    if(this.searchTerm.trim() && this.selectedTypes.length > 0){
+      this.search.emit({
+        term: this.searchTerm,
+        types: this.selectedTypes
+      });
+    }
+  }
 }

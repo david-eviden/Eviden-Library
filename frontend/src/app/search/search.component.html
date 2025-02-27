@@ -1,42 +1,20 @@
-<!-- <div class="d-flex flex-grow-1 justify-content-center mx-3">
-    <form class="d-flex w-100" role="search">
-        <input class="form-control me-2 busqueda" type="search" [formControl]="searchControl" name="query" placeholder="Busca por autor, título, ISBN"
-            aria-label="Search">
-        <button class="btn btn-outline-secondary" type="submit" (click)="buscar()">Buscar</button>
-    </form>
-</div> -->
-
-<div class="search-container">
-    <!-- <input 
-        class="form-control" 
-        type="search" 
-        [formControl]="searchControl" 
-        placeholder="Busca por autor, título o género"
-        aria-label="Search"> -->
-    <input class="form-control me-2 busqueda" type="search" placeholder="Busca por autor, título, ISBN"
-        aria-label="Search">
-    <div *ngIf="isLoading" class="spinner-border text-primary spinner-sm" role="status">
-        <span class="visually-hidden">Cargando...</span>
-    </div>
-    <div *ngIf="librosFiltrados | async as libros" class="search-results">
-        <div *ngIf="libros.length > 0" class="results-container">
-            <div *ngFor="let libro of libros" class="result-item">
-                <div class="libro-info">
-                    <h5>{{ libro.titulo }}</h5>
-                    <div class="details">
-                        <span class="autor" *ngFor="let autor of libro.autores; let last = last">
-                            {{ autor.nombre }}{{ !last ? ', ' : '' }}
-                        </span>
-                        <span class="genre" *ngFor="let genero of libro.generos; let last = last">
-                            {{ genero.nombre }}{{ !last ? ', ' : '' }}
-                        </span>
-                    </div>
-                    <p class="precio">{{ libro.precio | currency:'EUR' }}</p>
-                </div>
+<div class="d-flex flex-grow-1 justify-content-center mx-3">ç
+    <form class="d-flex w-100 gap-2" role="search" (ngSubmit)="onSearch()">
+        <div class="d-flex gap-2 align-items-center">
+            <div class="btn-group" role="group">
+                <button *nfFor="let option os searchOptions" type="button" class="btn btn-sm"
+                    [class.btn-primary]="isSelected(option.value)"
+                    [class.btn-outline-primary]="!isSelected(option.value)" (click)="toggleSearchType(option.value)">
+                    {{option.label}}
+                </button>
             </div>
         </div>
-        <div *ngIf="searchControl.value && searchControl.value.length >= 2 && libros.length === 0" class="no-results">
-            No se encontraron resultados
-        </div>
-    </div>
+        <input class="form-control busqueda" type="search"
+            [placeholder]="'Buscar en '+(selectedTypes.length > 1 ? 'multiples categorías': selectedTypes[0])"
+            [(ngModel)]="searchTerm" name="searchTerm" aria-label="Seacrh">
+        <button class="btn btn-outline-secondary" type="submit"
+            [disabled]="!searchTerm.trim() || selectedTypes.length === 0">
+            Buscar
+        </button>
+    </form>
 </div>

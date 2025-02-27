@@ -20,6 +20,7 @@ import { DetallesPedidoComponent } from './detalles-pedido/detalles-pedido.compo
 import { ValoracionComponent } from './valoracion/valoracion.component';
 import { DetallesLibroComponent } from './detalles-libro/detalles-libro.component';
 import { SearchComponent } from './search/search.component';
+import { FormsModule } from '@angular/forms'; 
 
 
 @NgModule({
@@ -46,7 +47,8 @@ import { SearchComponent } from './search/search.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    RouterModule
+    RouterModule,
+    FormsModule
 ],
   providers: [],
   bootstrap: [AppComponent]

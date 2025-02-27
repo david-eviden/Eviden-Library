@@ -26,36 +26,18 @@ import com.evidenlibrary.backend.apirest.model.service.LibroService;
 @RequestMapping("/api")
 public class SearchController {
 	@Autowired
-    private LibroService libroService;
+    private SearchService searchService;
 
 	
 	@GetMapping("/search")
-    public ResponseEntity<?> busqueda(@RequestParam String query) {
+    public ResponseEntity<?> search(@RequestParam String query) {
 		String lowerCaseQuery = query.toLowerCase();
 
 		List<Libro> resultados = libroService.findAll()
-		    .stream()
-		    .filter(libro -> 
-		            	// Buscar en título
-		                libro.getTitulo().toLowerCase().contains(lowerCaseQuery) || 
-		                // Buscar en autores
-		                libro.getAutores().stream()
-		                    .anyMatch(autor -> autor.getNombre().toLowerCase().contains(lowerCaseQuery)) ||
-		                // Buscar en géneros
-		                libro.getGeneros().stream()
-		                    .anyMatch(genero -> genero.getNombre().toLowerCase().contains(lowerCaseQuery))
-		            )
-		     .collect(Collectors.toList());
-		return ResponseEntity.ok(resultados);
-
-		}
-	
-	/*@GetMapping("/titulo")
-    public ResponseEntity<?> busquedaTitulo(@RequestParam String query) {
-		
+		    Map<String,Object> results = new HashMap<>();
+			results.put("libros", searchService.searchLibros(query));
+			results.put("autores", searchService.searchAutores(query));
+			results.put("generos", searchService.searchGeneros(query));
+			return ResponseEntity.ok(results);
 	}
-	@GetMapping("/genero")
-    public ResponseEntity<?> busquedaGenero(@RequestParam String query) {
-		
-	}*/
 }
