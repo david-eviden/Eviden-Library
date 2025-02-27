@@ -18,7 +18,7 @@ export class AutorService implements OnInit{
   autores$ = this.autoresSubject.asObservable();  // Observable al que nos suscribimos en los componentes
 
   constructor(private http: HttpClient, private router: Router) {}
-  
+
   ngOnInit(): void {}
 
   // Obtener lista de autores
@@ -93,15 +93,14 @@ export class AutorService implements OnInit{
         return throwError(e);
       }),
       tap(() => {
-        // Después de eliminar, actualizamos la lista de autores
-        this.getAutores().subscribe();  // Refrescamos la lista llamando a getAutores()
+        this.getAutores().subscribe();  // Refrescamos la lista
       })
     );
   }
 
   // Eliminar todos los autores
   deleteAll(): Observable<void> {
-    return this.http.delete<void>(`${this.urlEndPoint}/deleteAll`);
+    return this.http.delete<void>(`${this.urlEndPoint}`);
   }
 }
 

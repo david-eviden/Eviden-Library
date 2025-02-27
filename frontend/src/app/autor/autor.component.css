@@ -1,3 +1,7 @@
+h2 {
+    text-decoration: underline;
+}
+
 /* Estilo general para los elementos de la lista */
 ul.list-unstyled {
     padding-left: 0;

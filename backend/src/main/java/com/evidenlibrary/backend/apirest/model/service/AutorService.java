@@ -15,5 +15,7 @@ public interface AutorService {
 	public Autor save(Autor autor);
 	
 	public void delete(Autor autor);
+	
+	public void deleteAll();
 
 }

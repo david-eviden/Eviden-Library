@@ -48,7 +48,6 @@ export class AutorComponent implements OnInit {
         this.autorService.delete(autor.id).subscribe(
           response => {
             // Cuando la eliminación es exitosa, actualizamos la lista
-            // Eliminar el autor de la lista localmente
             this.autores = this.autores.filter(a => a.id !== autor.id);
             swal(
               '¡Eliminado!',
@@ -74,4 +73,42 @@ export class AutorComponent implements OnInit {
       }
     });
   }
+
+  deleteAll(): void {
+    // Mensaje confirmacion eliminar todos
+    swal({
+      title: '¿Estás seguro de eliminar todos los autores?',
+      text: "¡Esta operación no es reversible!",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "¡Sí, eliminar todos!",
+      cancelButtonText: "No, cancelar",
+      buttonsStyling: true,
+      reverseButtons: true
+    }).then((result) => {
+      if (result.value) {
+        this.autorService.deleteAll().subscribe(
+          response => {
+            // Vaciamos el array de autores
+            this.autores = [];
+  
+            swal(
+              '¡Eliminados!',
+              'Todos los autores han sido eliminados :(',
+              'success'
+            );
+          }
+        );
+      } else if (result.dismiss === swal.DismissReason.cancel) {
+        swal(
+          'Cancelado',
+          'Tus autores están a salvo :)',
+          'error'
+        )
+      }
+    });
+  }
+
 }
