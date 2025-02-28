@@ -34,7 +34,7 @@ export class FormGeneroComponent implements OnInit {
       json => {
         this.router.navigate(['/generos'])
         // Mensaje SweetAlert
-        swal('Nuevo genero', `Genero ${json.genero.nombre} creado con éxito`, 'success');
+        swal('Nuevo genero', `${json.mensaje} creado con éxito`, 'success');
       },
 
       // Si error
@@ -66,7 +66,7 @@ export class FormGeneroComponent implements OnInit {
       json => {
         this.router.navigate(['/generos'])
         //Mensaje
-        swal('Genero Actualizado', `Genero ${json.genero.nombre} actualizado con éxito`, 'success');
+        swal('Genero Actualizado', `${json.mensaje}`, 'success');
       },
 
       // Si error
