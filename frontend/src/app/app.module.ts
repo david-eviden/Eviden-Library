@@ -21,7 +21,7 @@ import { ValoracionComponent } from './valoracion/valoracion.component';
 import { DetallesLibroComponent } from './detalles-libro/detalles-libro.component';
 import { SearchComponent } from './search/search.component';
 import { FormsModule } from '@angular/forms';
-import { ResultadoBusquedaComponent } from './resultado-busqueda/resultado-busqueda.component'; 
+import { ResultadoBusquedaComponent } from './resultado-busqueda/resultado-busqueda.component';
 
 
 @NgModule({

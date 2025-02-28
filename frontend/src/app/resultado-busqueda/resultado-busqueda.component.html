@@ -5,11 +5,11 @@
     <div *ngIf="results.libros?.length > 0" class="mt-4">
         <h3>Libros</h3>
         <div class="row">
-            <div *ngFor="let libro os results.libros" class="col-md-4 mb-3">
+            <div *ngFor="let libro of results.libros" class="col-md-4 mb-3">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">{{libro.titulo}}</h5>
-                        <p class="card-text">{{libro.precio | currency}}</p>
+                        <p class="card-text">{{libro.precio}}</p>
                         <button class=" btn btn-primary" [routerLink]="['/libros', libro.id]">Ver detalles</button>
                     </div>
                 </div>
@@ -21,7 +21,7 @@
     <div *ngIf="results.autores?.length > 0" class="mt-4">
         <h3>Autores</h3>
         <div class="row">
-            <div *ngFor="let autor os results.autores" class="col-md-4 mb-3">
+            <div *ngFor="let autor of results.autores" class="col-md-4 mb-3">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">{{autor.nombre}}</h5>
@@ -37,7 +37,7 @@
     <div *ngIf="results.generos?.length > 0" class="mt-4">
         <h3>Géneros</h3>
         <div class="row">
-            <div *ngFor="let genero os results.generos" class="col-md-4 mb-3">
+            <div *ngFor="let genero of results.generos" class="col-md-4 mb-3">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">{{genero.nombre}}</h5>

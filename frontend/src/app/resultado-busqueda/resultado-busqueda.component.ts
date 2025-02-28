@@ -20,15 +20,16 @@ export class ResultadoBusquedaComponent implements OnInit{
   ngOnInit(): void {
       this.route.queryParams.subscribe(params => {
         this.searchTerm = params['q'];
-        if (this.searchTerm){
+        if (this.searchTerm) {
+          // Realizamos la búsqueda con el término proporcionado
           this.searchService.search(this.searchTerm).subscribe({
             next: (data) => {
-              this.results = data;
+              this.results = data; // Asignamos los resultados obtenidos
             },
             error: (error) => {
-              console.error('Error al obtener resultados: ', error);
+              console.error('Error al obtener resultados: ', error); // Manejo de errores
             }
-          })
+          });
         }
       })
   }
