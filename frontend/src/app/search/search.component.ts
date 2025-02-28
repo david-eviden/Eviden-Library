@@ -26,19 +26,7 @@ export class SearchComponent {
     private router: Router
   ){}
 
-  toggleSearchType(type: string): void{
-    const index = this.selectedTypes.indexOf(type);
-    if (index === -1){
-      this.selectedTypes.push(type);
-    }else{
-      this.selectedTypes = this.selectedTypes.filter(t => t !== type);
-    }
-  }
-
-  isSelected(type:string): boolean{
-    return this.selectedTypes.includes(type);
-  }
-  
+  //busqueda
   onSearch(term:string): void {
     if(term.trim()){
       this.searchService.search(term).subscribe({

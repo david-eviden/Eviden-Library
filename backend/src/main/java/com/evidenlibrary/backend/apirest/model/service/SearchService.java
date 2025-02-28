@@ -22,7 +22,7 @@ public class SearchService{
 	private GeneroDao generoDao;
 	
 	public List<Libro> searchLibros (String query){
-		return libroDao.findByTituloContainingIgnoreCaseOrAutores_NombreContainingIgnoreCaseOrGenero_NombreContainingIgnoreCase(query,query,query);
+		return libroDao.findByTituloContainingIgnoreCaseOrAutores_NombreContainingIgnoreCaseOrGeneros_NombreContainingIgnoreCase(query,query,query);
 	}
 	
 	public List<Autor> searchAutores (String query){
