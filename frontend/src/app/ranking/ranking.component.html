@@ -15,6 +15,7 @@
                                     <span *ngFor="let autor of libro.autores; let last = last">
                                         {{ autor.nombre }}<span *ngIf="!last">, </span>
                                     </span>
+                                    <span *ngIf="!libro.autores || libro.autores.length === 0">Sin autores</span>
                                 </p>
                             </div>
                         </div>

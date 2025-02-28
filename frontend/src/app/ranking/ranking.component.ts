@@ -47,6 +47,10 @@ export class RankingComponent implements OnInit {
 
   // Método para ver detalles de un libro
   verDetallesLibro(bookId: number): void {
-    this.router.navigate(['/libro', bookId]);
+    if (bookId !== undefined) {
+      this.router.navigate(['/libro', bookId]);
+    } else {
+      console.error('ID de libro indefinido');
+    }
   }
 }

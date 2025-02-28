@@ -13,7 +13,7 @@ public interface LibroDao extends JpaRepository<Libro, Long> {
             String titulo, String autor, String genero);
 	
 	@Query("SELECT l FROM Libro l LEFT JOIN l.valoraciones v GROUP BY l.id ORDER BY AVG(v.puntuacion) DESC LIMIT 10")
-    List<Libro> findTop5MejorValorados();
+    List<Libro> findTop10MejorValorados();
 
 
 	Optional<Libro> findByTitulo(String titulo);

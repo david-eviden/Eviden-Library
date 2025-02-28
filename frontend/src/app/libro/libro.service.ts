@@ -8,7 +8,7 @@ import { DatePipe } from '@angular/common';
   providedIn: 'root'  //disponible a nivel global
 })
 export class LibroService {
-  private urlEndPoint: string = 'http://localhost:8081/api'; 
+  private urlEndPoint: string = 'http://localhost:8081/api/libros'; 
 
   constructor(private http: HttpClient) {}
 

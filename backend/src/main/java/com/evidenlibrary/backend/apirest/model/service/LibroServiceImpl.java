@@ -32,7 +32,7 @@ public class LibroServiceImpl implements LibroService {
     @Override
     @Transactional(readOnly = true)
     public List<Libro> getMejorValorados() {
-        return libroDao.findTop5MejorValorados();
+        return libroDao.findTop10MejorValorados();
     }
 
 	@Override

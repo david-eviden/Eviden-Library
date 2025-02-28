@@ -47,7 +47,7 @@ public class LibroController {
     }
     
     //Obtener mejor valorados
-    @GetMapping("/mejor-valorados")
+    @GetMapping("/libros/mejor-valorados")
     public List<Libro> getMejorValorados() {
         return libroService.getMejorValorados();
     }
