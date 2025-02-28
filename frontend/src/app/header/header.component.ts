@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
@@ -18,4 +19,7 @@ export class HeaderComponent {
     { nombre: 'Biografías' },
   ];
 
+  onSearch(searchTerm: string){
+    console.log('Busqueda: ', searchTerm);
+  }
 }

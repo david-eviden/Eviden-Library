@@ -15,6 +15,8 @@ public interface LibroService {
 	
 	public Libro findById(Long id);
 	
+	//public Libro findByTitulo(String titulo);
+	
 	public List<Libro> findLibrosByAutorId(Long id);
 	
 	public List<Libro> findLibrosByFavoritoId(Long id);
@@ -26,4 +28,6 @@ public interface LibroService {
 	public void delete(Libro libro);
 	
 	public void deleteAll();
+
+	Libro findByTitulo(String titulo);
 }

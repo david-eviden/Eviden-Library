@@ -8,7 +8,7 @@ import { Favorito } from './favorito';
 })
 export class FavoritoService {
 
-  private urlEndPoint: string = 'http://localhost:8080/api/favoritos'; 
+  private urlEndPoint: string = 'http://localhost:8081/api/favoritos'; 
   
     constructor(private http: HttpClient) {}
   

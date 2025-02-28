@@ -12,6 +12,7 @@ import { FavoritoComponent } from './favorito/favorito.component';
 import { PedidoComponent } from './pedido/pedido.component';
 import { ValoracionComponent } from './valoracion/valoracion.component';
 import { DetallesLibroComponent } from './detalles-libro/detalles-libro.component';
+import { ResultadoBusquedaComponent } from './resultado-busqueda/resultado-busqueda.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/principal', pathMatch: 'full' }, // Defecto
@@ -31,6 +32,7 @@ const routes: Routes = [
   { path: 'pedidos', component: PedidoComponent },
   { path: 'pedido/:id', component: DetallesPedidoComponent },
   { path: 'valoraciones', component: ValoracionComponent },
+  { path: 'search-results', component: ResultadoBusquedaComponent},
   { path: '**', redirectTo: '/error' } // Ruta de error
 ];
 

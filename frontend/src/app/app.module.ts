@@ -19,6 +19,9 @@ import { PedidoComponent } from './pedido/pedido.component';
 import { DetallesPedidoComponent } from './detalles-pedido/detalles-pedido.component';
 import { ValoracionComponent } from './valoracion/valoracion.component';
 import { DetallesLibroComponent } from './detalles-libro/detalles-libro.component';
+import { SearchComponent } from './search/search.component';
+import { FormsModule } from '@angular/forms';
+import { ResultadoBusquedaComponent } from './resultado-busqueda/resultado-busqueda.component';
 import { PaginatorComponent } from './paginator/paginator.component';
 
 
@@ -39,6 +42,8 @@ import { PaginatorComponent } from './paginator/paginator.component';
     DetallesPedidoComponent,
     ValoracionComponent,
     DetallesLibroComponent,
+    SearchComponent,
+    ResultadoBusquedaComponent,
     PaginatorComponent,
     //AdminComponent
   ],
@@ -46,7 +51,8 @@ import { PaginatorComponent } from './paginator/paginator.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    RouterModule
+    RouterModule,
+    FormsModule
 ],
   providers: [],
   bootstrap: [AppComponent]
