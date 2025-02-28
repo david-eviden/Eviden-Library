@@ -8,9 +8,14 @@ import { DatePipe } from '@angular/common';
   providedIn: 'root'  //disponible a nivel global
 })
 export class LibroService {
-  private urlEndPoint: string = 'http://localhost:8081/api/libros'; 
+  private urlEndPoint: string = 'http://localhost:8081/api'; 
 
   constructor(private http: HttpClient) {}
+
+  //Get mejor valorados
+  getMejorValorados(): Observable<Libro[]> {
+    return this.http.get<Libro[]>(this.urlEndPoint+ '/mejor-valorados');  
+  }
 
   // Get libros (paginado)
   getLibros(page: number): Observable<any> {

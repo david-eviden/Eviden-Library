@@ -45,6 +45,12 @@ public class LibroController {
     public Page<Libro> index(@PathVariable Integer page) {
         return libroService.findAllPaginado(PageRequest.of(page, 9));
     }
+    
+    //Obtener mejor valorados
+    @GetMapping("/mejor-valorados")
+    public List<Libro> getMejorValorados() {
+        return libroService.getMejorValorados();
+    }
 
 	// Obtener libros por ID
 	@GetMapping("/libro/{id}")
