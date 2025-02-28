@@ -8,38 +8,47 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card mb-3" *ngFor="let valoracion of valoraciones">
-                <a [routerLink]="['/libro', valoracion.libroDetalles]" routerLinkActive="active">
+                
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <h6 class="text-muted">
-                                    <strong>{{ valoracion.usuario?.nombre }} {{ valoracion.usuario?.apellido }}</strong>
-                                </h6>
-                                <p class="text-muted">
-                                    {{ valoracion.usuario?.email }}
-                                </p>
+                        <a [routerLink]="['/libro', valoracion.libroDetalles]" routerLinkActive="active">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="text-muted">
+                                        <strong>{{ valoracion.usuario?.nombre }} {{ valoracion.usuario?.apellido }}</strong>
+                                    </h6>
+                                    <p class="text-muted">
+                                        {{ valoracion.usuario?.email }}
+                                    </p>
+                                </div>
+                                <div class="stars-container">
+                                    <span class="star-rating">
+                                        <i class="bi bi-star-fill text-warning" 
+                                           *ngFor="let star of getStarsArray(valoracion.puntuacion)"></i>
+                                        <i class="bi bi-star" 
+                                           *ngFor="let star of getEmptyStarsArray(valoracion.puntuacion)"></i>
+                                    </span>
+                                </div>
                             </div>
-                            <div class="stars-container">
-                                <span class="star-rating">
-                                    <i class="bi bi-star-fill text-warning" 
-                                       *ngFor="let star of getStarsArray(valoracion.puntuacion)"></i>
-                                    <i class="bi bi-star" 
-                                       *ngFor="let star of getEmptyStarsArray(valoracion.puntuacion)"></i>
-                                </span>
-                            </div>
+                        
+                            <p class="card-text mt-3">
+                                <i class="bi bi-quote"></i>
+                                {{ valoracion.comentario }}
+                                <i class="bi bi-quote"></i>
+                            </p>
+                        
+                            <small class="text-muted">
+                                {{ valoracion.fecha | date:'dd/MM/yyyy' }}
+                            </small>
+                        </a>
+                        <div class="d-flex justify-content-end gap-2 mt-3">
+                            <button type="button" name="editar" [routerLink]="['/valoracion/form', valoracion.id]" class="btn btn-secondary text-nowrap">
+                                <i class="bi bi-pencil me-2"></i>Editar
+                            </button>
+                            <button type="button" name="eliminar" (click)="delete(valoracion)" class="btn btn-danger text-nowrap">
+                                <i class="bi bi-person-x me-2"></i>Eliminar
+                            </button>
                         </div>
-
-                        <p class="card-text mt-3">
-                            <i class="bi bi-quote"></i>
-                            {{ valoracion.comentario }}
-                            <i class="bi bi-quote"></i>
-                        </p>
-
-                        <small class="text-muted">
-                            {{ valoracion.fecha | date:'dd/MM/yyyy' }}
-                        </small>
                     </div>
-                </a>
             </div>
         </div>
     </div>

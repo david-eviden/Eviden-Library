@@ -1,16 +1,26 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable, OnInit } from '@angular/core';
+import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
 import { Valoracion } from './valoracion';
+import { Router } from '@angular/router';
+import swal from 'sweetalert2';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ValoracionService {
+export class ValoracionService implements OnInit {
 
-  private urlEndPoint: string = 'http://localhost:8080/api/valoraciones'; 
+  private urlEndPoint: string = 'http://localhost:8080/api/valoraciones';
+  private urlEndPoint1: string = 'http://localhost:8080/api/valoracion'; 
+  private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
 
-  constructor(private http: HttpClient) {}
+  // Creamos un BehaviorSubject para la lista de valoraciones
+  private valoracionesSubject = new BehaviorSubject<Valoracion[]>([]);
+  valoraciones$ = this.valoracionesSubject.asObservable();  // Observable al que nos suscribimos en los componentes
+
+  constructor(private http: HttpClient, private router: Router) {}
+
+  ngOnInit(): void {}
 
   getValoraciones(): Observable<Valoracion[]> {
     return this.http.get<any[]>(this.urlEndPoint).pipe(
@@ -29,5 +39,64 @@ export class ValoracionService {
         });
       })
     ); 
+  }
+
+  // Crear valoracion
+  create(valoracion: Valoracion): Observable<any> {
+    return this.http.post<any>(this.urlEndPoint1, valoracion, {headers: this.httpHeaders}).pipe(
+      catchError(e => {
+        if (e.status == 400) {
+          return throwError(e);
+        }
+
+        this.router.navigate(['/valoraciones']);
+        console.log(e.error.mensaje);
+        swal(e.error.mensaje, e.error.error, 'error');
+        return throwError(e);
+      })
+    );
+  }
+
+  // Obtener valoracion individual
+  getValoracion(id: number): Observable<Valoracion> {
+    return this.http.get<Valoracion>(`${this.urlEndPoint1}/${id}`).pipe(
+      catchError(e => {
+        this.router.navigate(['/valoraciones']);
+        console.log(e.error.mensaje);
+        swal('Error al obtener el valoracion', e.error.mensaje, 'error');
+        return throwError(e);
+      })
+    );
+  }
+
+  // Actualizar valoracion
+  updateValoracion(valoracion: Valoracion): Observable<any> {
+    return this.http.put<any>(`${this.urlEndPoint1}/${valoracion.id}`, valoracion, {headers: this.httpHeaders}).pipe(
+      catchError(e => {
+        if (e.status == 400) {
+          return throwError(e);
+        }
+
+        this.router.navigate(['/valoraciones']);
+        console.log(e.error.mensaje);
+        swal(e.error.mensaje, e.error.error, 'error');
+        return throwError(e);
+      })
+    );
+  }
+
+  // Eliminar valoracion
+  delete(id: number): Observable<Valoracion> {
+    return this.http.delete<Valoracion>(`${this.urlEndPoint1}/${id}`, {headers: this.httpHeaders}).pipe(
+      catchError(e => {
+        this.router.navigate(['/valoraciones']);
+        console.log(e.error.mensaje);
+        swal(e.error.mensaje, e.error.error, 'error');
+        return throwError(e);
+      }),
+      tap(() => {
+        this.getValoraciones().subscribe();  // Refrescamos la lista
+      })
+    );
   }
 }

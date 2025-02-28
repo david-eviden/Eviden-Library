@@ -11,7 +11,7 @@
             <h4 *ngIf="autor.id">Editar un Autor</h4>
         </div>
         <div class="card-body">
-            <form #autorsForm="ngForm">
+            <form #autoresForm="ngForm">
                 <!-- Campo Nombre -->
                 <div class="form-group row mb-4">
                     <label for="nombre" class="col-sm-3 col-form-label">Nombre:</label>
@@ -61,11 +61,11 @@
                 <!-- Botones de acción -->
                 <div class="form-group row mt-5">
                     <div class="col-sm-9 offset-sm-3">
-                        <button class="btn btn-success me-3" role="button" (click)="create()" *ngIf="!autor.id" [disabled]="!autorsForm.form.valid">
+                        <button class="btn btn-success me-3" role="button" (click)="create()" *ngIf="!autor.id" [disabled]="!autoresForm.form.valid">
                             <i class="bi bi-plus-lg"></i> Crear
                         </button>
             
-                        <button class="btn btn-warning" role="button" (click)="update()" *ngIf="autor.id" [disabled]="!autorsForm.form.valid">
+                        <button class="btn btn-warning" role="button" (click)="update()" *ngIf="autor.id" [disabled]="!autoresForm.form.valid">
                             <i class="bi bi-pencil"></i> Editar
                         </button>            
                     </div>

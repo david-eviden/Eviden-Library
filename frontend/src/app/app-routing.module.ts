@@ -16,6 +16,7 @@ import { AdminComponent } from './admin/admin.component';
 import { FormLibroComponent } from './form-libro/form-libro.component';
 import { FormAutorComponent } from './form-autor/form-autor.component';
 import { FormGeneroComponent } from './form-genero/form-genero.component';
+import { FormValoracionComponent } from './form-valoracion/form-valoracion.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/principal', pathMatch: 'full' }, // Defecto
@@ -41,6 +42,8 @@ const routes: Routes = [
   { path: 'pedidos', component: PedidoComponent },
   { path: 'pedido/:id', component: DetallesPedidoComponent },
   { path: 'valoraciones', component: ValoracionComponent },
+  { path: 'valoracion/form/', component: FormValoracionComponent },
+  { path: 'valoracion/form/:id', component: FormValoracionComponent },
   { path: '**', redirectTo: '/error' } // Ruta de error
 ];
 

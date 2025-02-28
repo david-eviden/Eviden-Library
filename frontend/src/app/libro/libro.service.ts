@@ -48,9 +48,8 @@ export class LibroService {
 
   /* Sin paginacion */
 
-  /*
   // Observable para que sea asíncrono (se actualice en tiempo real)
-  getLibros(): Observable<Libro[]> {
+  getLibrosNoPagin(): Observable<Libro[]> {
 
     // return of(LIBROS);
 
@@ -71,7 +70,7 @@ export class LibroService {
       }),
 
     );
-  } */
+  }
 
   // Crear libro
   create(libro: Libro) : Observable<any> {

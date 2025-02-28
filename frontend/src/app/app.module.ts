@@ -26,6 +26,7 @@ import { FormLibroComponent } from './form-libro/form-libro.component';
 import { FormsModule } from '@angular/forms';
 import { FormAutorComponent } from './form-autor/form-autor.component';
 import { FormGeneroComponent } from './form-genero/form-genero.component';
+import { FormValoracionComponent } from './form-valoracion/form-valoracion.component';
 
 
 @NgModule({
@@ -51,6 +52,7 @@ import { FormGeneroComponent } from './form-genero/form-genero.component';
     FormLibroComponent,
     FormAutorComponent,
     FormGeneroComponent,
+    FormValoracionComponent,
   ],
   imports: [
     BrowserModule,

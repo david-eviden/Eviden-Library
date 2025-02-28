@@ -9,6 +9,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -47,6 +48,7 @@ public class Autor implements Serializable {
     private String biografia;
 
     @ManyToMany(mappedBy = "autores", fetch = FetchType.LAZY)
+    @JsonBackReference
     private final Set<Libro> libros = new HashSet<>();
 
     @JsonProperty("libros")

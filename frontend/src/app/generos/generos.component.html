@@ -26,10 +26,10 @@
                 <p class="text-muted">{{ genero.descripcion }}</p>
             </div>
             <div class="d-flex flex-sm-row flex-md-row gap-2">
-                <button type="button" name="editar" [routerLink]="['/genero/form', genero.id]" class="btn btn-secondary btn-lg text-nowrap">
+                <button type="button" name="editar" [routerLink]="['/genero/form', genero.id]" class="btn btn-secondary text-nowrap">
                     <i class="bi bi-pencil me-2"></i>Editar
                 </button>
-                <button type="button" name="eliminar" (click)="delete(genero)" class="btn btn-danger btn-lg text-nowrap">
+                <button type="button" name="eliminar" (click)="delete(genero)" class="btn btn-danger text-nowrap">
                     <i class="bi bi-person-x me-2"></i>Eliminar
                 </button>
             </div>
