@@ -21,12 +21,6 @@ h2 {
     margin-bottom: 1.5rem;
 }
 
-/* Imagen */
-.book-image-container {
-    position: relative;
-    padding: 15px;
-}
-
 .book-cover {
     max-height: 400px;
     border-radius: 8px;

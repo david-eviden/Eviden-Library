@@ -18,7 +18,7 @@ import { FormAutorComponent } from './form-autor/form-autor.component';
 import { FormGeneroComponent } from './form-genero/form-genero.component';
 import { FormValoracionComponent } from './form-valoracion/form-valoracion.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   { path: '', redirectTo: '/principal', pathMatch: 'full' }, // Defecto
   { path: 'principal', component: PrincipalComponent },
   { path: 'admin', component: AdminComponent },
@@ -48,7 +48,14 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  imports: [
+    RouterModule.forRoot(routes, {
+      scrollPositionRestoration: "enabled",
+      anchorScrolling: "enabled",
+      onSameUrlNavigation: "reload",
+      enableTracing: false,
+    }),
+  ],
+  exports: [RouterModule],
 })
 export class AppRoutingModule { }

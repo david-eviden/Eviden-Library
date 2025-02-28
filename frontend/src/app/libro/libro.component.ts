@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { LibroService } from './libro.service';
 import { Libro } from './libro';
-import { ActivatedRoute, Router } from '@angular/router';
-import { tap } from 'rxjs';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
+import { filter, tap } from 'rxjs';
 import swal from 'sweetalert2';
 
 @Component({
@@ -15,8 +15,22 @@ export class LibroComponent implements OnInit{
 
   libros : Libro[]= [];
   paginador: any;
+  animationState = "in"
 
-  constructor(private libroService: LibroService, private router: Router, private activatedRoute: ActivatedRoute) {}
+  constructor(private libroService: LibroService, private router: Router, private activatedRoute: ActivatedRoute) {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationStart)
+    ).subscribe(() => {
+      this.handleViewTransition();
+    });
+  }
+
+  handleViewTransition(): void {
+    if ('startViewTransition' in document) {
+      // Use the modern View Transitions API if available
+      (document as any).startViewTransition();
+    }
+  }
 
   ngOnInit(): void {
 
@@ -57,19 +71,28 @@ export class LibroComponent implements OnInit{
     ) */
   };
 
+  irAtras(): void {
+    if ("startViewTransition" in document) {
+      document.documentElement.classList.add("navigating-back")
+      ;(document as any).startViewTransition(() => {
+        window.history.back()
+        // Eliminar la clase después de la transición
+        setTimeout(() => {
+          document.documentElement.classList.remove("navigating-back")
+        }, 300)
+      })
+    } else {
+      window.history.back()
+    }
+  }
+
   // Método para navegar a detalles con View Transitions
   getDetallesLibro(id: number): void {
-    const imagenLibro = document.getElementById(`imagen-libro-${id}`);
-
-    // Comprobar si el navegador soporta la API de View Transitions
-    if (document.startViewTransition && imagenLibro) {
-      // Iniciar la transición de la imagen
-      document.startViewTransition(() => {
-        // Aquí, la imagen es la que se moverá de una página a otra
+    if ('startViewTransition' in document) {
+      (document as any).startViewTransition(() => {
         this.router.navigate(['/libro', id]);
       });
     } else {
-      // Si el navegador no soporta View Transitions, se hace la navegación normalmente
       this.router.navigate(['/libro', id]);
     }
   }

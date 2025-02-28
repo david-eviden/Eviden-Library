@@ -27,6 +27,7 @@ import { FormsModule } from '@angular/forms';
 import { FormAutorComponent } from './form-autor/form-autor.component';
 import { FormGeneroComponent } from './form-genero/form-genero.component';
 import { FormValoracionComponent } from './form-valoracion/form-valoracion.component';
+import { appConfig } from './app.config';
 
 
 @NgModule({
@@ -61,7 +62,9 @@ import { FormValoracionComponent } from './form-valoracion/form-valoracion.compo
     RouterModule,
     FormsModule
 ],
-  providers: [],
+  providers: [
+    ...appConfig.providers
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

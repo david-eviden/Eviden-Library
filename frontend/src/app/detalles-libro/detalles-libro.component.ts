@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { Libro } from '../libro/libro';
 import { DetallesLibroService } from './detalles-libro.service';
 import { Valoracion } from '../valoracion/valoracion';
 import { ValoracionService } from '../valoracion/valoracion.service';
 import swal from 'sweetalert2';
-import { tap } from 'rxjs';
+import { filter, tap } from 'rxjs';
 
 
 @Component({
@@ -23,7 +23,19 @@ export class DetallesLibroComponent implements OnInit {
     private router: Router,
     private libroService: DetallesLibroService,
     private valoracionService: ValoracionService
-  ) {}
+  ) {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationStart)
+    ).subscribe(() => {
+      this.handleViewTransition();
+    });
+  }
+
+  handleViewTransition(): void {
+    if ('startViewTransition' in document) {
+      (document as any).startViewTransition();
+    }
+  }
 
   ngOnInit(): void {
     // Obtener el id del libro desde la ruta
@@ -43,6 +55,16 @@ export class DetallesLibroComponent implements OnInit {
         console.error('Error al obtener las valoraciones:', error);
       }
     );
+  }
+
+  irAtras(): void {
+    if ('startViewTransition' in document) {
+      (document as any).startViewTransition(() => {
+        this.router.navigate(['/libros']);
+      });
+    } else {
+      this.router.navigate(['/libro']);
+    }
   }
 
   // Método helper para generar array de estrellas

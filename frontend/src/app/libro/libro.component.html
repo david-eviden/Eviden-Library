@@ -21,18 +21,19 @@
             <div class="card h-100 shadow-sm" (click)="getDetallesLibro(libro.id)">
                 <img [src]="'/img/libroEjemplo.jpg'" class="card-img-top" 
                      [id]="'imagen-libro-' + libro.id" 
-                     [alt]="'Imagen de ' + libro.titulo">
+                     [alt]="'Imagen de ' + libro.titulo"
+                     [style.view-transition-name]="'imagen-libro-' + libro.id">
                 <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">{{ libro.titulo }}</h5>
+                    <h5 class="card-title" [style.view-transition-name]="'titulo-libro-' + libro.id">{{ libro.titulo }}</h5>
                     <p class="card-text text-muted mb-2">
-                        <span *ngIf="libro.autores && libro.autores.length > 0">
+                        <span *ngIf="libro.autores && libro.autores.length > 0" [style.view-transition-name]="'autor-libro-' + libro.autores[0].id">
                             Por <strong>{{ libro.autores[0].nombre }}</strong>
                         </span>
                         <span *ngIf="!libro.autores || libro.autores.length === 0">
                             Autor desconocido
                         </span>
                     </p>
-                    <p class="card-text fw-bold mt-auto">
+                    <p class="card-text fw-bold mt-auto" [style.view-transition-name]="'precio-libro-' + libro.id">
                         {{ libro.precio | currency:'EUR':'symbol':'1.2-2' }}
                     </p>
                     <button class="btn btn-primary mt-2">Añadir al carrito</button>
