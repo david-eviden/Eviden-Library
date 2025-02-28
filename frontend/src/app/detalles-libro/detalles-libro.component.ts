@@ -49,7 +49,6 @@ export class DetallesLibroComponent implements OnInit {
     this.valoracionService.getValoraciones().subscribe(
       (valoraciones) => {
         this.valoraciones = valoraciones;
-        console.log('Valoraciones recibidas:', valoraciones);
       },
       (error) => {
         console.error('Error al obtener las valoraciones:', error);

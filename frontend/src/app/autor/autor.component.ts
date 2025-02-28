@@ -18,10 +18,9 @@ export class AutorComponent implements OnInit {
     this.autorService.autores$.subscribe(
       (autores: Autor[]) => {
         this.autores = autores;
-        console.log('Autores recibidos:', autores);  // Esto mostrará la lista de autores en la consola
       },
       error => {
-        console.error('Error al obtener los autores', error);  // Muestra errores si los hay
+        console.error('Error al obtener los autores', error); 
       }
     );
 

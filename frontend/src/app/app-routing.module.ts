@@ -42,7 +42,7 @@ export const routes: Routes = [
   { path: 'pedidos', component: PedidoComponent },
   { path: 'pedido/:id', component: DetallesPedidoComponent },
   { path: 'valoraciones', component: ValoracionComponent },
-  { path: 'valoracion/form/', component: FormValoracionComponent },
+  { path: 'valoracion/form', component: FormValoracionComponent },
   { path: 'valoracion/form/:id', component: FormValoracionComponent },
   { path: '**', redirectTo: '/error' } // Ruta de error
 ];

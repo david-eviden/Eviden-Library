@@ -17,7 +17,6 @@ export class CarritoComponent implements OnInit {
     this.carritoService.getCarritos().subscribe(
       carritos => {
         this.carritos = carritos;
-        console.log('Carritos recibidos:', carritos);
       },
       error => {
         console.error('Error al obtener los carritos:', error);

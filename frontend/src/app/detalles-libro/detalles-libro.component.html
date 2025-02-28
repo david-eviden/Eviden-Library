@@ -1,14 +1,14 @@
 <div class="container my-5">
     <div class="card shadow book-details">
         <div class="card-header bg-transparent border-0">
-            <button class="btn btn-outline-secondary" (click)="irAtras()">
+            <button class="btn btn-outline-secondary m-3" (click)="irAtras()">
                 <i class="bi bi-arrow-left me-2"></i>Volver
             </button>
             <h2 class="text-center my-3">Detalles del Libro</h2>
         </div>
         
         <div class="card-body">
-            <div class="row">
+            <div class="row m-1">
                 <div class="col-md-4 text-center mb-4 mb-md-0">
                     <img [src]="'/img/libroEjemplo.jpg'" 
                          [id]="'imagen-libro-' + libro.id" 

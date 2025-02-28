@@ -48,7 +48,7 @@
                             (change)="onLibroChange()">
                             <option [ngValue]="undefined">-- Seleccionar Libro --</option>
                             <option *ngFor="let libro of libros" [ngValue]="libro">
-                                {{ libro.titulo }} ({{ libro.descripcion }})
+                                {{ libro.titulo }} ({{ libro.autores[0].nombre }})
                             </option>
                         </select>
                         <div class="alert alert-danger mt-2" *ngIf="libro.invalid && (libro.dirty || libro.touched)">

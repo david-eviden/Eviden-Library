@@ -17,7 +17,6 @@ export class GenerosComponent implements OnInit{
     this.generoService.getGeneros().subscribe(
       (generos: Genero[]) => {
         this.generos = generos;
-        console.log('Generos recibidos:', generos);  // Esto mostrará la lista de generoes en la consola
       },
       error => {
         console.error('Error al obtener los generos', error);  // Muestra errores si los hay

@@ -16,7 +16,6 @@ export class DetallesCarritoComponent implements OnInit {
     this.detallesCarritoService.getdetallesCarrito().subscribe(
       (detallesCarritos: detallesCarrito[]) => {
         this.detallesCarrito = detallesCarritos;
-        console.log('Detalles de los carritos recibidos:', detallesCarritos); 
       },
       error => {
         console.error('Error al obtener los detalles de los carritos', error);  // Muestra errores si los hay

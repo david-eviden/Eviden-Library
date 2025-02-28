@@ -19,7 +19,6 @@ export class FavoritoComponent {
     this.favoritoService.getUsuarios().subscribe(
       (favoritos: Favorito[]) => {
         this.favoritos = favoritos;
-        console.log('Favoritos recibidos:', favoritos); 
         this.agruparFavoritos();
       },
       error => {

@@ -20,12 +20,13 @@ export class LibroService {
   getLibros(page: number): Observable<any> {
     return this.http.get(this.urlEndPoint + '/page/' + page).pipe(
 
+      /*
       tap((response: any) => {
         console.log('LibroService: tap 1 (Object)');
         (response.content as Libro[]).forEach(libro => {
           console.log(libro.titulo);
         })
-      }),
+      }), */
 
       map((response: any) => {
         // Retornamos
