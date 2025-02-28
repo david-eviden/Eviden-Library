@@ -23,6 +23,8 @@ import { SearchComponent } from './search/search.component';
 import { FormsModule } from '@angular/forms';
 import { ResultadoBusquedaComponent } from './resultado-busqueda/resultado-busqueda.component';
 import { PaginatorComponent } from './paginator/paginator.component';
+import { RankingComponent } from './ranking/ranking.component';
+import { LibroService } from './libro/libro.service';
 
 
 @NgModule({
@@ -45,6 +47,7 @@ import { PaginatorComponent } from './paginator/paginator.component';
     SearchComponent,
     ResultadoBusquedaComponent,
     PaginatorComponent,
+    RankingComponent,
     //AdminComponent
   ],
   imports: [
@@ -54,7 +57,7 @@ import { PaginatorComponent } from './paginator/paginator.component';
     RouterModule,
     FormsModule
 ],
-  providers: [],
+  providers: [LibroService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

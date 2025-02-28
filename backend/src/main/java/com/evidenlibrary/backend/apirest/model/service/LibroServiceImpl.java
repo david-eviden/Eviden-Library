@@ -28,6 +28,12 @@ public class LibroServiceImpl implements LibroService {
     public Page<Libro> findAllPaginado(Pageable pageable) {
         return libroDao.findAll(pageable);
     }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public List<Libro> getMejorValorados() {
+        return libroDao.findTop10MejorValorados();
+    }
 
 	@Override
 	@Transactional(readOnly = true)

@@ -1,0 +1,44 @@
+/*Controles carrusel*/
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: grey;
+    border-radius: 50%;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    width: 5%;
+
+}
+
+.carousel-control-prev {
+    float: left;
+}
+
+.carousel-control-next {
+    float: right;
+}
+
+/*cards*/
+.card {
+    height: 100%;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.col-lg-2-4 {
+    flex: 0 0 20%;
+    max-width: 20%;
+}
+
+.container {
+    padding-bottom: 50px;
+}
