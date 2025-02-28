@@ -15,6 +15,7 @@ import { DetallesLibroComponent } from './detalles-libro/detalles-libro.componen
 import { AdminComponent } from './admin/admin.component';
 import { FormLibroComponent } from './form-libro/form-libro.component';
 import { FormAutorComponent } from './form-autor/form-autor.component';
+import { FormGeneroComponent } from './form-genero/form-genero.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/principal', pathMatch: 'full' }, // Defecto
@@ -32,6 +33,8 @@ const routes: Routes = [
   { path: 'usuarios', component: UsuarioComponent },
   //{ path: 'usuario/:id', component: DetallesUsuarioComponent },
   { path: 'generos', component: GenerosComponent },
+  { path: 'genero/form', component: FormGeneroComponent },
+  { path: 'genero/form/:id', component: FormGeneroComponent },
   { path: 'favoritos', component: FavoritoComponent },
   { path: 'carrito', component: CarritoComponent },
   { path: 'carrito/:id', component: DetallesCarritoComponent },
