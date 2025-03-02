@@ -37,18 +37,26 @@ export class SearchComponent implements OnInit {
 
   onSearchInput(event: any): void {
     const term = event.target.value;
-    if (!term || term.trim() === '') {
+    const cleanTerm = term.replace(/\s+/g, ' ').trim();
+    
+    if (!cleanTerm) {
       this.showDropdown = false;
       return;
     }
-    this.searchTerm = term;
-    this.searchSubject.next(term);
+    
+    this.searchTerm = cleanTerm;
+    this.searchSubject.next(cleanTerm);
   }
 
-  // Nueva función para búsqueda en el dropdown
   searchForDropdown(term: string): void {
-    const encodedTerm = encodeURIComponent(term.trim());
-    this.searchService.search(encodedTerm).subscribe({
+    const cleanTerm = term.replace(/\s+/g, ' ').trim();
+    
+    if (cleanTerm === '') {
+      this.showDropdown = false;
+      return;
+    }
+
+    this.searchService.search(cleanTerm).subscribe({
       next: (results) => {
         this.searchResults = results;
         this.showDropdown = true;
@@ -60,7 +68,6 @@ export class SearchComponent implements OnInit {
     });
   }
 
-  // Función para seleccionar un resultado del dropdown
   selectResult(type: string, item: any): void {
     this.showDropdown = false;
     switch(type) {
@@ -76,29 +83,29 @@ export class SearchComponent implements OnInit {
     }
   }
 
-  // Función para realizar la búsqueda completa
   performFullSearch(): void {
-    if (!this.searchTerm || this.searchTerm.trim() === '') {
+    const cleanTerm = this.searchTerm.replace(/\s+/g, ' ').trim();
+    
+    if (!cleanTerm) {
       this.router.navigate(['/principal']);
       return;
     }
 
-    const encodedTerm = encodeURIComponent(this.searchTerm.trim());
     this.showDropdown = false;
 
-    this.searchService.search(encodedTerm).subscribe({
+    this.searchService.search(cleanTerm).subscribe({
       next: (results) => {
         if (this.isEmptyResults(results)) {
           this.router.navigate(['/search-results'], {
             queryParams: {
-              q: encodedTerm,
+              q: cleanTerm,
               noResults: true
             }
           });
         } else {
           this.router.navigate(['/search-results'], {
             queryParams: {
-              q: encodedTerm
+              q: cleanTerm
             },
             state: { results }
           });
@@ -116,7 +123,6 @@ export class SearchComponent implements OnInit {
            (!results.generos || results.generos.length === 0);
   }
 
-  // Cerrar el dropdown cuando se hace clic fuera
   onClickOutside(event: Event): void {
     if (!(event.target as HTMLElement).closest('.search-container')) {
       this.showDropdown = false;

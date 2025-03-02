@@ -12,8 +12,11 @@ export class SearchService {
   constructor(private http: HttpClient) {}
 
   search(query: string, searchLibros: boolean = true, searchAutores: boolean = true, searchGeneros: boolean = true): Observable<any> {
+    // Limpiar la query antes de enviarla
+    const cleanQuery = query.replace(/\s+/g, ' ').trim();
+    
     let params = new HttpParams()
-      .set('query', encodeURIComponent(query))
+      .set('query', cleanQuery) // Ya no necesitamos encodeURIComponent aquí
       .set('searchLibros', searchLibros.toString())
       .set('searchAutores', searchAutores.toString())
       .set('searchGeneros', searchGeneros.toString());

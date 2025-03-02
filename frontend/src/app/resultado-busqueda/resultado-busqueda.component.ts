@@ -28,22 +28,26 @@ export class ResultadoBusquedaComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
-      this.searchTerm = params['q'];
-      this.searchType = this.detectSearchType(this.searchTerm);
+      let searchTerm = params['q'];
       
-      if (!this.searchTerm || this.searchTerm.trim() === '') {
+      // Limpiar el término de búsqueda
+      searchTerm = searchTerm ? searchTerm.replace(/\s+/g, ' ').trim() : '';
+      this.searchTerm = searchTerm;
+      
+      if (!searchTerm) {
         this.router.navigate(['/principal']);
         return;
       }
 
+      this.searchType = this.detectSearchType(searchTerm);
       this.loading = true;
-      this.searchService.search(this.searchTerm).subscribe({
+
+      this.searchService.search(searchTerm).subscribe({
         next: (data) => {
           this.results = data;
           this.loading = false;
           this.noResults = this.isEmptyResults(data);
 
-          // Si es búsqueda por autor o género, cargar libros relacionados
           if (this.searchType === 'autor' && this.results.autores.length > 0) {
             this.loadLibrosByAutor(this.results.autores[0].id);
           } else if (this.searchType === 'genero' && this.results.generos.length > 0) {
