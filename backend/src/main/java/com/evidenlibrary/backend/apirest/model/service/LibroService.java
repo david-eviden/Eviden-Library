@@ -13,7 +13,11 @@ public interface LibroService {
 	
 	public Page<Libro> findAllPaginado(Pageable pageable); // Paginación
 	
+	public List<Libro> getMejorValorados();//Mejor valorados
+	
 	public Libro findById(Long id);
+	
+	//public Libro findByTitulo(String titulo);
 	
 	public List<Libro> findLibrosByAutorId(Long id);
 	
@@ -26,4 +30,8 @@ public interface LibroService {
 	public void delete(Libro libro);
 	
 	public void deleteAll();
+
+	Libro findByTitulo(String titulo);
+
+	
 }

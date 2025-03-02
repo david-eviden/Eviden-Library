@@ -11,6 +11,7 @@ import { Libro } from '../libro/libro';
 export class CarritoService {
 
   private urlEndPoint: string = 'http://localhost:8080/api/carritos'; 
+  private carrito: any[] = [];
 
   constructor(private http: HttpClient) {}
 
@@ -47,5 +48,9 @@ export class CarritoService {
         });
       })
     ); 
+  }
+
+  addToCarrito(libro: any): void {
+    console.log('Añadir libro al carrito', libro);
   }
 }

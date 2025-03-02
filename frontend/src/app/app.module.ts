@@ -19,6 +19,9 @@ import { PedidoComponent } from './pedido/pedido.component';
 import { DetallesPedidoComponent } from './detalles-pedido/detalles-pedido.component';
 import { ValoracionComponent } from './valoracion/valoracion.component';
 import { DetallesLibroComponent } from './detalles-libro/detalles-libro.component';
+import { SearchComponent } from './search/search.component';
+import { FormsModule } from '@angular/forms';
+import { ResultadoBusquedaComponent } from './resultado-busqueda/resultado-busqueda.component';
 import { PaginatorComponent } from './paginator/paginator.component';
 import { AdminComponent } from './admin/admin.component';
 import { DetallesFavoritoComponent } from './detalles-favorito/detalles-favorito.component';
@@ -28,6 +31,8 @@ import { FormAutorComponent } from './form-autor/form-autor.component';
 import { FormGeneroComponent } from './form-genero/form-genero.component';
 import { FormValoracionComponent } from './form-valoracion/form-valoracion.component';
 import { appConfig } from './app.config';
+import { RankingComponent } from './ranking/ranking.component';
+import { LibroService } from './libro/libro.service';
 
 
 @NgModule({
@@ -47,7 +52,10 @@ import { appConfig } from './app.config';
     DetallesPedidoComponent,
     ValoracionComponent,
     DetallesLibroComponent,
+    SearchComponent,
+    ResultadoBusquedaComponent,
     PaginatorComponent,
+    RankingComponent,
     AdminComponent,
     DetallesFavoritoComponent,
     FormLibroComponent,
@@ -60,11 +68,12 @@ import { appConfig } from './app.config';
     AppRoutingModule,
     HttpClientModule,
     RouterModule,
+    FormsModule,
     FormsModule
 ],
   providers: [
     ...appConfig.providers
-  ],
+  LibroService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

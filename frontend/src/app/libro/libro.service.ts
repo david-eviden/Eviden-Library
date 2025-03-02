@@ -16,6 +16,11 @@ export class LibroService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
+  //Get mejor valorados
+  getMejorValorados(): Observable<Libro[]> {
+    return this.http.get<Libro[]>(this.urlEndPoint+ '/mejor-valorados');  
+  }
+
   // Get libros (paginado)
   getLibros(page: number): Observable<any> {
     return this.http.get(this.urlEndPoint + '/page/' + page).pipe(

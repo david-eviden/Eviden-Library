@@ -44,6 +44,7 @@ export const routes: Routes = [
   { path: 'valoraciones', component: ValoracionComponent },
   { path: 'valoracion/form', component: FormValoracionComponent },
   { path: 'valoracion/form/:id', component: FormValoracionComponent },
+  { path: 'search-results', component: ResultadoBusquedaComponent},
   { path: '**', redirectTo: '/error' } // Ruta de error
 ];
 

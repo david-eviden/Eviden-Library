@@ -6,7 +6,7 @@
             </button>
             <h2 class="text-center my-3">Detalles del Libro</h2>
         </div>
-        
+
         <div class="card-body">
             <div class="row m-1">
                 <div class="col-md-4 text-center mb-4 mb-md-0">
@@ -17,6 +17,7 @@
                          [style.view-transition-name]="'imagen-libro-' + libro.id">
                 </div>
 
+
                 <div class="col-md-8">
                     <!-- Información del libro -->
                     <h3 class="book-title" [style.view-transition-name]="'titulo-libro-' + libro.id">{{ libro.titulo }}</h3>
@@ -24,8 +25,9 @@
                         Por <strong>{{ libro.autores[0].nombre }}</strong>
                     </p>
                     <p class="text-muted descripcion">
-                       {{ libro.descripcion }}
+                        {{ libro.descripcion }}
                     </p>
+
 
                     <!-- Detalles adicionales -->
                     <div class="additional-info mb-4">
