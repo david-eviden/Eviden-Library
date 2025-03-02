@@ -17,5 +17,7 @@ public interface LibroDao extends JpaRepository<Libro, Long> {
 
 
 	Optional<Libro> findByTitulo(String titulo);
+
+	public byte[] getPortadaBytes();
 }
 
