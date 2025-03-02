@@ -97,9 +97,16 @@ public class LibroController {
 
 		// Manejamos errores
 		try {
-			//Guardar la imagen
-			byte[] imagenBytes = imagen.getBytes();
-			nuevoLibro = libroService.save(libro);
+			// Obtener los bytes de la imagen y el tipo MIME
+	        byte[] imagenBytes = imagen.getBytes();
+	        String tipoImagen = imagen.getContentType();
+
+	        // Asignar la imagen y el tipo MIME al objeto libro
+	        libro.setPortada(imagenBytes);
+	        libro.setTipoImagen(tipoImagen);
+
+	        // Guardar el libro
+	        nuevoLibro = libroService.save(libro);
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al insertar en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
