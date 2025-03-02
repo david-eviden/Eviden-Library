@@ -16,15 +16,8 @@
                 <div class="form-group row mb-4">
                     <label for="titulo" class="col-sm-3 col-form-label">Título:</label>
                     <div class="col-sm-9">
-                        <input type="text" 
-                               class="form-control form-control-lg" 
-                               [(ngModel)]="libro.titulo" 
-                               name="titulo" 
-                               #titulo="ngModel" 
-                               placeholder="Título del libro..."
-                               maxlength="25" 
-                               minlength="2" 
-                               required>
+                        <input type="text" class="form-control form-control-lg" [(ngModel)]="libro.titulo" name="titulo"
+                            #titulo="ngModel" placeholder="Título del libro..." maxlength="25" minlength="2" required>
                         <div class="alert alert-danger mt-2" *ngIf="titulo.invalid && (titulo.dirty || titulo.touched)">
                             <div *ngIf="titulo.errors?.['required']">
                                 El título es requerido
@@ -43,17 +36,11 @@
                 <div class="form-group row mb-4">
                     <label for="descripcion" class="col-sm-3 col-form-label">Descripción:</label>
                     <div class="col-sm-9">
-                        <textarea 
-                               class="form-control form-control-lg" 
-                               [(ngModel)]="libro.descripcion" 
-                               name="descripcion" 
-                               #descripcion="ngModel" 
-                               rows="3" 
-                               placeholder="Descripción del libro..."
-                               minlength="10" 
-                               maxlength="250" 
-                               required></textarea>
-                        <div class="alert alert-danger mt-2" *ngIf="descripcion.invalid && (descripcion.dirty || descripcion.touched)">
+                        <textarea class="form-control form-control-lg" [(ngModel)]="libro.descripcion"
+                            name="descripcion" #descripcion="ngModel" rows="3" placeholder="Descripción del libro..."
+                            minlength="10" maxlength="250" required></textarea>
+                        <div class="alert alert-danger mt-2"
+                            *ngIf="descripcion.invalid && (descripcion.dirty || descripcion.touched)">
                             <div *ngIf="descripcion.errors?.['required']">
                                 La descripción es requerida
                             </div>
@@ -71,11 +58,8 @@
                 <div class="form-group row mb-4">
                     <label for="precio" class="col-sm-3 col-form-label">Precio:</label>
                     <div class="col-sm-9">
-                        <input type="number" 
-                               class="form-control form-control-lg" 
-                               [(ngModel)]="libro.precio" 
-                               name="precio" 
-                               #precio="ngModel" required>
+                        <input type="number" class="form-control form-control-lg" [(ngModel)]="libro.precio"
+                            name="precio" #precio="ngModel" required>
                         <div class="alert alert-danger mt-2" *ngIf="precio.invalid && (precio.dirty || precio.touched)">
                             <div *ngIf="precio.errors?.['required']">
                                 El precio es requerido
@@ -88,11 +72,8 @@
                 <div class="form-group row mb-4">
                     <label for="stock" class="col-sm-3 col-form-label">Stock:</label>
                     <div class="col-sm-9">
-                        <input type="number" 
-                               class="form-control form-control-lg" 
-                               [(ngModel)]="libro.stock" 
-                               name="stock" 
-                               #stock="ngModel" required>
+                        <input type="number" class="form-control form-control-lg" [(ngModel)]="libro.stock" name="stock"
+                            #stock="ngModel" required>
                         <div class="alert alert-danger mt-2" *ngIf="stock.invalid && (stock.dirty || stock.touched)">
                             <div *ngIf="stock.errors?.['required']">
                                 El stock es requerido
@@ -105,12 +86,9 @@
                 <div class="form-group row mb-4">
                     <label for="imagen" class="col-sm-3 col-form-label">Imagen:</label>
                     <div class="col-sm-9">
-                        <input type="text" 
-                               class="form-control form-control-lg" 
-                               [(ngModel)]="libro.imagen" 
-                               name="imagen" 
-                               #imagen="ngModel"
-                               placeholder="Imagen del libro...">
+                        <input type="file" class="form-control form-control-lg" (change)="onFileChange($event)"
+                            name="imagen" [(ngModel)]="libro.imagen" #imagen="ngModel"
+                            placeholder="Imagen del libro...">
                         <div class="alert alert-danger mt-2" *ngIf="imagen.invalid && (imagen.dirty || imagen.touched)">
                             <div *ngIf="imagen.errors?.['required']">
                                 La imagen es requerida
@@ -119,17 +97,13 @@
                     </div>
                 </div>
 
+
                 <!-- Campo Autor -->
                 <div class="form-group row mb-4">
                     <label for="autor" class="col-sm-3 col-form-label">Autor:</label>
                     <div class="col-sm-9">
-                        <select
-                            class="form-select form-select-lg"
-                            [(ngModel)]="autorSeleccionado.id"
-                            name="autor"
-                            #autor="ngModel"
-                            required
-                            (change)="seleccionarAutor($event)">
+                        <select class="form-select form-select-lg" [(ngModel)]="autorSeleccionado.id" name="autor"
+                            #autor="ngModel" required (change)="seleccionarAutor($event)">
                             <option value="0">Seleccione un autor</option>
                             <option *ngFor="let autor of autores" [value]="autor.id">{{ autor.nombre }}</option>
                             <option value="crearAutor">+ Añadir un autor</option>
@@ -139,7 +113,8 @@
                                 El autor es requerido
                             </div>
                         </div>
-                        <div class="alert alert-danger mt-2" *ngIf="autor.valid && autorSeleccionado.id === 0 && (autor.dirty || autor.touched)">
+                        <div class="alert alert-danger mt-2"
+                            *ngIf="autor.valid && autorSeleccionado.id === 0 && (autor.dirty || autor.touched)">
                             Debe seleccionar un autor válido
                         </div>
                     </div>
@@ -149,13 +124,8 @@
                 <div class="form-group row mb-4">
                     <label for="genero" class="col-sm-3 col-form-label">Género:</label>
                     <div class="col-sm-9">
-                        <select
-                            class="form-select form-select-lg"
-                            [(ngModel)]="generoSeleccionado.id"
-                            name="genero"
-                            #genero="ngModel"
-                            required
-                            (change)="seleccionarGenero($event)">
+                        <select class="form-select form-select-lg" [(ngModel)]="generoSeleccionado.id" name="genero"
+                            #genero="ngModel" required (change)="seleccionarGenero($event)">
                             <option value="0">Seleccione un género</option>
                             <option *ngFor="let genero of generos" [value]="genero.id">{{ genero.nombre }}</option>
                             <option value="crearGenero">+ Añadir un género</option>
@@ -165,7 +135,8 @@
                                 El género es requerido
                             </div>
                         </div>
-                        <div class="alert alert-danger mt-2" *ngIf="genero.valid && generoSeleccionado.id === 0 && (genero.dirty || genero.touched)">
+                        <div class="alert alert-danger mt-2"
+                            *ngIf="genero.valid && generoSeleccionado.id === 0 && (genero.dirty || genero.touched)">
                             Debe seleccionar un género válido
                         </div>
                     </div>
@@ -174,15 +145,15 @@
                 <!-- Botones de acción -->
                 <div class="form-group row mt-5">
                     <div class="col-sm-9 offset-sm-3">
-                        <button class="btn btn-success me-3" role="button" (click)="create()" *ngIf="!libro.id" 
+                        <button class="btn btn-success me-3" role="button" (click)="create()" *ngIf="!libro.id"
                             [disabled]="!librosForm.form.valid || autorSeleccionado.id === 0 || generoSeleccionado.id === 0">
                             <i class="bi bi-plus-lg"></i> Crear
                         </button>
-            
-                        <button class="btn btn-warning" role="button" (click)="update()" *ngIf="libro.id" 
+
+                        <button class="btn btn-warning" role="button" (click)="update()" *ngIf="libro.id"
                             [disabled]="!librosForm.form.valid || autorSeleccionado.id === 0 || generoSeleccionado.id === 0">
                             <i class="bi bi-pencil"></i> Editar
-                        </button>            
+                        </button>
                     </div>
                 </div>
             </form>

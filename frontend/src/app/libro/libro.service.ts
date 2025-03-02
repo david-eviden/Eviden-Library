@@ -10,8 +10,8 @@ import swal from 'sweetalert2';
   providedIn: 'root'  //disponible a nivel global
 })
 export class LibroService {
-  private urlEndPoint: string = 'http://localhost:8080/api/libros'; 
-  private urlEndPoint1: string = 'http://localhost:8080/api/libro'; 
+  private urlEndPoint: string = 'http://localhost:8081/api/libros'; 
+  private urlEndPoint1: string = 'http://localhost:8081/api/libro'; 
   private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
 
   constructor(private http: HttpClient, private router: Router) {}
@@ -96,8 +96,8 @@ export class LibroService {
   }
 
   // Crear libro
-  create(libro: Libro) : Observable<any> {
-    return this.http.post<any>(this.urlEndPoint1, libro, {headers: this.httpHeaders}).pipe(
+  create(formData: FormData) : Observable<any> {
+    return this.http.post<any>(this.urlEndPoint1, formData, {headers: this.httpHeaders}).pipe(
       catchError(e => {
         // Validamos
         if(e.status==400) {
