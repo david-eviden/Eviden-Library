@@ -10,8 +10,8 @@ import swal from 'sweetalert2';
   providedIn: 'root'  //disponible a nivel global
 })
 export class LibroService {
-  private urlEndPoint: string = 'http://localhost:8080/api/libros'; 
-  private urlEndPoint1: string = 'http://localhost:8080/api/libro'; 
+  private urlEndPoint: string = 'http://localhost:8081/api/libros'; 
+  private urlEndPoint1: string = 'http://localhost:8081/api/libro'; 
   private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
 
   constructor(private http: HttpClient, private router: Router) {}

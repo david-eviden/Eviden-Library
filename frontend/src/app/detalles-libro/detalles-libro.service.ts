@@ -12,7 +12,7 @@ import swal from 'sweetalert2';
 })
 export class DetallesLibroService  implements OnInit{
 
-  private urlEndPoint: string = 'http://localhost:8080/api/libro'; 
+  private urlEndPoint: string = 'http://localhost:8081/api/libro'; 
     private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
 
   constructor(private http: HttpClient, private router: Router) {}
