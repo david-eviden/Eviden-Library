@@ -10,7 +10,7 @@ import { Valoracion } from '../valoracion/valoracion';
 })
 export class DetallesLibroService  implements OnInit{
 
-  private urlEndPoint: string = 'http://localhost:8081/api/libro'; 
+  private urlEndPoint: string = 'http://localhost:8080/api/libro'; 
 
   constructor(private http: HttpClient) {}
   ngOnInit(): void {}

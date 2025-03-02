@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'  //disponible a nivel global
 })
 export class AutorService {
-  private urlEndPoint: string = 'http://localhost:8081/api/autores'; 
+  private urlEndPoint: string = 'http://localhost:8080/api/autores'; 
 
   constructor(private http: HttpClient) {}
 

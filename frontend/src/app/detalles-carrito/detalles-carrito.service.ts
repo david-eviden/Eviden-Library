@@ -8,7 +8,7 @@ import { detallesCarrito } from './detalles-carrito';
 })
 export class DetallesCarritoService {
 
-  private urlEndPoint: string = 'http://localhost:8081/api/detallesCarrito'; 
+  private urlEndPoint: string = 'http://localhost:8080/api/detallesCarrito'; 
 
   constructor(private http: HttpClient) {}
 

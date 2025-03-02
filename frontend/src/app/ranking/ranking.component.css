@@ -42,3 +42,95 @@
 .container {
     padding-bottom: 50px;
 }
+
+/* Responsive */
+
+@media (max-width: 992px) {
+    .category {
+        flex-basis: 100%;
+    }
+
+    .category-books {
+        padding-left: 0;
+    }
+
+    .col-lg-2-4 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+@media (max-width: 768px) {
+    .category h2 {
+        font-size: 1.5rem;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 10%;
+        background-color: rgba(0, 0, 0, 0);
+        height: 100%;
+        top: 0;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        background-color: rgba(128, 128, 128, 0.7);
+        padding: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .row-cols-1>* {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .row-cols-sm-2>* {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+
+    .category h2 {
+        font-size: 1.5rem;
+    }
+
+    .col-lg-2-4 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .book-grid {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: hidden;
+    }
+
+    .book-item {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .carousel-item .row {
+        flex-wrap: nowrap;
+    }
+
+    .card {
+        margin: 0 auto;
+        max-width: 280px;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 10%;
+        background-color: rgba(0, 0, 0, 0);
+        height: 100%;
+        top: 0;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        background-color: rgba(128, 128, 128, 0.7);
+        padding: 15px;
+    }
+}

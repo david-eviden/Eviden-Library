@@ -8,7 +8,7 @@ import { Valoracion } from './valoracion';
 })
 export class ValoracionService {
 
-  private urlEndPoint: string = 'http://localhost:8081/api/valoraciones'; 
+  private urlEndPoint: string = 'http://localhost:8080/api/valoraciones'; 
 
   constructor(private http: HttpClient) {}
 
