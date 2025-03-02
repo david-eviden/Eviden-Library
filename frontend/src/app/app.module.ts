@@ -32,6 +32,8 @@ import { FormValoracionComponent } from './form-valoracion/form-valoracion.compo
 import { appConfig } from './app.config';
 import { RankingComponent } from './ranking/ranking.component';
 import { LibroService } from './libro/libro.service';
+import { DetallesUsuarioComponent } from './detalles-usuario/detalles-usuario.component';
+import { FormUsuarioComponent } from './form-usuario/form-usuario.component';
 
 
 @NgModule({
@@ -61,6 +63,8 @@ import { LibroService } from './libro/libro.service';
     FormAutorComponent,
     FormGeneroComponent,
     FormValoracionComponent,
+    DetallesUsuarioComponent,
+    FormUsuarioComponent,
   ],
   imports: [
     BrowserModule,

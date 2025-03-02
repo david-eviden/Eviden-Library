@@ -18,6 +18,8 @@ import { FormAutorComponent } from './form-autor/form-autor.component';
 import { FormGeneroComponent } from './form-genero/form-genero.component';
 import { FormValoracionComponent } from './form-valoracion/form-valoracion.component';
 import { ResultadoBusquedaComponent } from './resultado-busqueda/resultado-busqueda.component';
+import { DetallesUsuarioComponent } from './detalles-usuario/detalles-usuario.component';
+import { FormUsuarioComponent } from './form-usuario/form-usuario.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/principal', pathMatch: 'full' }, // Defecto
@@ -33,7 +35,8 @@ export const routes: Routes = [
   { path: 'autor/form', component: FormAutorComponent },
   { path: 'autor/form/:id', component: FormAutorComponent },
   { path: 'usuarios', component: UsuarioComponent },
-  //{ path: 'usuario/:id', component: DetallesUsuarioComponent },
+  { path: 'usuario/:id', component: DetallesUsuarioComponent },
+  { path: 'usuario/form/:id', component: FormUsuarioComponent },
   { path: 'generos', component: GenerosComponent },
   { path: 'genero/form', component: FormGeneroComponent },
   { path: 'genero/form/:id', component: FormGeneroComponent },

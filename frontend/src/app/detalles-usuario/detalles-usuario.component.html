@@ -1,0 +1,162 @@
+<div class="container my-5">
+    <div class="card shadow user-details">
+        <div class="card-header bg-transparent border-0">
+            <h2 class="text-center my-3">Detalles del Usuario</h2>
+        </div>
+
+        <div class="card-body">
+            <div class="row m-1">
+                <div class="col-md-4 text-center mb-4 mb-md-0">
+                    <img [src]="usuario.foto ? usuario.foto : '/img/usuarioDefecto.png'" 
+                         [id]="'imagen-usuario-' + usuario.id" 
+                         class="img-fluid user-avatar" 
+                         alt="Imagen de {{ usuario.nombre }} {{ usuario.apellido }}">
+                    
+                    <!-- Información básica en tarjetas para móvil -->
+                    <div class="d-md-none mt-3">
+                        <div class="info-card mb-2">
+                            <div class="info-title">Rol</div>
+                            <div class="info-value">
+                                <span [ngClass]="{'badge bg-primary': usuario.rol === 'ROLE_USER', 
+                                                'badge bg-danger': usuario.rol === 'ROLE_ADMIN'}">
+                                    {{ usuario.rol === 'ROLE_USER' ? 'Cliente' : 'Administrador' }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <!-- Información del usuario -->
+                    <h3 class="user-name">
+                        {{ usuario.nombre }} {{ usuario.apellido }}
+                    </h3>
+                    
+                    <div class="user-info mb-4">
+                        <p class="d-flex align-items-center mb-2">
+                            <i class="bi bi-envelope me-2 text-primary"></i>
+                            <span>{{ usuario.email }}</span>
+                        </p>
+                        <p class="d-flex align-items-center mb-2">
+                            <i class="bi bi-geo-alt me-2 text-primary"></i>
+                            <span>{{ usuario.direccion }}</span>
+                        </p>
+                        
+                        <!-- Rol (solo visible en desktop) -->
+                        <p class="d-none d-md-flex align-items-center">
+                            <i class="bi bi-person-badge me-2 text-primary"></i>
+                            <span [ngClass]="{'badge bg-primary': usuario.rol === 'ROLE_USER', 
+                                            'badge bg-danger': usuario.rol === 'ROLE_ADMIN'}">
+                                {{ usuario.rol === 'ROLE_USER' ? 'Cliente' : 'Administrador' }}
+                            </span>
+                        </p>
+                    </div>
+                    
+                    <!-- Botones de acción (solo admin o usuario propio) -->
+                    <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 mt-custom">
+                        <button type="button" name="editar" [routerLink]="['/usuario/form', usuario.id]" class="btn btn-secondary btn-lg">
+                            <i class="bi bi-pencil me-2"></i>Editar perfil
+                        </button>
+                        <button type="button" name="eliminar" (click)="delete(usuario)" class="btn btn-danger btn-lg">
+                            <i class="bi bi-trash3 me-2"></i>Eliminar usuario
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de Pedidos
+            <div class="row mt-5">
+                <div class="card-header bg-transparent text-center">
+                    <h3 class="mb-0">Historial de Pedidos</h3>
+                </div>
+                <div class="card-body">
+                    <div *ngIf="usuario.pedidos.length === 0" class="alert alert-info">
+                        Este usuario aún no ha realizado ningún pedido.
+                    </div>
+                    <div class="table-responsive" *ngIf="usuario.pedidos.length != 0">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let pedido of usuario.pedidos">
+                                    <td>{{ pedido.id }}</td>
+                                    <td>{{ pedido.total | currency:'EUR':'symbol':'1.2-2' }}</td>
+                                    <td>
+                                        <span [ngClass]="{
+                                            'badge bg-warning': pedido.estado === 'PENDIENTE',
+                                            'badge bg-info': pedido.estado === 'ENVIADO',
+                                            'badge bg-success': pedido.estado === 'ENTREGADO',
+                                            'badge bg-danger': pedido.estado === 'CANCELADO'
+                                        }">
+                                            {{ pedido.estado }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a [routerLink]="['/pedidos']" class="btn btn-sm btn-primary me-1">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de Valoraciones 
+            <div class="row mt-4">
+                <div class="card-header bg-transparent text-center">
+                    <h3 class="mb-0">Valoraciones Realizadas</h3>
+                </div>
+                <div class="card-body">
+                    <div *ngIf="usuario.valoraciones?.length === 0" class="alert alert-info">
+                        Este usuario aún no ha realizado valoraciones.
+                    </div>
+                    <div class="card mb-3" *ngFor="let valoracion of usuario.valoraciones">
+                        <div class="card-body">
+                            <a [routerLink]="['/libro', valoracion.libro?.id]">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h5 class="card-title">{{ valoracion.libro?.titulo }}</h5>
+                                    </div>
+                                    <div class="stars-container">
+                                        <span class="star-rating">
+                                            <i class="bi bi-star-fill text-warning" 
+                                               *ngFor="let star of getStarsArray(valoracion.puntuacion)"></i>
+                                            <i class="bi bi-star" 
+                                               *ngFor="let star of getEmptyStarsArray(valoracion.puntuacion)"></i>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <p class="card-text mt-3">
+                                    <i class="bi bi-quote"></i>
+                                    {{ valoracion.comentario }}
+                                    <i class="bi bi-quote"></i>
+                                </p>
+
+                                <small class="text-muted">
+                                    {{ valoracion.fecha | date:'dd/MM/yyyy' }}
+                                </small>
+                            </a>
+                            <div class="d-flex justify-content-end gap-2 mt-3">
+                                <button type="button" name="editar" [routerLink]="['/valoracion/form', valoracion.id]" class="btn btn-secondary text-nowrap">
+                                    <i class="bi bi-pencil me-2"></i>Editar
+                                </button>
+                                <button type="button" name="eliminar" (click)="deleteValoracion(valoracion)" class="btn btn-danger text-nowrap">
+                                    <i class="bi bi-trash3 me-2"></i>Eliminar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </div>
+</div>
