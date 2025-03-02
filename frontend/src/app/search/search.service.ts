@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { HttpClient} from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Libro } from '../libro/libro';
 
 @Injectable({
   providedIn: 'root'  //disponible a nivel global
@@ -10,7 +11,21 @@ export class SearchService {
 
   constructor(private http: HttpClient) {}
 
-  search(query: string): Observable<any> {
-    return this.http.get(`${this.urlEndPoint}?query=${encodeURIComponent(query)}`);
+  search(query: string, searchLibros: boolean = true, searchAutores: boolean = true, searchGeneros: boolean = true): Observable<any> {
+    let params = new HttpParams()
+      .set('query', encodeURIComponent(query))
+      .set('searchLibros', searchLibros.toString())
+      .set('searchAutores', searchAutores.toString())
+      .set('searchGeneros', searchGeneros.toString());
+
+    return this.http.get(this.urlEndPoint, { params });
+  }
+
+  getLibrosByAutor(autorId: number): Observable<Libro[]> {
+    return this.http.get<Libro[]>(`${this.urlEndPoint}/libros/autor/${autorId}`);
+  }
+
+  getLibrosByGenero(generoId: number): Observable<Libro[]> {
+    return this.http.get<Libro[]>(`${this.urlEndPoint}/libros/genero/${generoId}`);
   }
 }

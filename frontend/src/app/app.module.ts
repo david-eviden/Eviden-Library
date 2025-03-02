@@ -25,6 +25,7 @@ import { ResultadoBusquedaComponent } from './resultado-busqueda/resultado-busqu
 import { PaginatorComponent } from './paginator/paginator.component';
 import { RankingComponent } from './ranking/ranking.component';
 import { LibroService } from './libro/libro.service';
+import { ClickOutsideDirective } from './directives/click-outside.directive';
 
 
 @NgModule({
@@ -48,6 +49,7 @@ import { LibroService } from './libro/libro.service';
     ResultadoBusquedaComponent,
     PaginatorComponent,
     RankingComponent,
+    ClickOutsideDirective
     //AdminComponent
   ],
   imports: [

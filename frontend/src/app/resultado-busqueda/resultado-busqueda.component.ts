@@ -11,9 +11,13 @@ import { Carrito } from '../carrito/carrito';
   templateUrl: './resultado-busqueda.component.html',
   styleUrl: './resultado-busqueda.component.css'
 })
-export class ResultadoBusquedaComponent implements OnInit{
+export class ResultadoBusquedaComponent implements OnInit {
   results: any = {libros: [], autores: [], generos: []};
   searchTerm: string = '';
+  loading: boolean = true;
+  noResults: boolean = false;
+  searchType: string = 'all'; // 'all', 'autor', 'genero'
+  librosRelacionados: Libro[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -23,20 +27,67 @@ export class ResultadoBusquedaComponent implements OnInit{
   ){}
 
   ngOnInit(): void {
-      this.route.queryParams.subscribe(params => {
-        this.searchTerm = params['q'];
-        if (this.searchTerm) {
-          // Realizamos la búsqueda con el término proporcionado
-          this.searchService.search(this.searchTerm).subscribe({
-            next: (data) => {
-              this.results = data; // Asignamos los resultados obtenidos
-            },
-            error: (error) => {
-              console.error('Error al obtener resultados: ', error); // Manejo de errores
-            }
-          });
+    this.route.queryParams.subscribe(params => {
+      this.searchTerm = params['q'];
+      this.searchType = this.detectSearchType(this.searchTerm);
+      
+      if (!this.searchTerm || this.searchTerm.trim() === '') {
+        this.router.navigate(['/principal']);
+        return;
+      }
+
+      this.loading = true;
+      this.searchService.search(this.searchTerm).subscribe({
+        next: (data) => {
+          this.results = data;
+          this.loading = false;
+          this.noResults = this.isEmptyResults(data);
+
+          // Si es búsqueda por autor o género, cargar libros relacionados
+          if (this.searchType === 'autor' && this.results.autores.length > 0) {
+            this.loadLibrosByAutor(this.results.autores[0].id);
+          } else if (this.searchType === 'genero' && this.results.generos.length > 0) {
+            this.loadLibrosByGenero(this.results.generos[0].id);
+          }
+        },
+        error: (error) => {
+          console.error('Error al obtener resultados: ', error);
+          this.loading = false;
+          this.noResults = true;
         }
-      })
+      });
+    });
+  }
+
+  private detectSearchType(term: string): string {
+    const termLower = term.toLowerCase();
+    if (termLower.includes('autor:') || termLower.includes('por:') || 
+        termLower.includes('escrito por:') || termLower.includes('de:')) {
+      return 'autor';
+    }
+    if (termLower.includes('genero:') || termLower.includes('género:') || 
+        termLower.includes('categoria:') || termLower.includes('categoría:')) {
+      return 'genero';
+    }
+    return 'all';
+  }
+
+  private loadLibrosByAutor(autorId: number): void {
+    this.searchService.getLibrosByAutor(autorId).subscribe(
+      libros => this.librosRelacionados = libros
+    );
+  }
+
+  private loadLibrosByGenero(generoId: number): void {
+    this.searchService.getLibrosByGenero(generoId).subscribe(
+      libros => this.librosRelacionados = libros
+    );
+  }
+
+  private isEmptyResults(results: any): boolean {
+    return (!results.libros || results.libros.length === 0) &&
+           (!results.autores || results.autores.length === 0) &&
+           (!results.generos || results.generos.length === 0);
   }
 
   getDetallesLibro(libroId: number): void {
@@ -45,7 +96,6 @@ export class ResultadoBusquedaComponent implements OnInit{
 
   addToCarrito(libro: Libro) {
     this.carritoService.getCarritos().subscribe((carritos: Carrito[]) => {
-      // Check if the book is in any of the carts
       const isBookInCart = carritos.some(carrito => 
         carrito.detalles.some(detalle => detalle.libro.id === libro.id)
       );
@@ -53,7 +103,6 @@ export class ResultadoBusquedaComponent implements OnInit{
       if (isBookInCart) {
         console.log('Libro ya está en el carrito');
       } else {
-        // If the book is not in the cart, add it to the cart
         this.carritoService.addToCarrito(libro);
         console.log('Libro añadido al carrito');
       }
