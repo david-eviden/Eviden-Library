@@ -1,5 +1,8 @@
+import { Libro } from "../libro/libro";
+
 export class Autor {
-    biografia: string= "";
+    id = 0;
     nombre: string= "" ;
-    apellido: string = "" ;
+    biografia: string= "";
+    libros: Libro[] = [];
 }

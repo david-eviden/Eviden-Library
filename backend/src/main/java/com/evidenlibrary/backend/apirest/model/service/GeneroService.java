@@ -17,4 +17,6 @@ public interface GeneroService {
 	public Genero save(Genero genero);
 	
 	public void delete(Genero genero);
+	
+    public void deleteAll();
 }

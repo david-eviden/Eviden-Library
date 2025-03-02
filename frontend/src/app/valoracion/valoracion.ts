@@ -2,7 +2,7 @@ import { Libro } from "../libro/libro";
 import { Usuario } from "../usuario/usuario";
 
 export class Valoracion {
-    id?: number;
+    id: number = 0;
     usuario: Usuario | undefined;
     libro: Libro | undefined;
     libroDetalles: number = 0;

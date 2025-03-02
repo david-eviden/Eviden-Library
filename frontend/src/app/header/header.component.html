@@ -12,10 +12,10 @@
                 </button>
                 <ul class="dropdown-menu">
 
-                    <!-- Categorías -->
+                    <!-- Categorías 
                     <li *ngFor="let categoria of categorias">
                         <a class="dropdown-item" href="#">{{ categoria.nombre }}</a>
-                    </li>
+                    </li> -->
 
                     <!-- Páginas principales -->
                     <li>
@@ -48,8 +48,21 @@
                     <li>
                         <a class="dropdown-item" routerLink="/valoraciones" routerLinkActive="active">Valoraciones</a>
                     </li>
+                    <li><hr class="dropdown-divider"></li>
                     <li>
                         <a class="dropdown-item" routerLink="/admin" routerLinkActive="active">Admin</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" routerLink="/libro/form" routerLinkActive="active">Form Libro</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" routerLink="/autor/form" routerLinkActive="active">Form Autor</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" routerLink="/genero/form" routerLinkActive="active">Form Genero</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" routerLink="/valoracion/form" routerLinkActive="active">Form Valoracion</a>
                     </li>
                 </ul>
             </div>

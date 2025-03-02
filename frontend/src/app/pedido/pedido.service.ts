@@ -16,10 +16,13 @@ export class PedidoService {
     getPedidos(): Observable<Pedido[]> {
       return this.http.get<any[]>(this.urlEndPoint).pipe(
         map(response => {
-          console.log('Respuesta cruda del servidor:', response); // Debug
           return response.map(item => {
             const pedido = new Pedido();
             pedido.id = item.id;
+            pedido.estado = item.estado;
+            pedido.total = item.total;
+            pedido.precioTotal = item.precioTotal;
+            pedido.direccionEnvio = item.direccionEnvio;
             if (item.usuario) {
               console.log('Usuario en pedido:', item.usuario); // Debug
               const usuario = new Usuario();
@@ -32,16 +35,22 @@ export class PedidoService {
               usuario.rol = item.usuario.rol;
               pedido.usuario = usuario;
             }
-            pedido.fechaPedido = item.fechaPedido;
-            pedido.estado = item.estado;
-            pedido.total = item.total;
-            pedido.direccionEnvio = item.direccionEnvio;
-            pedido.detalles = item.detalles?.map((detalle: any) => ({
-              id: detalle.id,
-              libro: detalle.libro,
-              cantidad: detalle.cantidad,
-              precioUnitario: detalle.precioUnitario
-            })) || [];
+
+            console.log(`Pedido ID: ${item.id}, Detalles recibidos:`, item.detalles);
+        
+            // Verificar explícitamente si hay detalles antes de mapear
+            if (item.detalles && Array.isArray(item.detalles) && item.detalles.length > 0) {
+              pedido.detalles = item.detalles.map((detalle: any) => ({
+                id: detalle.id,
+                libro: detalle.libro,
+                cantidad: detalle.cantidad,
+                precioUnitario: detalle.precioUnitario
+              }));
+            } else {
+              console.warn(`No se encontraron detalles para el pedido ID: ${item.id}`);
+              pedido.detalles = [];
+            }
+            
             return pedido;
           });
         })

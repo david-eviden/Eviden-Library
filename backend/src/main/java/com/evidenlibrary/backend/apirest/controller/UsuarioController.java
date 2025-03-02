@@ -40,7 +40,7 @@ public class UsuarioController {
 
     // Obtener usuario por ID
     @GetMapping("/usuario/{id}")
-    public ResponseEntity<?> show(@PathVariable Long id) {
+    public ResponseEntity<?> show(@PathVariable(name = "id") Long id) {
 
         Usuario usuario;
         Map<String, Object> response = new HashMap<>();
@@ -95,7 +95,7 @@ public class UsuarioController {
     // Actualizar usuario
     @PutMapping("/usuario/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> update(@RequestBody Usuario usuario, BindingResult result, @PathVariable Long id) {
+    public ResponseEntity<?> update(@RequestBody Usuario usuario, BindingResult result, @PathVariable(name = "id") Long id) {
 
         Usuario currentUsuario = this.usuarioService.findById(id);
         Usuario nuevoUsuario;
@@ -140,7 +140,7 @@ public class UsuarioController {
 
     // Eliminar usuario por ID
     @DeleteMapping("/usuario/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
         Usuario currentUsuario = this.usuarioService.findById(id);
         Map<String, Object> response = new HashMap<>();
 

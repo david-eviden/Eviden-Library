@@ -42,7 +42,7 @@ public class FavoritoController {
 	
 	// Obtener favoritos por ID
 	@GetMapping("/favorito/{id}")
-	public ResponseEntity<?> show(@PathVariable Long id) {
+	public ResponseEntity<?> show(@PathVariable(name = "id") Long id) {
 		
 		Favorito favorito;
 		Map<String, Object> response = new HashMap<>();
@@ -101,7 +101,7 @@ public class FavoritoController {
 	// Actualizar favorito
 	@PutMapping("/favorito/{id}")
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<?> update(@RequestBody Favorito favorito, BindingResult result ,@PathVariable Long id) {
+	public ResponseEntity<?> update(@RequestBody Favorito favorito, BindingResult result ,@PathVariable(name = "id") Long id) {
 		
 		Favorito currentFavorito = this.favoritoService.findById(id);
 		Favorito nuevoFavorito;
@@ -142,7 +142,7 @@ public class FavoritoController {
  
 	// Eliminar favorito por ID
 	@DeleteMapping("/favorito/{id}")
-	public ResponseEntity<?> delete(@PathVariable Long id) {
+	public ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
 		Favorito currentFavorito = this.favoritoService.findById(id);
 		Map<String, Object> response = new HashMap<>();
 		

@@ -10,6 +10,9 @@ export class PaginatorComponent implements OnInit, OnChanges {
 
   @Input()
   paginador: any;
+  
+  @Input()
+  pageSize: number = 6; // Tamaño de página por defecto
 
   paginas: number[] = [];
 
@@ -23,7 +26,7 @@ export class PaginatorComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(): void {
-    const pagesToShow = 5;  // Número máximo de páginas a mostrar
+    const pagesToShow = 4;  // Número máximo de páginas a mostrar
     const currentPage = this.paginador.number;
     const totalPages = this.paginador.totalPages;
   

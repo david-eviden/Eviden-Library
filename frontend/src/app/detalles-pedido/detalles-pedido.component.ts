@@ -16,7 +16,6 @@ export class DetallesPedidoComponent {
     this.detallesPedidoService.getdetallesPedido().subscribe(
       (detallesPedidos: detallesPedido[]) => {
         this.detallesPedido = detallesPedidos;
-        console.log('Detalles de los carritos recibidos:', detallesPedidos); 
       },
       error => {
         console.error('Error al obtener los detalles de los carritos', error);  // Muestra errores si los hay

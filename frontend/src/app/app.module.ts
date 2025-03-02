@@ -23,6 +23,13 @@ import { SearchComponent } from './search/search.component';
 import { FormsModule } from '@angular/forms';
 import { ResultadoBusquedaComponent } from './resultado-busqueda/resultado-busqueda.component';
 import { PaginatorComponent } from './paginator/paginator.component';
+import { AdminComponent } from './admin/admin.component';
+import { DetallesFavoritoComponent } from './detalles-favorito/detalles-favorito.component';
+import { FormLibroComponent } from './form-libro/form-libro.component';
+import { FormAutorComponent } from './form-autor/form-autor.component';
+import { FormGeneroComponent } from './form-genero/form-genero.component';
+import { FormValoracionComponent } from './form-valoracion/form-valoracion.component';
+import { appConfig } from './app.config';
 import { RankingComponent } from './ranking/ranking.component';
 import { LibroService } from './libro/libro.service';
 
@@ -48,7 +55,12 @@ import { LibroService } from './libro/libro.service';
     ResultadoBusquedaComponent,
     PaginatorComponent,
     RankingComponent,
-    //AdminComponent
+    AdminComponent,
+    DetallesFavoritoComponent,
+    FormLibroComponent,
+    FormAutorComponent,
+    FormGeneroComponent,
+    FormValoracionComponent,
   ],
   imports: [
     BrowserModule,
@@ -57,7 +69,7 @@ import { LibroService } from './libro/libro.service';
     RouterModule,
     FormsModule
 ],
-  providers: [LibroService],
+  providers: [...appConfig.providers, LibroService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

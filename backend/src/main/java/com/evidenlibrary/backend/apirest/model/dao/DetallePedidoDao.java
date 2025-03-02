@@ -8,4 +8,6 @@ import com.evidenlibrary.backend.apirest.model.entity.DetallePedido;
 
 public interface DetallePedidoDao extends JpaRepository<DetallePedido, Long> {
     List<DetallePedido> findByPedidoId(Long pedidoId);
+    
+    List<DetallePedido> findByLibroId(Long libroId);
 }
