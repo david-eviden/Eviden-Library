@@ -19,9 +19,6 @@
 
                     <!-- Páginas principales -->
                     <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li>
                         <a class="dropdown-item" routerLink="/principal" routerLinkActive="active">Principal</a>
                     </li>
                     <li>
@@ -74,14 +71,14 @@
 
             <!-- Iconos de usuario, favoritos y carrito (visibles en pantallas grandes) -->
             <div class="d-none d-sm-flex gap-3">
-                <a href="#" class="btn btn-link text-decoration-none text-dark">
-                    <i class="bi bi-person-circle"></i> <span class="d-none d-md-inline">Perfil</span>
+                <a routerLink="/usuario/1" class="btn btn-link text-decoration-none text-dark">
+                    <i class="bi bi-person-circle mx-2"></i> <span class="d-none d-md-inline">Perfil</span>
                 </a>
                 <a href="#" class="btn btn-link text-decoration-none text-dark">
-                    <i class="bi bi-heart-fill"></i> <span class="d-none d-md-inline">Favoritos</span>
+                    <i class="bi bi-heart-fill mx-2"></i> <span class="d-none d-md-inline">Favoritos</span>
                 </a>
                 <a href="#" class="btn btn-link text-dark">
-                    <i class="bi bi-cart4"></i>
+                    <i class="bi bi-cart4 mx-2"></i>
                     <span class="badge bg-danger">3</span>
                 </a>
             </div>
@@ -96,7 +93,7 @@
                 <i class="bi bi-heart-fill"></i> Favoritos
             </a>
             <a href="#" class="btn btn-link text-dark">
-                <i class="bi bi-cart4"></i>
+                <i class="bi bi-cart4 m-1"></i>
                 <span class="badge bg-danger">3</span>
             </a>
         </div>

@@ -8,6 +8,7 @@ export class Libro {
     stock: number = 0;
     titulo: string = "";
     //generos: string = "";
+    imagen: string = "";
     descripcion: String = "";
     valoraciones: Valoracion[] = [];
     autores: Autor[] = [];
