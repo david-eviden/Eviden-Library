@@ -25,13 +25,6 @@
 }
 
 
-
-@media (max-width: 768px) {
-  .badge {
-    display: none;
-  }
-}
-
 @media (max-width: 700px) {
 
   .navbar .d-flex {
