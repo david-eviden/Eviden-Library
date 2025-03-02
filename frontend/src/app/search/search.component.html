@@ -17,8 +17,8 @@
             <div class="dropdown-item" *ngFor="let libro of searchResults.libros.slice(0, 3)"
                 (click)="selectResult('libro', libro)">
                 <div class="d-flex align-items-center">
-                    <img [src]="libro.imagen || '/assets/default-book.png'" class="dropdown-thumbnail me-2"
-                        alt="Portada">
+                    <img [src]="libro.imagen || '/img/libroEjemplo.jpg'" class="dropdown-thumbnail me-2"
+                        [alt]="'Imagen de '+libro.titulo">
                     <div>
                         <div class="item-title">{{libro.titulo}}</div>
                         <small class="text-muted">{{libro.autores[0]?.nombre}} {{libro.autores[0]?.apellido}}</small>
