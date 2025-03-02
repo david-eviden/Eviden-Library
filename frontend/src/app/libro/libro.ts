@@ -7,7 +7,7 @@ export class Libro {
     stock: number = 0;
     titulo: string = "";
     //generos: string = "";
-    portada?: any;
+    imagen?: any;
     tipoImagen?: string;
     descripcion: String = "";
     valoraciones: Valoracion[] = [];

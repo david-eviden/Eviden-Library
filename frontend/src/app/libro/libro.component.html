@@ -6,9 +6,8 @@
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         <div class="col" *ngFor="let libro of libros">
             <div class="card h-100 shadow-sm" (click)="getDetallesLibro(libro.id)">
-                <img [src]="'/img/libroEjemplo.jpg'" class="card-img-top" 
-                     [id]="'imagen-libro-' + libro.id" 
-                     [alt]="'Imagen de ' + libro.titulo">
+                <img [src]="'/img/libroEjemplo.jpg'" class="card-img-top" [id]="'imagen-libro-' + libro.id"
+                    [alt]="'Imagen de ' + libro.titulo">
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">{{ libro.titulo }}</h5>
                     <p class="card-text text-muted mb-2">
@@ -24,16 +23,30 @@
                     <p class="card-text fw-bold mt-auto">
                         {{ libro.precio | currency:'EUR':'symbol':'1.2-2' }}
                     </p>
-                    <button class="btn btn-primary mt-2">Añadir al carrito</button>
+                    <button class="btn btn-primary mt-2" (click)="onUploadPortada($event, libro.id)">
+                        Subir Portada
+                    </button>
+
                 </div>
             </div>
         </div>
     </div>
+
+    <div *ngIf="libroIdParaPortada !== null">
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">Subir Portada para el Libro</h5>
+                <input type="file" (change)="onFileSelected($event)" />
+                <button (click)="onUpload()">Subir Portada</button>
+            </div>
+        </div>
+    </div>
+
 
     <div class="row mt-4">
         <div class="col-12">
             <paginator-nav *ngIf="paginador" [paginador]="paginador"></paginator-nav>
         </div>
     </div>
-    
+
 </div>

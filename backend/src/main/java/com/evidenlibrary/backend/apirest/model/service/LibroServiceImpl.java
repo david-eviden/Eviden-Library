@@ -77,19 +77,36 @@ public class LibroServiceImpl implements LibroService {
 	}
 	
 	//guardar portada
-	public Libro guardarPortada(Long libroId, MultipartFile file) throws IOException {
-        Libro libro = libroDao.findById(libroId).orElseThrow(() -> new RuntimeException("Libro no encontrado"));
+	public Libro guardarPortada(Long libroId, MultipartFile file) {
+		try {
+			// Verificar que el archivo no esté vacío
+	        if (file.isEmpty()) {
+	            throw new IllegalArgumentException("El archivo no puede estar vacío.");
+	        }
 
-        // Convertir el archivo en un arreglo de bytes
-        byte[] portadaBytes = file.getBytes();
-        
-        // Obtener el tipo de imagen 
-        String tipoImagen = file.getContentType();
+	        // Verificar el tamaño del archivo (limite de 5MB)
+	        if (file.getSize() > 5 * 1024 * 1024) {
+	            throw new IllegalArgumentException("El archivo excede el tamaño permitido (5MB).");
+	        }
 
-        libro.setPortada(portadaBytes);
-        libro.setTipoImagen(tipoImagen);
+	        // Obtener el libro desde la base de datos
+	        Libro libro = libroDao.findById(libroId).orElseThrow(() -> new RuntimeException("Libro no encontrado"));
 
-        return libroDao.save(libro);
+	        // Convertir el archivo en un arreglo de bytes
+	        byte[] portadaBytes = file.getBytes();
+	        
+	        // Obtener el tipo de imagen 
+	        String tipoImagen = file.getContentType();
+
+	        libro.setPortada(portadaBytes);
+	        libro.setTipoImagen(tipoImagen);
+
+	        return libroDao.save(libro);
+	    } catch (IOException e) {	        
+	        throw new RuntimeException("Error al procesar la portada del libro", e);
+	    }catch (IllegalArgumentException e) {
+	        throw new IllegalArgumentException("Error en el archivo: " + e.getMessage());
+	    }
     }
 
 	@Override

@@ -14,6 +14,8 @@ export class LibroComponent implements OnInit{
 
   libros : Libro[]= [];
   paginador: any;
+  selectedFile: File | null = null;
+  libroIdParaPortada: number | null = null;//libroSeleccionado
 
   constructor(private libroService: LibroService, private router: Router, private activatedRoute: ActivatedRoute) {}
 
@@ -70,5 +72,30 @@ export class LibroComponent implements OnInit{
       // Si el navegador no soporta View Transitions, se hace la navegación normalmente
       this.router.navigate(['/libro', id]);
     }
+   
+  }
+  // Método para obtener el id y habilitar la subida de portada
+  onUploadPortada(event: Event, libroId: number): void {
+    event.stopPropagation(); // Prevenir la propagación del evento.
+    this.libroIdParaPortada = libroId; // Lógica para mostrar el formulario de subida de portada.
+    console.log('ID del libro para portada:', this.libroIdParaPortada);no
+}
+
+  // Método que se ejecuta cuando el usuario selecciona un archivo
+  onFileSelected(event: any): void {
+    this.selectedFile = event.target.files[0];
+  }
+
+  // Método para enviar la portada al backend
+  onUpload(): void {
+    if (this.selectedFile && this.libroIdParaPortada !== null) {
+      this.libroService.uploadPortada(this.libroIdParaPortada, this.selectedFile).subscribe(response => {
+        console.log('Portada cargada con éxito', response);
+      }, error => {
+        console.error('Error al cargar la portada', error);
+      });
+    } else {
+      console.error('No se ha seleccionado ningún archivo o el libro no ha sido seleccionado');
     }
   }
+}

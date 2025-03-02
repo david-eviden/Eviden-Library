@@ -17,6 +17,13 @@ export class LibroService {
     return this.http.get<Libro[]>(this.urlEndPoint+ '/mejor-valorados');  
   }
 
+  // Método para cargar la portada de un libro
+  uploadPortada(libroId: number, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('portada', file, file.name);
+
+    return this.http.post(`${this.urlEndPoint}/${libroId}/portada`, formData);
+  }
 
   // Get libros (paginado)
   getLibros(page: number): Observable<any> {
