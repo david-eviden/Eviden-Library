@@ -87,8 +87,7 @@
                     <label for="imagen" class="col-sm-3 col-form-label">Imagen:</label>
                     <div class="col-sm-9">
                         <input type="file" class="form-control form-control-lg" (change)="onFileChange($event)"
-                            [(ngModel)]="libro.imagen" name="imagen" #imagen="ngModel"
-                            placeholder="Imagen del libro...">
+                            name="imagen" #imagen="ngModel" placeholder="Imagen del libro...">
                         <div class="alert alert-danger mt-2" *ngIf="imagen.invalid && (imagen.dirty || imagen.touched)">
                             <div *ngIf="imagen.errors?.['required']">
                                 La imagen es requerida
@@ -96,6 +95,7 @@
                         </div>
                     </div>
                 </div>
+
 
                 <!-- Campo Autor -->
                 <div class="form-group row mb-4">

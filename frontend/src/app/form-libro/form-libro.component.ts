@@ -84,7 +84,7 @@ export class FormLibroComponent implements OnInit {
       }
     }
 
-    this.libroService.create(this.libro).subscribe(
+    this.libroService.create(FormData).subscribe(
       // Si OK
       json => {
         this.router.navigate(['/libros']);
@@ -106,16 +106,16 @@ export class FormLibroComponent implements OnInit {
     const file = event.target.files[0];  // Obtener el archivo seleccionado
     if (file) {
       // Establecer el tipo de imagen
-      this.libro.tipoImagen = file.type;
+      this.libro.tipoImagen = file.type; // Almacenar el tipo de imagen (por ejemplo, "image/jpeg")
 
       // Leer el archivo como ArrayBuffer
       const reader = new FileReader();
       reader.readAsArrayBuffer(file);
-      
+
       reader.onload = () => {
         // Convertir el ArrayBuffer a un Uint8Array (representación en bytes)
         const byteArray = new Uint8Array(reader.result as ArrayBuffer);
-        this.libro.portada = byteArray;  // Almacenar los bytes en el libro
+        this.libro.imagen = byteArray;  // Almacenar los bytes en el libro
       };
     }
   }

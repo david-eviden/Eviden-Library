@@ -12,6 +12,6 @@ export class Libro {
     valoraciones: Valoracion[] = [];
     autores: Autor[] = [];
     generos: Genero[] = [];
-    portada: any;
+    imagen: any;
     tipoImagen: string = "";
 }
