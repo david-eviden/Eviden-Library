@@ -1,4 +1,5 @@
 import { Autor } from "../autor/autor";
+import { Genero } from "../generos/generos";
 import { Valoracion } from "../valoracion/valoracion";
 
 export class Libro {
@@ -10,4 +11,5 @@ export class Libro {
     descripcion: String = "";
     valoraciones: Valoracion[] = [];
     autores: Autor[] = [];
+    generos: Genero[] = [];
 }

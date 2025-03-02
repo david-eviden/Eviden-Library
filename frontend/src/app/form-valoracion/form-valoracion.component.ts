@@ -91,6 +91,22 @@ export class FormValoracionComponent implements OnInit {
         this.valoracionService.getValoracion(id).subscribe(
           (valoracion) => {
             this.valoracion = valoracion;
+            
+            // Si tenemos libroDetalles pero no libro, intentamos cargar el libro
+            if (this.valoracion.libroDetalles && !this.valoracion.libro) {
+              const libroId = typeof this.valoracion.libroDetalles === 'number' 
+                ? this.valoracion.libroDetalles 
+                : (this.valoracion.libroDetalles as any).id;
+                
+              this.libroService.getLibro(libroId).subscribe(
+                libro => {
+                  this.valoracion.libro = libro;
+                },
+                error => {
+                  console.error('Error al cargar el libro para la valoración', error);
+                }
+              );
+            }
           },
           error => {
             console.error('Error al cargar valoración', error);
@@ -104,6 +120,37 @@ export class FormValoracionComponent implements OnInit {
 
   // Update valoración por ID
   public update(): void {
+    // Asegurarse de que el libro esté establecido correctamente
+    if (!this.valoracion.libro && this.valoracion.libroDetalles) {
+      // Buscar el libro por ID si solo tenemos libroDetalles
+      const libroId = typeof this.valoracion.libroDetalles === 'number' 
+        ? this.valoracion.libroDetalles 
+        : (this.valoracion.libroDetalles as any).id;
+        
+      const libroEncontrado = this.libros.find(l => l.id === libroId);
+      if (libroEncontrado) {
+        this.valoracion.libro = libroEncontrado;
+      } else {
+        // Si no encontramos el libro en la lista cargada, intentamos obtenerlo del servicio
+        this.libroService.getLibro(libroId).subscribe(
+          libro => {
+            this.valoracion.libro = libro;
+            this.completarActualizacion();
+          },
+          error => {
+            console.error('Error al cargar el libro para la valoración', error);
+            swal('Error', 'No se pudo cargar el libro asociado a la valoración', 'error');
+          }
+        );
+        return; // Salimos para evitar la llamada duplicada a completarActualizacion()
+      }
+    }
+    
+    this.completarActualizacion();
+  }
+  
+  // Método auxiliar para completar la actualización
+  private completarActualizacion(): void {
     this.valoracionService.updateValoracion(this.valoracion).subscribe(
       // Si OK
       json => {

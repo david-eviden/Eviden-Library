@@ -35,7 +35,7 @@ public class DetalleCarritoController {
     }
 
     @GetMapping("/detalle-carrito/{id}")
-    public ResponseEntity<?> show(@PathVariable Long id) {
+    public ResponseEntity<?> show(@PathVariable(name = "id") Long id) {
         DetalleCarrito detalleCarrito;
         Map<String, Object> response = new HashMap<>();
 
@@ -55,8 +55,8 @@ public class DetalleCarritoController {
         return new ResponseEntity<>(detalleCarrito, HttpStatus.OK);
     }
 
-    @GetMapping("/detalles-carrito/carrito/{carritoId}")
-    public ResponseEntity<?> findByCarritoId(@PathVariable Long carritoId) {
+    @GetMapping("/detalles-carrito/carrito/{id}")
+    public ResponseEntity<?> findByCarritoId(@PathVariable(name = "id") Long carritoId) {
         List<DetalleCarrito> detalles;
         Map<String, Object> response = new HashMap<>();
 
@@ -90,7 +90,7 @@ public class DetalleCarritoController {
     }
 
     @PutMapping("/detalle-carrito/{id}")
-    public ResponseEntity<?> update(@RequestBody DetalleCarrito detalleCarrito, @PathVariable Long id) {
+    public ResponseEntity<?> update(@RequestBody DetalleCarrito detalleCarrito, @PathVariable(name = "id") Long id) {
         DetalleCarrito detalleActual = detalleCarritoService.findById(id);
         DetalleCarrito detalleUpdated;
         Map<String, Object> response = new HashMap<>();
@@ -120,7 +120,7 @@ public class DetalleCarritoController {
     }
 
     @DeleteMapping("/detalle-carrito/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
         Map<String, Object> response = new HashMap<>();
 
         try {

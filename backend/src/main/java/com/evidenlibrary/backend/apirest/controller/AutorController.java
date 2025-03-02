@@ -41,7 +41,7 @@ public class AutorController {
 	
 	// Obtener autores por ID
 	@GetMapping("/autor/{id}")
-	public ResponseEntity<?> show(@PathVariable Long id) {
+	public ResponseEntity<?> show(@PathVariable(name = "id") Long id) {
 		
 		Autor autor;
 		Map<String, Object> response = new HashMap<>();
@@ -97,7 +97,7 @@ public class AutorController {
 	// Actualizar autor
 	@PutMapping("/autor/{id}")
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<?> update(@RequestBody Autor autor, BindingResult result ,@PathVariable Long id) {
+	public ResponseEntity<?> update(@RequestBody Autor autor, BindingResult result ,@PathVariable(name = "id") Long id) {
 		
 		Autor currentAutor = this.autorService.findById(id);
 		Autor nuevoAutor;
@@ -138,7 +138,7 @@ public class AutorController {
 
 	// Eliminar autor por ID
 	@DeleteMapping("/autor/{id}")
-	public ResponseEntity<?> delete(@PathVariable Long id) {
+	public ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
 		Autor currentAutor = this.autorService.findById(id);
 		Map<String, Object> response = new HashMap<>();
 

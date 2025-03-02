@@ -20,7 +20,11 @@
                                class="form-control form-control-lg" 
                                [(ngModel)]="libro.titulo" 
                                name="titulo" 
-                               #titulo="ngModel" maxlenght="25" minlength="2" required>
+                               #titulo="ngModel" 
+                               placeholder="Título del libro..."
+                               maxlength="25" 
+                               minlength="2" 
+                               required>
                         <div class="alert alert-danger mt-2" *ngIf="titulo.invalid && (titulo.dirty || titulo.touched)">
                             <div *ngIf="titulo.errors?.['required']">
                                 El título es requerido
@@ -43,7 +47,12 @@
                                class="form-control form-control-lg" 
                                [(ngModel)]="libro.descripcion" 
                                name="descripcion" 
-                               #descripcion="ngModel" rows="3" minlength="10" maxlength="250" required></textarea>
+                               #descripcion="ngModel" 
+                               rows="3" 
+                               placeholder="Descripción del libro..."
+                               minlength="10" 
+                               maxlength="250" 
+                               required></textarea>
                         <div class="alert alert-danger mt-2" *ngIf="descripcion.invalid && (descripcion.dirty || descripcion.touched)">
                             <div *ngIf="descripcion.errors?.['required']">
                                 La descripción es requerida
@@ -100,7 +109,8 @@
                                class="form-control form-control-lg" 
                                [(ngModel)]="libro.imagen" 
                                name="imagen" 
-                               #imagen="ngModel">
+                               #imagen="ngModel"
+                               placeholder="Imagen del libro...">
                         <div class="alert alert-danger mt-2" *ngIf="imagen.invalid && (imagen.dirty || imagen.touched)">
                             <div *ngIf="imagen.errors?.['required']">
                                 La imagen es requerida
@@ -115,19 +125,22 @@
                     <div class="col-sm-9">
                         <select
                             class="form-select form-select-lg"
-                            [(ngModel)]="libro.autores[0].nombre"
+                            [(ngModel)]="autorSeleccionado.id"
                             name="autor"
                             #autor="ngModel"
                             required
-                            (change)="opcionCrearAutor()">
-                            <option value="">Seleccione un autor</option>
-                            <option *ngFor="let autor of autores" [value]="autor.nombre">{{ autor.nombre }}</option>
+                            (change)="seleccionarAutor($event)">
+                            <option value="0">Seleccione un autor</option>
+                            <option *ngFor="let autor of autores" [value]="autor.id">{{ autor.nombre }}</option>
                             <option value="crearAutor">+ Añadir un autor</option>
                         </select>
                         <div class="alert alert-danger mt-2" *ngIf="autor.invalid && (autor.dirty || autor.touched)">
                             <div *ngIf="autor.errors?.['required']">
                                 El autor es requerido
                             </div>
+                        </div>
+                        <div class="alert alert-danger mt-2" *ngIf="autor.valid && autorSeleccionado.id === 0 && (autor.dirty || autor.touched)">
+                            Debe seleccionar un autor válido
                         </div>
                     </div>
                 </div>
@@ -138,13 +151,13 @@
                     <div class="col-sm-9">
                         <select
                             class="form-select form-select-lg"
-                            [(ngModel)]="libro.generos[0].nombre"
+                            [(ngModel)]="generoSeleccionado.id"
                             name="genero"
                             #genero="ngModel"
                             required
-                            (change)="opcionCrearGenero()">
-                            <option value="">Seleccione un género</option>
-                            <option *ngFor="let genero of generos" [value]="genero.nombre">{{ genero.nombre }}</option>
+                            (change)="seleccionarGenero($event)">
+                            <option value="0">Seleccione un género</option>
+                            <option *ngFor="let genero of generos" [value]="genero.id">{{ genero.nombre }}</option>
                             <option value="crearGenero">+ Añadir un género</option>
                         </select>
                         <div class="alert alert-danger mt-2" *ngIf="genero.invalid && (genero.dirty || genero.touched)">
@@ -152,17 +165,22 @@
                                 El género es requerido
                             </div>
                         </div>
+                        <div class="alert alert-danger mt-2" *ngIf="genero.valid && generoSeleccionado.id === 0 && (genero.dirty || genero.touched)">
+                            Debe seleccionar un género válido
+                        </div>
                     </div>
                 </div>
 
                 <!-- Botones de acción -->
                 <div class="form-group row mt-5">
                     <div class="col-sm-9 offset-sm-3">
-                        <button class="btn btn-success me-3" role="button" (click)="create()" *ngIf="!libro.id" [disabled]="!librosForm.form.valid">
+                        <button class="btn btn-success me-3" role="button" (click)="create()" *ngIf="!libro.id" 
+                            [disabled]="!librosForm.form.valid || autorSeleccionado.id === 0 || generoSeleccionado.id === 0">
                             <i class="bi bi-plus-lg"></i> Crear
                         </button>
             
-                        <button class="btn btn-warning" role="button" (click)="update()" *ngIf="libro.id" [disabled]="!librosForm.form.valid">
+                        <button class="btn btn-warning" role="button" (click)="update()" *ngIf="libro.id" 
+                            [disabled]="!librosForm.form.valid || autorSeleccionado.id === 0 || generoSeleccionado.id === 0">
                             <i class="bi bi-pencil"></i> Editar
                         </button>            
                     </div>

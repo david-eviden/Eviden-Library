@@ -4,10 +4,20 @@
         No hay libros disponibles en el catálogo.
     </div>
 
-    <!-- Botón para crear libro y eliminar todos -->
+    <div class="row mb-4">
+        <div class="col-md-4 offset-md-8">
+            <div class="input-group">
+                <label class="input-group-text" for="pageSizeSelect">Libros por página:</label>
+                <select class="form-select" id="pageSizeSelect" [ngModel]="currentPageSize" (change)="cambiarTamanioPagina($event)">
+                    <option *ngFor="let size of pageSizes" [value]="size">{{ size }}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
     <div class="text-center mb-4 w-100">
         <div class="btn-group gap-2 w-100">
-            <button class="btn btn-primary btn-lg" type="button" [routerLink]="['/libros/form']">
+            <button class="btn btn-primary btn-lg" type="button" [routerLink]="['/libro/form']">
                 <i class="bi bi-journal-check me-2"></i>Crear libro
             </button>
             <button class="btn btn-danger btn-lg" type="button" (click)="deleteAll()" *ngIf="libros?.length != 0">
@@ -44,7 +54,7 @@
 
     <div class="row mt-4">
         <div class="col-12">
-            <paginator-nav *ngIf="paginador" [paginador]="paginador"></paginator-nav>
+            <paginator-nav *ngIf="paginador" [paginador]="paginador" [pageSize]="currentPageSize"></paginator-nav>
         </div>
     </div>
     

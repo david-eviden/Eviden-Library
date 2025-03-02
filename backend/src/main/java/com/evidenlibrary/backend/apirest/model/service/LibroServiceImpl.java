@@ -71,7 +71,7 @@ public class LibroServiceImpl implements LibroService {
 	@Override
 	@Transactional
 	public void delete(Libro libro) {
-		
+		// Obtener los detalles de pedido relacionados con este libro
         List<DetallePedido> detallesPedido = detallePedidoService.findByPedidoId(libro.getId());
         
 		// Desasociar el libro de todos sus autores
@@ -98,7 +98,6 @@ public class LibroServiceImpl implements LibroService {
         
         // Eliminar el libro
         libroDao.delete(libro);
-
 	}
 
 	@Override
@@ -122,15 +121,16 @@ public class LibroServiceImpl implements LibroService {
             for (Genero genero : libro.getGeneros()) {
                 genero.getLibros().remove(libro);
             }
-            
-            // Desasociar de pedidos
-            for (DetallePedido detalle : detallesPedido) {
-                detallePedidoService.delete(detalle);
-            }
-            
             libro.getGeneros().clear();
-            
-            // Actualizar el libro con las asociaciones eliminadas
+        }
+        
+        // Desasociar de pedidos
+        for (DetallePedido detalle : detallesPedido) {
+            detallePedidoService.delete(detalle);
+        }
+        
+        // Actualizar los libros con las asociaciones eliminadas
+        for (Libro libro : libros) {
             libroDao.save(libro);
         }
         

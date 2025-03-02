@@ -20,7 +20,10 @@
                                class="form-control form-control-lg" 
                                [(ngModel)]="autor.nombre" 
                                name="nombre" 
-                               #nombre="ngModel" minlength="5" maxlength="50" required>
+                               #nombre="ngModel" 
+                               placeholder="Nombre del autor..."
+                               minlength="5" maxlength="50" 
+                               required>
                         <div class="alert alert-danger mt-2" *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)">
                             <div *ngIf="nombre.errors?.['required']">
                                 El nombre es requerido
@@ -43,7 +46,11 @@
                                class="form-control form-control-lg" 
                                [(ngModel)]="autor.biografia" 
                                name="biografia" 
-                               #biografia="ngModel" rows="3" minlength="10" maxlength="250" required></textarea>
+                               #biografia="ngModel" 
+                               rows="3" 
+                               placeholder="Biografía del autor..."
+                               minlength="10" maxlength="250" r
+                               equired></textarea>
                         <div class="alert alert-danger mt-2" *ngIf="biografia.invalid && (biografia.dirty || biografia.touched)">
                             <div *ngIf="biografia.errors?.['required']">
                                 La biografía es requerida

@@ -42,7 +42,7 @@ public class GeneroController {
 
 	// Obtener generos por ID
 	@GetMapping("/genero/{id}")
-	public ResponseEntity<?> show(@PathVariable Long id) {
+	public ResponseEntity<?> show(@PathVariable(name = "id") Long id) {
 
 		Genero genero;
 		Map<String, Object> response = new HashMap<>();
@@ -97,7 +97,7 @@ public class GeneroController {
 	// Actualizar genero
 	@PutMapping("/genero/{id}")
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<?> update(@RequestBody Genero genero, BindingResult result, @PathVariable Long id) {
+	public ResponseEntity<?> update(@RequestBody Genero genero, BindingResult result, @PathVariable(name = "id") Long id) {
 
 		Genero currentGenero = this.generoService.findById(id);
 		Genero nuevoGenero;
@@ -138,7 +138,7 @@ public class GeneroController {
 
 	// Eliminar genero por ID
 	@DeleteMapping("/generos/{id}")
-	public ResponseEntity<?> delete(@PathVariable Long id) {
+	public ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
 		Genero currentGenero = this.generoService.findById(id);
 		Map<String, Object> response = new HashMap<>();
 

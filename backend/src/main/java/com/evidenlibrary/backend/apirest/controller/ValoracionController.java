@@ -35,7 +35,7 @@ public class ValoracionController {
     }
 
     @GetMapping("/valoracion/{id}")
-    public ResponseEntity<?> show(@PathVariable Long id) {
+    public ResponseEntity<?> show(@PathVariable(name = "id") Long id) {
         Valoracion valoracion;
         Map<String, Object> response = new HashMap<>();
 
@@ -55,8 +55,8 @@ public class ValoracionController {
         return new ResponseEntity<>(valoracion, HttpStatus.OK);
     }
 
-    @GetMapping("/valoraciones/libro/{libroId}")
-    public ResponseEntity<?> findByLibroId(@PathVariable Long libroId) {
+    @GetMapping("/valoraciones/libro/{id}")
+    public ResponseEntity<?> findByLibroId(@PathVariable(name = "id") Long libroId) {
         List<Valoracion> valoraciones;
         Map<String, Object> response = new HashMap<>();
 
@@ -71,8 +71,8 @@ public class ValoracionController {
         return new ResponseEntity<>(valoraciones, HttpStatus.OK);
     }
 
-    @GetMapping("/valoraciones/usuario/{usuarioId}")
-    public ResponseEntity<?> findByUsuarioId(@PathVariable Long usuarioId) {
+    @GetMapping("/valoraciones/usuario/{id}")
+    public ResponseEntity<?> findByUsuarioId(@PathVariable(name = "id") Long usuarioId) {
         List<Valoracion> valoraciones;
         Map<String, Object> response = new HashMap<>();
 
@@ -123,7 +123,7 @@ public class ValoracionController {
     } */
 
     @PutMapping("/valoracion/{id}")
-    public ResponseEntity<?> update(@RequestBody Valoracion valoracion, @PathVariable Long id) {
+    public ResponseEntity<?> update(@RequestBody Valoracion valoracion, @PathVariable(name = "id") Long id) {
         Valoracion valoracionActual = valoracionService.findById(id);
         Valoracion valoracionUpdated;
         Map<String, Object> response = new HashMap<>();
@@ -155,7 +155,7 @@ public class ValoracionController {
     }
 
     @DeleteMapping("/valoracion/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
         Map<String, Object> response = new HashMap<>();
 
         try {

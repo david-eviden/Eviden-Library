@@ -47,7 +47,7 @@ public class PedidoController {
     }
 
     @GetMapping("/pedido/{id}")
-    public ResponseEntity<?> show(@PathVariable Long id) {
+    public ResponseEntity<?> show(@PathVariable(name = "id") Long id) {
         Pedido pedido;
         Map<String, Object> response = new HashMap<>();
 
@@ -67,8 +67,8 @@ public class PedidoController {
         return new ResponseEntity<>(pedido, HttpStatus.OK);
     }
 
-    @GetMapping("/pedidos/usuario/{usuarioId}")
-    public ResponseEntity<?> findByUsuarioId(@PathVariable Long usuarioId) {
+    @GetMapping("/pedidos/usuario/{id}")
+    public ResponseEntity<?> findByUsuarioId(@PathVariable(name = "id") Long usuarioId) {
         List<Pedido> pedidos;
         Map<String, Object> response = new HashMap<>();
 
@@ -102,7 +102,7 @@ public class PedidoController {
     }
 
     @PutMapping("/pedido/{id}")
-    public ResponseEntity<?> update(@RequestBody Pedido pedido, @PathVariable Long id) {
+    public ResponseEntity<?> update(@RequestBody Pedido pedido, @PathVariable(name = "id") Long id) {
         Pedido pedidoActual = pedidoService.findById(id);
         Pedido pedidoUpdated;
         Map<String, Object> response = new HashMap<>();
@@ -135,7 +135,7 @@ public class PedidoController {
     }
 
     @DeleteMapping("/pedido/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
         Map<String, Object> response = new HashMap<>();
 
         try {

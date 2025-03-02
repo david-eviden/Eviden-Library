@@ -108,11 +108,9 @@ export class DetallesLibroService  implements OnInit{
   delete(id: number): Observable<Libro> {
     return this.http.delete<Libro>(`${this.urlEndPoint}/${id}`, {headers: this.httpHeaders}).pipe(
       catchError(e => {
-        this.router.navigate(['/libros']);
-        console.log(e.error.mensaje);
-        swal(e.error.mensaje, e.error.error, 'error');
+        console.error(e.error.mensaje);
         return throwError(e);
       })
-    );;
+    );
   }
 }

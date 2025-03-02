@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -26,8 +25,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.*;
-
 @Entity
 @Table(name = "libros")
 @Data
@@ -43,51 +40,42 @@ public class Libro implements Serializable {
     private Long id;
     
     @Column(nullable = false, unique = true)
-    @Size(min=2,max=25, message="debe tener entre 2 y 25 caracteres")
-    @NotEmpty(message = "no puede estar vacío")
     private String titulo;
     
     @Column(nullable = false)
-    @NotEmpty(message = "no puede estar vacío")
     private Double precio;
     
     @Column(nullable = false)
-    @NotEmpty(message = "no puede estar vacío")
     private Integer stock;
     
     @Column(nullable = false)
-    @Size(min=10, max=250, message="debe tener entre 10 y 250 caracteres")
-    @NotEmpty(message = "no puede estar vacío")
     private String descripcion;
     
     @Column(nullable = true)
     private String imagen;
 
-	@ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
         name = "libro_autor",
         joinColumns = @JoinColumn(name = "libro_id"),
         inverseJoinColumns = @JoinColumn(name = "autor_id")
     )
-	@JsonManagedReference
-    public final Set<Autor> autores = new HashSet<>();
+    private final Set<Autor> autores = new HashSet<>();
     
-    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
         name = "libro_genero",
         joinColumns = @JoinColumn(name = "libro_id"),
         inverseJoinColumns = @JoinColumn(name = "genero_id")
     )
-    @JsonManagedReference
-    @JsonIgnore
-    public final Set<Genero> generos = new HashSet<>();
+    private final Set<Genero> generos = new HashSet<>();
     
     @OneToMany(mappedBy = "libro", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    public final List<Valoracion> valoraciones = new ArrayList<>();
+    private final List<Valoracion> valoraciones = new ArrayList<>();
     
     @OneToMany(mappedBy = "libro", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
-    public final List<Favorito> favoritos = new ArrayList<>();
+    private final List<Favorito> favoritos = new ArrayList<>();
 
     
     // Getter/Setter
@@ -151,6 +139,4 @@ public class Libro implements Serializable {
 	public Long getId() {
 		return id;
 	}
-    
-    
 }

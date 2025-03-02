@@ -113,11 +113,30 @@ export class DetallesLibroComponent implements OnInit {
 
         this.libroService.delete(libro.id).subscribe(
           response => {
+            this.router.navigate(['/libros']);
             swal(
               '¡Eliminado!',
               `El libro "${libro.titulo}" ha sido eliminado con éxito`,
               'success'
             );
+          },
+          error => {
+            console.error('Error al eliminar el libro:', error);
+            
+            // Mensaje específico para el caso de libros con pedidos asociados
+            if (error.status === 409) { // 409 Conflict
+              swal(
+                'No se puede eliminar',
+                'Este libro no puede ser eliminado porque está asociado a uno o más pedidos.',
+                'warning'
+              );
+            } else {
+              swal(
+                'Error al eliminar',
+                error.error.mensaje || 'Ocurrió un error al intentar eliminar el libro.',
+                'error'
+              );
+            }
           }
         );
 
@@ -129,6 +148,51 @@ export class DetallesLibroComponent implements OnInit {
           'error'
         )
 
+      }
+    });
+  }
+
+  // Eliminar valoracion con confirmación
+  deleteValoracion(valoracion: Valoracion): void {
+    // Mensaje de confirmación de eliminación
+    swal({
+      title: `¿Estás seguro de eliminar la valoración?`,
+      text: "¡Esta operación no es reversible!",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "¡Sí, eliminar!",
+      cancelButtonText: "No, cancelar",
+      buttonsStyling: true,
+      reverseButtons: true
+    }).then((result) => {
+      if (result.value) {
+        this.valoracionService.delete(valoracion.id).subscribe(
+          response => {
+            // Cuando la eliminación es exitosa, actualizamos la lista
+            this.libro.valoraciones = this.libro.valoraciones.filter(v => v.id !== valoracion.id);
+            swal(
+              '¡Eliminado!',
+              `La valoración ha sido eliminada con éxito`,
+              'success'
+            );
+          },
+          error => {
+            console.error('Error al eliminar la valoración', error);
+            swal(
+              'Error',
+              'Hubo un problema al eliminar la valoración',
+              'error'
+            );
+          }
+        );
+      } else if (result.dismiss === swal.DismissReason.cancel) {
+        swal(
+          'Cancelado',
+          'La valoración está a salvo :)',
+          'error'
+        );
       }
     });
   }

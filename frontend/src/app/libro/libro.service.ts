@@ -46,6 +46,23 @@ export class LibroService {
     );
   }
 
+  // Get libros (paginado con tamaño personalizado)
+  getLibrosConTamanio(page: number, size: number): Observable<any> {
+    return this.http.get(`${this.urlEndPoint}/page/${page}/size/${size}`).pipe(
+      map((response: any) => {
+        // Retornamos
+        (response.content as Libro[]).map(libro => {
+          libro.titulo = libro.titulo;
+          libro.precio = libro.precio;
+          libro.stock = libro.stock;
+          libro.descripcion = libro.descripcion;
+          
+          return libro;
+        });
+        return response;
+      }),
+    );
+  }
 
   /* Sin paginacion */
 
@@ -77,17 +94,16 @@ export class LibroService {
   create(libro: Libro) : Observable<any> {
     return this.http.post<any>(this.urlEndPoint1, libro, {headers: this.httpHeaders}).pipe(
       catchError(e => {
-
         // Validamos
         if(e.status==400) {
-          return throwError(e);
+          return throwError(() => e);
         }
 
         // Controlamos otros errores
         this.router.navigate(['/libros']);
         console.log(e.error.mensaje);
         swal(e.error.mensaje, e.error.error, 'error');
-        return throwError(e);
+        return throwError(() => e);
       })
     );
   }
@@ -100,7 +116,7 @@ export class LibroService {
         this.router.navigate(['/libros']);
         console.log(e.error.mensaje);
         swal('Error al obtener el libro', e.error.mensaje, 'error');
-        return throwError(e);
+        return throwError(() => e);
       })
     );
   }
@@ -109,31 +125,30 @@ export class LibroService {
   updateLibro(libro: Libro): Observable<any> {
     return this.http.put<any>(`${this.urlEndPoint1}/${libro.id}`, libro, {headers: this.httpHeaders}).pipe(
       catchError(e => {
-
         // Validamos
         if(e.status==400) {
-          return throwError(e);
+          return throwError(() => e);
         }
 
         // Controlamos otros errores
         this.router.navigate(['/libros']);
         console.log(e.error.mensaje);
         swal(e.error.mensaje, e.error.error, 'error');
-        return throwError(e);
+        return throwError(() => e);
       })
     );
   }
 
   // Delete
   delete(id: number): Observable<Libro> {
-    return this.http.delete<Libro>(`${this.urlEndPoint}/${id}`, {headers: this.httpHeaders}).pipe(
+    return this.http.delete<Libro>(`${this.urlEndPoint1}/${id}`, {headers: this.httpHeaders}).pipe(
       catchError(e => {
         this.router.navigate(['/libros']);
         console.log(e.error.mensaje);
         swal(e.error.mensaje, e.error.error, 'error');
-        return throwError(e);
+        return throwError(() => e);
       })
-    );;
+    );
   }
 
   // Delete todos

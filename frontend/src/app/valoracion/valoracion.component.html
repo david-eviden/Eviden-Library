@@ -1,5 +1,11 @@
 <div class="container mt-4">
     <h2 class="text-center mb-4">Valoraciones de Libros</h2>
+
+    <div class="d-flex justify-content-end my-3">
+        <a [routerLink]="['/valoracion/form']" class="btn btn-primary btn-lg">
+            <i class="bi bi-plus-circle me-2"></i>Nueva valoración
+        </a>
+    </div>
     
     <div class="alert alert-info" *ngIf="valoraciones.length === 0">
         No hay valoraciones disponibles.

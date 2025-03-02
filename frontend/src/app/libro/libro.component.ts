@@ -16,6 +16,9 @@ export class LibroComponent implements OnInit{
   libros : Libro[]= [];
   paginador: any;
   animationState = "in"
+  pageSizes: number[] = [3, 6, 9, 12]; // Opciones de tamaño de página
+  currentPageSize: number = 6; // Tamaño de página por defecto
+  currentPage: number = 0; // Página actual
 
   constructor(private libroService: LibroService, private router: Router, private activatedRoute: ActivatedRoute) {
     this.router.events.pipe(
@@ -33,7 +36,6 @@ export class LibroComponent implements OnInit{
   }
 
   ngOnInit(): void {
-
     // Obtenemos el numero de pagina del observable
     this.activatedRoute.paramMap.subscribe(params => {
       let page: number = +params.get('page')!;
@@ -41,20 +43,9 @@ export class LibroComponent implements OnInit{
       if(!page) {
         page = 0;
       }
-
-      this.libroService.getLibros(page)
-      .pipe(
-        /*
-        tap(response => {
-          console.log('LibrosComponent: tap 3');
-          (response.content as Libro[]).forEach( libro => {
-            console.log(libro.titulo);
-          });
-        })*/
-      ).subscribe(response => {
-        this.libros = response.content as Libro[];
-        this.paginador = response;
-      });
+      
+      this.currentPage = page;
+      this.cargarLibros();
     });
 
   
@@ -132,6 +123,23 @@ export class LibroComponent implements OnInit{
         )
       }
     });
+  }
+
+  // Método para cargar libros con el tamaño de página actual
+  cargarLibros(): void {
+    this.libroService.getLibrosConTamanio(this.currentPage, this.currentPageSize)
+    .subscribe(response => {
+      this.libros = response.content as Libro[];
+      this.paginador = response;
+    });
+  }
+  
+  // Método para cambiar el tamaño de la página
+  cambiarTamanioPagina(event: any): void {
+    this.currentPageSize = +event.target.value;
+    this.currentPage = 0; // Volvemos a la primera página al cambiar el tamaño
+    this.cargarLibros();
+    this.router.navigate(['/libros/page', 0]); // Actualizamos la URL
   }
 
 }

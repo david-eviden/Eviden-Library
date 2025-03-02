@@ -35,6 +35,19 @@
                     </div>
                 </div>
 
+                <!-- Información del Usuario (solo en modo edición) -->
+                <div class="form-group row mb-4" *ngIf="valoracion.id && valoracion.usuario">
+                    <label class="col-sm-3 col-form-label">Usuario:</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext">
+                            <strong>{{ valoracion.usuario.nombre }} {{ valoracion.usuario.apellido }}</strong>
+                            <span *ngIf="valoracion.usuario.email">
+                                ({{ valoracion.usuario.email }})
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Campo Libro -->
                 <div class="form-group row mb-4" *ngIf="!valoracion.id">
                     <label for="libro" class="col-sm-3 col-form-label">Libro:</label>
@@ -55,6 +68,19 @@
                             <div *ngIf="libro.errors?.['required']">
                                 El libro es requerido
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información del Libro (solo en modo edición) -->
+                <div class="form-group row mb-4" *ngIf="valoracion.id && valoracion.libro">
+                    <label class="col-sm-3 col-form-label">Libro:</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext">
+                            <strong>{{ valoracion.libro.titulo }}</strong>
+                            <span *ngIf="valoracion.libro.autores && valoracion.libro.autores.length > 0">
+                                ({{ valoracion.libro.autores[0].nombre }})
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -99,7 +125,11 @@
                                class="form-control form-control-lg" 
                                [(ngModel)]="valoracion.comentario" 
                                name="comentario" 
-                               #comentario="ngModel" rows="3" minlength="10" maxlength="250" required></textarea>
+                               #comentario="ngModel" 
+                               rows="3" 
+                               placeholder="Añada un comentario..."
+                               minlength="10" maxlength="250" 
+                               required></textarea>
                         <div class="alert alert-danger mt-2" *ngIf="comentario.invalid && (comentario.dirty || comentario.touched)">
                             <div *ngIf="comentario.errors?.['required']">
                                 El comentario es requerido
