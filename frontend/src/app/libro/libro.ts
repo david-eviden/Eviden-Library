@@ -7,10 +7,11 @@ export class Libro {
     precio: number = 0;
     stock: number = 0;
     titulo: string = "";
-    //generos: string = "";
-    imagen: string = "";
+    //generos: string = "";    
     descripcion: String = "";
     valoraciones: Valoracion[] = [];
     autores: Autor[] = [];
     generos: Genero[] = [];
+    portada: any;
+    tipoImagen: string = "";
 }
