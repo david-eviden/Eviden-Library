@@ -76,19 +76,20 @@ public class LibroServiceImpl implements LibroService {
 		return libroDao.save(libro);
 	}
 	
-	//guardar con imagen
-	public Libro saveWithImage(Libro libro, MultipartFile file) throws IOException {
-        libro.setPortada(file.getBytes());
-        libro.setTipoImagen(file.getContentType());
-        return libroDao.save(libro);
-    }
-	
-	//obtenerPortada
-	public byte[] obtenerPortadaPorId(Long id) {
-        Libro libro = libroDao.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Libro no encontrado"));
+	//guardar portada
+	public Libro guardarPortada(Long libroId, MultipartFile file) throws IOException {
+        Libro libro = libroDao.findById(libroId).orElseThrow(() -> new RuntimeException("Libro no encontrado"));
+
+        // Convertir el archivo en un arreglo de bytes
+        byte[] portadaBytes = file.getBytes();
         
-        return libroDao.getPortadaBytes();
+        // Obtener el tipo de imagen 
+        String tipoImagen = file.getContentType();
+
+        libro.setPortada(portadaBytes);
+        libro.setTipoImagen(tipoImagen);
+
+        return libroDao.save(libro);
     }
 
 	@Override

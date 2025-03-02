@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.evidenlibrary.backend.apirest.model.entity.Libro;
 
@@ -32,6 +33,8 @@ public interface LibroService {
 	public void deleteAll();
 
 	Libro findByTitulo(String titulo);
+
+	public Libro guardarPortada(Long id, MultipartFile file);//guardar portada
 
 	
 }

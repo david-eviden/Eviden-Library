@@ -17,6 +17,7 @@ export class LibroService {
     return this.http.get<Libro[]>(this.urlEndPoint+ '/mejor-valorados');  
   }
 
+
   // Get libros (paginado)
   getLibros(page: number): Observable<any> {
     return this.http.get(this.urlEndPoint + '/page/' + page).pipe(
