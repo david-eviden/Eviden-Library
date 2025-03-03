@@ -22,12 +22,24 @@ public class SearchController {
 
 	
 	@GetMapping("/search")
-    public ResponseEntity<?> search(@RequestParam String query) {
+    public ResponseEntity<?> search(
+            @RequestParam String query,
+            @RequestParam(required = false, defaultValue = "true") boolean searchLibros,
+            @RequestParam(required = false, defaultValue = "true") boolean searchAutores,
+            @RequestParam(required = false, defaultValue = "true") boolean searchGeneros) {
 
 		Map<String,Object> results = new HashMap<>();
-		results.put("libros", searchService.searchLibros(query));
-		results.put("autores", searchService.searchAutores(query));
-		results.put("generos", searchService.searchGeneros(query));
-		return ResponseEntity.ok(results);
+        
+        if (searchLibros) {
+            results.put("libros", searchService.searchLibros(query));
+        }
+        if (searchAutores) {
+            results.put("autores", searchService.searchAutores(query));
+        }
+        if (searchGeneros) {
+            results.put("generos", searchService.searchGeneros(query));
+        }
+        
+        return ResponseEntity.ok(results);
 	}
 }

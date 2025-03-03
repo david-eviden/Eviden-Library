@@ -1,0 +1,37 @@
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.card.clickable:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-top {
+    height: 300px;
+    object-fit: cover;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-title {
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+}
+
+.btn-primary {
+    margin-top: auto;
+}
+
+/* Efecto hover suave */
+.card.clickable:active {
+    transform: translateY(-2px);
+}

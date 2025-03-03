@@ -32,6 +32,7 @@ import { FormValoracionComponent } from './form-valoracion/form-valoracion.compo
 import { appConfig } from './app.config';
 import { RankingComponent } from './ranking/ranking.component';
 import { LibroService } from './libro/libro.service';
+import { ClickOutsideDirective } from './directives/click-outside.directive';
 import { DetallesUsuarioComponent } from './detalles-usuario/detalles-usuario.component';
 import { FormUsuarioComponent } from './form-usuario/form-usuario.component';
 
@@ -57,6 +58,8 @@ import { FormUsuarioComponent } from './form-usuario/form-usuario.component';
     ResultadoBusquedaComponent,
     PaginatorComponent,
     RankingComponent,
+    ClickOutsideDirective
+    //AdminComponent
     AdminComponent,
     DetallesFavoritoComponent,
     FormLibroComponent,
