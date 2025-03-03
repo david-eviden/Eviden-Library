@@ -96,8 +96,8 @@ export class LibroService {
   }
 
   // Crear libro
-  create(formData: FormData) : Observable<any> {
-    return this.http.post<any>(this.urlEndPoint1, formData, {headers: this.httpHeaders}).pipe(
+  create(libro: Libro) : Observable<any> {
+    return this.http.post<any>(this.urlEndPoint1, libro, {headers: this.httpHeaders}).pipe(
       catchError(e => {
         // Validamos
         if(e.status==400) {

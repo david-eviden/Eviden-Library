@@ -1,6 +1,5 @@
 package com.evidenlibrary.backend.apirest.controller;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,21 +20,35 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.RequestMethod;
 
+import jakarta.persistence.EntityManager;
+
+import com.evidenlibrary.backend.apirest.model.entity.Autor;
+import com.evidenlibrary.backend.apirest.model.entity.Genero;
 import com.evidenlibrary.backend.apirest.model.entity.Libro;
+import com.evidenlibrary.backend.apirest.model.service.AutorService;
+import com.evidenlibrary.backend.apirest.model.service.GeneroService;
 import com.evidenlibrary.backend.apirest.model.service.LibroService;
 
-@CrossOrigin(origins = { "http://localhost:4200" })
+@CrossOrigin(origins = { "http://localhost:4200" }, methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE}, allowedHeaders = "*")
 @RestController
 @RequestMapping("/api")
 public class LibroController {
 
 	@Autowired
 	private LibroService libroService;
+	
+	@Autowired
+	private AutorService autorService;
+	
+	@Autowired
+	private GeneroService generoService;
+
+	@Autowired
+	private EntityManager entityManager;
 
 	// Obtener libros
 	@GetMapping("/libros")
@@ -45,8 +58,14 @@ public class LibroController {
 	
     // Obtener libros (paginado)
     @GetMapping("/libros/page/{page}")
-    public Page<Libro> index(@PathVariable Integer page) {
-        return libroService.findAllPaginado(PageRequest.of(page, 9));
+    public Page<Libro> index(@PathVariable(name = "page") Integer page) {
+        return libroService.findAllPaginado(PageRequest.of(page, 6));
+    }
+    
+    // Obtener libros (paginado con tamaño personalizado)
+    @GetMapping("/libros/page/{page}/size/{size}")
+    public Page<Libro> index(@PathVariable(name = "page") Integer page, @PathVariable(name = "size") Integer size) {
+        return libroService.findAllPaginado(PageRequest.of(page, size));
     }
     
     //Obtener mejor valorados
@@ -57,9 +76,9 @@ public class LibroController {
 
 	// Obtener libros por ID
 	@GetMapping("/libro/{id}")
-	public ResponseEntity<?> show(@PathVariable Long id) {
+	public ResponseEntity<?> show(@PathVariable(name = "id") Long id) {
 
-		Libro libro;
+		Libro libro = new Libro();
 		Map<String, Object> response = new HashMap<>();
 
 		try {
@@ -80,7 +99,7 @@ public class LibroController {
 
 	// Crear libro
 	@PostMapping("/libro")
-	public ResponseEntity<?> create(@RequestBody Libro libro, @RequestParam("imagen") MultipartFile imagen, BindingResult result) throws IOException {
+	public ResponseEntity<?> create(@RequestBody Libro libro, BindingResult result) {
 
 		Libro nuevoLibro;
 		Map<String, Object> response = new HashMap<>();
@@ -95,18 +114,34 @@ public class LibroController {
 			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
 
+		// Procesamos autores y géneros
+		if (libro.getAutores() != null && !libro.getAutores().isEmpty()) {
+			for (Autor autor : libro.getAutores()) {
+				if (autor.getId() != null) {
+					Autor autorExistente = autorService.findById(autor.getId());
+					if (autorExistente != null) {
+						libro.getAutores().remove(autor);
+						libro.getAutores().add(autorExistente);
+					}
+				}
+			}
+		}
+		
+		if (libro.getGeneros() != null && !libro.getGeneros().isEmpty()) {
+			for (Genero genero : libro.getGeneros()) {
+				if (genero.getId() != null) {
+					Genero generoExistente = generoService.findById(genero.getId());
+					if (generoExistente != null) {
+						libro.getGeneros().remove(genero);
+						libro.getGeneros().add(generoExistente);
+					}
+				}
+			}
+		}
+
 		// Manejamos errores
 		try {
-			// Obtener los bytes de la imagen y el tipo MIME
-	        byte[] imagenBytes = imagen.getBytes();
-	        String tipoImagen = imagen.getContentType();
-
-	        // Asignar la imagen y el tipo MIME al objeto libro
-	        libro.setPortada(imagenBytes);
-	        libro.setTipoImagen(tipoImagen);
-
-	        // Guardar el libro
-	        nuevoLibro = libroService.save(libro);
+			nuevoLibro = libroService.save(libro);
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al insertar en la base de datos");
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
@@ -114,56 +149,101 @@ public class LibroController {
 		}
 
 		response.put("mensaje", "El libro ha sido creado con éxito");
-		response.put("autor", nuevoLibro);
+		response.put("libro", nuevoLibro);
 		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 
 	// Actualizar libro
 	@PutMapping("/libro/{id}")
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<?> update(@RequestBody Libro libro, BindingResult result, @PathVariable Long id) {
+	public ResponseEntity<?> update(@RequestBody Libro libro, BindingResult result, @PathVariable(name = "id") Long id) {
 
-		Libro currentLibro = this.libroService.findById(id);
-		Libro nuevoLibro;
-		Map<String, Object> response = new HashMap<>();
+	    Libro currentLibro = this.libroService.findById(id);
+	    Libro nuevoLibro;
+	    Map<String, Object> response = new HashMap<>();
 
-		// Validamos campos
-		if (result.hasErrors()) {
+	    // Validamos campos
+	    if (result.hasErrors()) {
+	        List<String> errores = result.getFieldErrors().stream()
+	                .map(err -> "El campo '" + err.getField() + "' " + err.getDefaultMessage())
+	                .collect(Collectors.toList());
 
-			List<String> errores = result.getFieldErrors().stream()
-					.map(err -> "El campo '" + err.getField() + "' " + err.getDefaultMessage())
-					.collect(Collectors.toList());
+	        response.put("errores", errores);
+	        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	    }
 
-			response.put("errores", errores);
-			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-		}
+	    if (currentLibro == null) {
+	        response.put("mensaje", "No se pudo editar, el libro con ID: "
+	                .concat(id.toString().concat(" no existe en la base de datos")));
+	        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+	    }
 
-		if (currentLibro == null) {
-			response.put("mensaje", "No se puedo editar, el libro con ID: "
-					.concat(id.toString().concat(" no existe en la base de datos")));
-			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-		}
+	    try {
+	        // Verificamos si el campo es nulo antes de actualizarlo
+	        if (libro.getPrecio() != null) {
+	            currentLibro.setPrecio(libro.getPrecio());
+	        }
+	        if (libro.getStock() != null) {
+	            currentLibro.setStock(libro.getStock());
+	        }
+	        if (libro.getTitulo() != null && !libro.getTitulo().isEmpty()) {
+	            currentLibro.setTitulo(libro.getTitulo());
+	        }
+	        if (libro.getDescripcion() != null && !libro.getDescripcion().isEmpty()) {
+	            currentLibro.setDescripcion(libro.getDescripcion());
+	        }
+	        if (libro.getImagen() != null) {
+	            currentLibro.setImagen(libro.getImagen());
+	        }
+	        
+	        // Procesamos autores
+	        if (libro.getAutores() != null && !libro.getAutores().isEmpty()) {
+	            // Limpiamos los autores actuales
+	            currentLibro.getAutores().clear();
+	            
+	            // Añadimos los nuevos autores
+	            for (Autor autor : libro.getAutores()) {
+	                if (autor.getId() != null) {
+	                    Autor autorExistente = autorService.findById(autor.getId());
+	                    if (autorExistente != null) {
+	                        currentLibro.getAutores().add(autorExistente);
+	                    }
+	                }
+	            }
+	        }
+	        
+	        // Procesamos géneros
+	        if (libro.getGeneros() != null && !libro.getGeneros().isEmpty()) {
+	            // Limpiamos los géneros actuales
+	            currentLibro.getGeneros().clear();
+	            
+	            // Añadimos los nuevos géneros
+	            for (Genero genero : libro.getGeneros()) {
+	                if (genero.getId() != null) {
+	                    Genero generoExistente = generoService.findById(genero.getId());
+	                    if (generoExistente != null) {
+	                        currentLibro.getGeneros().add(generoExistente);
+	                    }
+	                }
+	            }
+	        }
+	        
+	        // Guardamos el libro actualizado
+	        nuevoLibro = libroService.save(currentLibro);
+	    } catch (DataAccessException e) {
+	        response.put("mensaje", "Error al actualizar el libro en la base de datos");
+	        response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+	        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
 
-		try {
-			currentLibro.setPrecio(libro.getPrecio());
-			currentLibro.setStock(libro.getStock());
-			currentLibro.setTitulo(libro.getTitulo());
-
-			nuevoLibro = libroService.save(currentLibro);
-		} catch (DataAccessException e) {
-			response.put("mensaje", "Error al actualizar el libro en la base de datos");
-			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-		response.put("mensaje", "El libro ha sido actualizado con éxito");
-		response.put("cliente", nuevoLibro);
-		return new ResponseEntity<>(response, HttpStatus.CREATED);
+	    response.put("mensaje", "El libro ha sido actualizado con éxito");
+	    response.put("libro", nuevoLibro);
+	    return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 
 	// Eliminar libro por ID
-	@DeleteMapping("/libros/{id}")
-	public ResponseEntity<?> delete(@PathVariable Long id) {
+	@DeleteMapping("/libro/{id}")
+	public ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
 		Libro currentLibro = this.libroService.findById(id);
 		Map<String, Object> response = new HashMap<>();
 
@@ -174,6 +254,18 @@ public class LibroController {
 		}
 
 		try {
+			// Verificar si el libro tiene pedidos asociados
+			Long count = (Long) entityManager.createQuery(
+				"SELECT COUNT(dp) FROM DetallePedido dp WHERE dp.libro.id = :libroId")
+				.setParameter("libroId", id)
+				.getSingleResult();
+				
+			if (count > 0) {
+				response.put("mensaje", "No se puede eliminar el libro porque está asociado a uno o más pedidos");
+				response.put("error", "El libro tiene pedidos asociados. Elimine primero los pedidos o implemente una eliminación lógica.");
+				return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+			}
+			
 			libroService.delete(currentLibro);
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al eliminar el libro en la base de datos");
@@ -182,8 +274,24 @@ public class LibroController {
 		}
 
 		response.put("mensaje", "El libro ha sido eliminado con éxito");
-		response.put("cliente", currentLibro);
+		response.put("libro", currentLibro);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
+	// Eliminar todos los libros
+	@DeleteMapping("/libros")
+	public ResponseEntity<?> deleteAll() {
+		Map<String, Object> response = new HashMap<>();
+
+		try {
+		    libroService.deleteAll();
+		} catch(DataAccessException e) {
+		    response.put("mensaje", "Error al eliminar los libros en la base de datos");
+		    response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+		    return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		response.put("mensaje", "Todos los libros han sido eliminados con éxito");
+		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
+	}
 }

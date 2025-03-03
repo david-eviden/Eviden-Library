@@ -7,7 +7,6 @@ import { Autor } from '../autor/autor';
 import { AutorService } from '../autor/autor.service';
 import { GeneroService } from '../generos/generos.service';
 import { Genero } from '../generos/generos';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-form-libro',
@@ -24,28 +23,13 @@ export class FormLibroComponent implements OnInit {
   autorSeleccionado: Autor = new Autor();
   generoSeleccionado: Genero = new Genero();
 
-  libroForm: FormGroup;
-
   constructor(
     private libroService: LibroService, 
     public router: Router, 
     private activatedRoute: ActivatedRoute,
     private autorService: AutorService,
     private generoService: GeneroService,
-    private fb: FormBuilder
-  ) { 
-    this.libroForm = this.fb.group({
-      titulo: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)]],
-      descripcion: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(250)]],
-      precio: ['', [Validators.required]],
-      stock: ['', [Validators.required]],
-      imagen: [null, Validators.required],
-      autor: ['', Validators.required],
-      genero: ['', Validators.required]
-    });
-
-  }
-
+  ) { }
 
   ngOnInit(): void {
     // Inicializar ids como 0 para que se seleccionen las opciones por defecto
@@ -100,30 +84,7 @@ export class FormLibroComponent implements OnInit {
       }
     }
 
-    // Crear una nueva instancia de FormData
-      const formData = new FormData();
-
-      // Agregar los datos del libro al FormData
-      formData.append('titulo', this.libro.titulo);
-      formData.append('precio', this.libro.precio.toString());
-      formData.append('stock', this.libro.stock.toString());
-      formData.append('descripcion', this.libro.descripcion.toString());
-
-      // Agregar autores y géneros
-      this.libro.autores.forEach((autor) => {
-        formData.append('autores', autor.id.toString());
-      });
-
-      this.libro.generos.forEach((genero) => {
-        formData.append('generos', genero.id.toString());
-      });
-
-      // Agregar la portada (imagen) si existe
-      if (this.libro.imagen) {
-        formData.append('imagen', new Blob([this.libro.imagen], { type: this.libro.tipoImagen }), 'portada.jpg');
-      }
-
-    this.libroService.create(formData).subscribe(
+    this.libroService.create(this.libro).subscribe(
       // Si OK
       json => {
         this.router.navigate(['/libros']);
@@ -138,27 +99,6 @@ export class FormLibroComponent implements OnInit {
         console.error(err.error.errores);
       }
     );
-  }
-
-  // portada
-  onFileChange(event: any): void {
-    const file = event.target.files[0];  // Obtener el archivo seleccionado
-    if (file) {
-      // Establecer el tipo de imagen
-      this.libro.tipoImagen = file.type; // Almacenar el tipo de imagen (por ejemplo, "image/jpeg")
-
-      // Leer el archivo como ArrayBuffer
-      const reader = new FileReader();
-      
-
-      reader.onload = () => {
-        // Convertir el ArrayBuffer a un Uint8Array (representación en bytes)
-        const byteArray = new Uint8Array(reader.result as ArrayBuffer);
-        this.libro.imagen = byteArray;  // Almacenar los bytes en el libro
-      };
-
-      reader.readAsArrayBuffer(file);
-    }
   }
 
   // Obtener libro por ID
