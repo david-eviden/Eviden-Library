@@ -11,9 +11,13 @@ import { Carrito } from '../carrito/carrito';
   templateUrl: './resultado-busqueda.component.html',
   styleUrl: './resultado-busqueda.component.css'
 })
-export class ResultadoBusquedaComponent implements OnInit{
+export class ResultadoBusquedaComponent implements OnInit {
   results: any = {libros: [], autores: [], generos: []};
   searchTerm: string = '';
+  loading: boolean = true;
+  noResults: boolean = false;
+  searchType: string = 'all';
+  librosRelacionados: Libro[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -23,20 +27,96 @@ export class ResultadoBusquedaComponent implements OnInit{
   ){}
 
   ngOnInit(): void {
-      this.route.queryParams.subscribe(params => {
-        this.searchTerm = params['q'];
-        if (this.searchTerm) {
-          // Realizamos la búsqueda con el término proporcionado
-          this.searchService.search(this.searchTerm).subscribe({
-            next: (data) => {
-              this.results = data; // Asignamos los resultados obtenidos
-            },
-            error: (error) => {
-              console.error('Error al obtener resultados: ', error); // Manejo de errores
-            }
-          });
+    this.route.queryParams.subscribe(params => {
+      this.searchTerm = params['q'] || '';
+      
+      if (!this.searchTerm.trim()) {
+        this.router.navigate(['/principal']);
+        return;
+      }
+
+      this.loading = true;
+      
+      this.searchService.search(this.searchTerm.trim()).subscribe({
+        next: (data) => {
+          this.results = data;
+          this.loading = false;
+          
+          // Determinar el tipo de búsqueda basado en los resultados
+          this.searchType = this.detectSearchTypeFromResults(this.results);
+          
+          // Cargar libros relacionados si es necesario
+          if (this.searchType === 'autor' && this.results.autores.length > 0) {
+            this.loadLibrosByAutor(this.results.autores[0].id);
+          } else if (this.searchType === 'genero' && this.results.generos.length > 0) {
+            this.loadLibrosByGenero(this.results.generos[0].id);
+          }
+
+          this.noResults = this.isEmptyResults();
+        },
+        error: (error) => {
+          console.error('Error al obtener resultados: ', error);
+          this.loading = false;
+          this.noResults = true;
         }
-      })
+      });
+    });
+  }
+
+  private detectSearchTypeFromResults(results: any): string {
+    // Si solo hay autores y no hay libros ni géneros
+    if (results.autores?.length > 0 && 
+        (!results.libros?.length || results.libros.length === 0) && 
+        (!results.generos?.length || results.generos.length === 0)) {
+      return 'autor';
+    }
+    
+    // Si solo hay géneros y no hay libros ni autores
+    if (results.generos?.length > 0 && 
+        (!results.libros?.length || results.libros.length === 0) && 
+        (!results.autores?.length || results.autores.length === 0)) {
+      return 'genero';
+    }
+
+    // Si hay coincidencia exacta con un autor
+    if (results.autores?.length === 1 && 
+        results.autores[0].nombre.toLowerCase() === this.searchTerm.toLowerCase() || 
+        results.autores[0].apellido.toLowerCase() === this.searchTerm.toLowerCase()) {
+      return 'autor';
+    }
+
+    // Si hay coincidencia exacta con un género
+    if (results.generos?.length === 1 && 
+        results.generos[0].nombre.toLowerCase() === this.searchTerm.toLowerCase()) {
+      return 'genero';
+    }
+
+    // Por defecto, mostrar todos los resultados
+    return 'all';
+  }
+
+  private loadLibrosByAutor(autorId: number): void {
+    this.searchService.getLibrosByAutor(autorId).subscribe(
+      libros => this.librosRelacionados = libros
+    );
+  }
+
+  private loadLibrosByGenero(generoId: number): void {
+    this.searchService.getLibrosByGenero(generoId).subscribe(
+      libros => this.librosRelacionados = libros
+    );
+  }
+
+  private isEmptyResults(): boolean {
+    if (this.searchType === 'autor') {
+      return this.results.autores.length === 0;
+    }
+    if (this.searchType === 'genero') {
+      return this.results.generos.length === 0;
+    }
+    return (!this.results.libros || this.results.libros.length === 0) &&
+           (!this.results.autores || this.results.autores.length === 0) &&
+           (!this.results.generos || this.results.generos.length === 0);
   }
 
   getDetallesLibro(libroId: number): void {
@@ -45,7 +125,6 @@ export class ResultadoBusquedaComponent implements OnInit{
 
   addToCarrito(libro: Libro) {
     this.carritoService.getCarritos().subscribe((carritos: Carrito[]) => {
-      // Check if the book is in any of the carts
       const isBookInCart = carritos.some(carrito => 
         carrito.detalles.some(detalle => detalle.libro.id === libro.id)
       );
@@ -53,7 +132,6 @@ export class ResultadoBusquedaComponent implements OnInit{
       if (isBookInCart) {
         console.log('Libro ya está en el carrito');
       } else {
-        // If the book is not in the cart, add it to the cart
         this.carritoService.addToCarrito(libro);
         console.log('Libro añadido al carrito');
       }
