@@ -1,5 +1,6 @@
 package com.evidenlibrary.backend.apirest.controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.persistence.EntityManager;
 
@@ -99,7 +102,7 @@ public class LibroController {
 
 	// Crear libro
 	@PostMapping("/libro")
-	public ResponseEntity<?> create(@RequestBody Libro libro, BindingResult result) {
+	public ResponseEntity<?> create(@RequestBody Libro libro, @RequestParam("imagen") MultipartFile imagen, BindingResult result) throws IOException{
 
 		Libro nuevoLibro;
 		Map<String, Object> response = new HashMap<>();
@@ -141,6 +144,13 @@ public class LibroController {
 
 		// Manejamos errores
 		try {
+			// Obtener los bytes de la imagen y el tipo MIME
+	        byte[] imagenBytes = imagen.getBytes();
+	        String tipoImagen = imagen.getContentType();
+
+	        // Asignar la imagen y el tipo MIME al objeto libro
+	        libro.setPortada(imagenBytes);
+	        libro.setTipoImagen(tipoImagen);
 			nuevoLibro = libroService.save(libro);
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al insertar en la base de datos");
@@ -192,8 +202,11 @@ public class LibroController {
 	        if (libro.getDescripcion() != null && !libro.getDescripcion().isEmpty()) {
 	            currentLibro.setDescripcion(libro.getDescripcion());
 	        }
-	        if (libro.getImagen() != null) {
-	            currentLibro.setImagen(libro.getImagen());
+	        if (libro.getTipoImagen() != null) {
+	            currentLibro.setTipoImagen(libro.getTipoImagen());
+	        }
+	        if (libro.getPortada() != null) {
+	            currentLibro.setPortada(libro.getPortada());
 	        }
 	        
 	        // Procesamos autores

@@ -17,6 +17,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -51,8 +52,6 @@ public class Libro implements Serializable {
     @Column(nullable = false)
     private String descripcion;
     
-    @Column(nullable = true)
-    private String imagen;
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -76,20 +75,20 @@ public class Libro implements Serializable {
     @OneToMany(mappedBy = "libro", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
     private final List<Favorito> favoritos = new ArrayList<>();
+    
+  //IMAGENES
+    @Lob
+    @Column(name = "portada", columnDefinition = "LONGBLOB")
+    private byte[] portada;
+    
+    @Column(name = "tipo_imagen")
+    private String tipoImagen;
 
     
     // Getter/Setter
     
     public String getDescripcion() {
 		return descripcion;
-	}
-
-	public String getImagen() {
-		return imagen;
-	}
-
-	public void setImagen(String imagen) {
-		this.imagen = imagen;
 	}
 
 	public List<Favorito> getFavoritos() {
@@ -139,4 +138,22 @@ public class Libro implements Serializable {
 	public Long getId() {
 		return id;
 	}
+
+	public byte[] getPortada() {
+		return portada;
+	}
+
+	public void setPortada(byte[] portada) {
+		this.portada = portada;
+	}
+
+	public String getTipoImagen() {
+		return tipoImagen;
+	}
+
+	public void setTipoImagen(String tipoImagen) {
+		this.tipoImagen = tipoImagen;
+	}
+	
+	
 }
