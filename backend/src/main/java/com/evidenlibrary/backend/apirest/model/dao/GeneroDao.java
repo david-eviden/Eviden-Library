@@ -9,4 +9,6 @@ import com.evidenlibrary.backend.apirest.model.entity.Genero;
 public interface GeneroDao extends JpaRepository<Genero, Long> {
 	List<Genero> findByNombreContainingIgnoreCaseOrLibros_TituloContainingIgnoreCaseOrLibros_Autores_NombreContainingIgnoreCase(
             String nombre, String titulo, String autorNombre);
+            
+    List<Genero> findByNombreContainingIgnoreCase(String nombre);
 }

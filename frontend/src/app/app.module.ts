@@ -34,6 +34,7 @@ import { RankingComponent } from './ranking/ranking.component';
 import { LibroService } from './libro/libro.service';
 import { DetallesUsuarioComponent } from './detalles-usuario/detalles-usuario.component';
 import { FormUsuarioComponent } from './form-usuario/form-usuario.component';
+import { ClickOutsideDirective } from './directives/click-outside.directive';
 
 
 @NgModule({
@@ -64,7 +65,7 @@ import { FormUsuarioComponent } from './form-usuario/form-usuario.component';
     FormGeneroComponent,
     FormValoracionComponent,
     DetallesUsuarioComponent,
-    FormUsuarioComponent,
+    ClickOutsideDirective
   ],
   imports: [
     BrowserModule,

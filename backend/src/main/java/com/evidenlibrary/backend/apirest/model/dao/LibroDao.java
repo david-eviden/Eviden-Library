@@ -17,5 +17,7 @@ public interface LibroDao extends JpaRepository<Libro, Long> {
 
 
 	Optional<Libro> findByTitulo(String titulo);
+
+	List<Libro> findByTituloContainingIgnoreCase(String titulo);
 }
 

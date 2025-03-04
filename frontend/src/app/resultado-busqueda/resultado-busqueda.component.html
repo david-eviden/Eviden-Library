@@ -1,71 +1,139 @@
 <div class="container mt-4">
     <h2>Resultados de búsqueda para: "{{searchTerm}}"</h2>
 
-    <!-- Libros -->
-    <div *ngIf="results.libros?.length > 0" class="mt-4">
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            <div class="col" *ngFor="let libro of results.libros">
-                <div class="card h-100 shadow-sm">
-                    <!-- Imagen del libro (por defecto, solo un ejemplo) -->
-                    <img [src]="'/img/libroEjemplo.jpg'" class="card-img-top" [id]="'imagen-libro-' + libro.id"
-                        [alt]="'Imagen de ' + libro.titulo" (click)="getDetallesLibro(libro.id)">
-                    <div class="card-body d-flex flex-column">
-                        <!-- Título del libro -->
-                        <h5 class="card-title">{{ libro.titulo }}</h5>
+    <!-- Loading spinner -->
+    <div *ngIf="loading" class="text-center mt-4">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
 
-                        <!-- Autor del libro -->
-                        <p class="card-text text-muted mb-2">
-                            <span *ngIf="libro.autores && libro.autores.length > 0">
-                                Por <strong>
-                                    {{ libro.autores[0].nombre }} {{ libro.autores[0].apellido }}
-                                </strong>
-                            </span>
-                            <span *ngIf="!libro.autores || libro.autores.length === 0">
-                                Autor desconocido
-                            </span>
-                        </p>
+    <!-- Mensaje de no resultados -->
+    <div *ngIf="noResults && !loading" class="alert alert-info mt-4">
+        <i class="fas fa-info-circle"></i>
+        No se encontraron resultados para tu búsqueda.
+        <a routerLink="/principal" class="alert-link">Volver a la página principal</a>
+    </div>
 
-                        <!-- Precio del libro -->
-                        <p class="card-text fw-bold mt-auto">
-                            {{ libro.precio | currency:'EUR':'symbol':'1.2-2' }}
-                        </p>
+    <!-- Resultados para búsqueda de autor -->
+    <div *ngIf="searchType === 'autor' && !loading && !noResults">
+        <!-- Información del autor -->
+        <div *ngFor="let autor of results.autores" class="mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">{{autor.nombre}} {{autor.apellido}}</h3>
+                    <p class="card-text">{{autor.biografia}}</p>
+                </div>
+            </div>
+        </div>
 
-                        <!-- Botón para añadir al carrito -->
-                        <button class="btn btn-primary mt-2" (click)="addToCarrito(libro)">
-                            Añadir al carrito
-                        </button>
+        <!-- Libros del autor -->
+        <div *ngIf="librosRelacionados.length > 0">
+            <h4>Libros del autor</h4>
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div *ngFor="let libro of librosRelacionados" class="col">
+                    <div class="card h-100 clickable" (click)="getDetallesLibro(libro.id)">
+                        <img [src]="'/img/libroEjemplo.jpg'" class="card-img-top" [id]="'imagen-libro-' +libro.id"
+                            [alt]="'Imagen de '+libro.titulo">
+                        <div class="card-body">
+                            <h5 class="card-title">{{libro.titulo}}</h5>
+                            <p class="card-text">{{libro.precio | currency:'EUR':'symbol':'1.2-2'}}</p>
+                            <button class="btn btn-primary" (click)="$event.stopPropagation(); addToCarrito(libro)">
+                                Añadir al carrito
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Autores -->
-    <div *ngIf="results.autores?.length > 0" class="mt-4">
-        <h3>Autor</h3>
-        <div class="row">
-            <div *ngFor="let autor of results.autores" class="col-md-4 mb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">{{autor.nombre}}</h5>
-                        <p class="card-text">{{autor.biografia | slice:0:100}}...</p>
-                        <button class="btn btn-primary" [routerLink]="['/autores', autor.id]">Ver detalles</button>
+    <!-- Resultados para búsqueda de género -->
+    <div *ngIf="searchType === 'genero' && !loading && !noResults">
+        <!-- Información del género -->
+        <div *ngFor="let genero of results.generos" class="mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">{{genero.nombre}}</h3>
+                    <p class="card-text">{{genero.descripcion}}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Libros del género -->
+        <div *ngIf="librosRelacionados.length > 0">
+            <h4>Libros de este género</h4>
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div *ngFor="let libro of librosRelacionados" class="col">
+                    <div class="card h-100 clickable" (click)="getDetallesLibro(libro.id)">
+                        <img [src]="'/img/libroEjemplo.jpg'" class="card-img-top" [id]="'imagen-libro-' +libro.id"
+                            [alt]="'Imagen de '+libro.titulo">
+                        <div class="card-body">
+                            <h5 class="card-title">{{libro.titulo}}</h5>
+                            <p class="card-text">{{libro.precio | currency:'EUR':'symbol':'1.2-2'}}</p>
+                            <button class="btn btn-primary" (click)="$event.stopPropagation(); addToCarrito(libro)">
+                                Añadir al carrito
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Géneros -->
-    <div *ngIf="results.generos?.length > 0" class="mt-4">
-        <h3>Géneros</h3>
-        <div class="row">
-            <div *ngFor="let genero of results.generos" class="col-md-4 mb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">{{genero.nombre}}</h5>
-                        <p class="card-text">{{genero.descripcion}}</p>
-                        <button class="btn btn-primary" [routerLink]="['/generos', genero.id]">Ver detalles</button>
+    <!-- Resultados generales (búsqueda normal) -->
+    <div *ngIf="searchType === 'all' && !loading && !noResults">
+        <!-- Libros -->
+        <div *ngIf="results.libros?.length > 0" class="mt-4">
+            <h3>Libros</h3>
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div *ngFor="let libro of results.libros" class="col">
+                    <div class="card h-100 clickable" (click)="getDetallesLibro(libro.id)">
+                        <img [src]="'/img/libroEjemplo.jpg'" class="card-img-top" [id]="'imagen-libro-' +libro.id"
+                            [alt]="'Imagen de '+libro.titulo">
+                        <div class="card-body">
+                            <h5 class="card-title">{{libro.titulo}}</h5>
+                            <p class="card-text">{{libro.precio | currency:'EUR':'symbol':'1.2-2'}}</p>
+                            <button class="btn btn-primary" (click)="$event.stopPropagation(); addToCarrito(libro)">
+                                Añadir al carrito
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Autores -->
+        <div *ngIf="results.autores?.length > 0" class="mt-4">
+            <h3>Autores</h3>
+            <div class="row">
+                <div *ngFor="let autor of results.autores" class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{autor.nombre}} {{autor.apellido}}</h5>
+                            <p class="card-text">{{autor.biografia | slice:0:150}}...</p>
+                            <button class="btn btn-outline-primary" [routerLink]="['/autores', autor.id]">
+                                Ver más
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Géneros -->
+        <div *ngIf="results.generos?.length > 0" class="mt-4">
+            <h3>Géneros</h3>
+            <div class="row">
+                <div *ngFor="let genero of results.generos" class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{genero.nombre}}</h5>
+                            <p class="card-text">{{genero.descripcion | slice:0:150}}...</p>
+                            <button class="btn btn-outline-primary" [routerLink]="['/generos', genero.id]">
+                                Ver más
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
