@@ -35,6 +35,8 @@ import { LibroService } from './libro/libro.service';
 import { DetallesUsuarioComponent } from './detalles-usuario/detalles-usuario.component';
 import { FormUsuarioComponent } from './form-usuario/form-usuario.component';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
+import { LoginComponent } from './login/login.component';
+import { ErrorComponent } from './error/error.component';
 
 
 @NgModule({
@@ -65,7 +67,9 @@ import { ClickOutsideDirective } from './directives/click-outside.directive';
     FormGeneroComponent,
     FormValoracionComponent,
     DetallesUsuarioComponent,
-    ClickOutsideDirective
+    ClickOutsideDirective,
+    LoginComponent,
+    ErrorComponent
   ],
   imports: [
     BrowserModule,

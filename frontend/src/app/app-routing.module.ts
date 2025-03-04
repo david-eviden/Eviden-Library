@@ -20,6 +20,8 @@ import { FormValoracionComponent } from './form-valoracion/form-valoracion.compo
 import { ResultadoBusquedaComponent } from './resultado-busqueda/resultado-busqueda.component';
 import { DetallesUsuarioComponent } from './detalles-usuario/detalles-usuario.component';
 import { FormUsuarioComponent } from './form-usuario/form-usuario.component';
+import { AuthGuard } from './login/auth.guard';
+import { LoginComponent } from './login/login.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/principal', pathMatch: 'full' }, // Defecto
@@ -49,7 +51,20 @@ export const routes: Routes = [
   { path: 'valoracion/form', component: FormValoracionComponent },
   { path: 'valoracion/form/:id', component: FormValoracionComponent },
   { path: 'search-results', component: ResultadoBusquedaComponent},
-  { path: '**', redirectTo: '/error' } // Ruta de error
+  { path: 'login', component: LoginComponent },
+  { 
+    path: 'admin', 
+    component: AdminComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { 
+    path: 'usuario', 
+    component: UsuarioComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['USER', 'ADMIN'] } 
+  },
+  { path: '**', redirectTo: '/error' }
 ];
 
 @NgModule({

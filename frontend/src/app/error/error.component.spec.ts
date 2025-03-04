@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FormGeneroComponent } from './form-genero.component';
+import { ErrorComponent } from './error.component';
 
-describe('FormGeneroComponent', () => {
-  let component: FormGeneroComponent;
-  let fixture: ComponentFixture<FormGeneroComponent>;
+describe('ErrorComponent', () => {
+  let component: ErrorComponent;
+  let fixture: ComponentFixture<ErrorComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FormGeneroComponent]
+      declarations: [ErrorComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(FormGeneroComponent);
+    fixture = TestBed.createComponent(ErrorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
