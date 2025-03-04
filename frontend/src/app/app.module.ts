@@ -58,7 +58,7 @@ import { FormUsuarioComponent } from './form-usuario/form-usuario.component';
     ResultadoBusquedaComponent,
     PaginatorComponent,
     RankingComponent,
-    ClickOutsideDirective
+    ClickOutsideDirective,
     //AdminComponent
     AdminComponent,
     DetallesFavoritoComponent,

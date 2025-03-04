@@ -14,8 +14,24 @@
   width: 100%;
 }
 
+.nav-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+}
+
 .navbar .dropdown {
-  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.nav-row .flex-grow-1 {
+  flex: 1;
+  min-width: 0;
+}
+
+.nav-row .d-none.d-sm-flex {
+  flex-shrink: 0;
 }
 
 .navbar .d-flex.flex-grow-1 {
@@ -24,9 +40,7 @@
   justify-content: center;
 }
 
-
 @media (max-width: 700px) {
-
   .navbar .d-flex {
     flex-wrap: nowrap;
     justify-content: flex-start;
@@ -34,7 +48,6 @@
 }
 
 @media (max-width: 576px) {
-
   .btn-link {
     padding: 0.25rem;
   }
