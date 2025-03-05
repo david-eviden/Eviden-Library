@@ -56,13 +56,13 @@ export const routes: Routes = [
     path: 'admin', 
     component: AdminComponent,
     canActivate: [AuthGuard],
-    data: { roles: ['ADMIN'] } 
+    data: { roles: ['admin'] } 
   },
   { 
     path: 'usuario', 
     component: UsuarioComponent,
     canActivate: [AuthGuard],
-    data: { roles: ['USER', 'ADMIN'] } 
+    data: { roles: ['user', 'admin'] } 
   },
   { path: '**', redirectTo: '/error' }
 ];

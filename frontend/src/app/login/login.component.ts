@@ -25,24 +25,34 @@ export class LoginComponent {
       password: this.password
     }).subscribe({
       next: (usuario) => {
-        swal(  // Usamos 'swal' para la alerta
-          `Bienvenido ${usuario.nombre}`,
-          '',  // Mensaje vacío
-          'success'  // Usamos 'type' para indicar el tipo de alerta
+        console.log('Usuario completo:', usuario);
+        
+        swal(
+          `¡Bienvenido ${usuario.username}!`,
+          '',
+          'success'
         );
-
+  
         // Redirigir según el rol
-        if (usuario.rol === 'ADMIN') {
-          this.router.navigate(['/admin']);
-        } else {
-          this.router.navigate(['/principal']);
+        switch(usuario.rol) {
+          case 'ADMIN':
+            this.router.navigate(['/admin']);
+            break;
+          case 'USER':
+            this.router.navigate(['/principal']);
+            break;
+          default:
+            console.error('Rol no reconocido');
+            this.router.navigate(['/principal']);
         }
       },
       error: (error) => {
-        swal(  // Usamos 'swal' para la alerta
-          'Error de inicio de sesión',
+        console.error('Error de inicio de sesión:', error);
+        
+        swal(
+          'Error de inicio de sesión :(',
           error.error?.mensaje || 'Credenciales inválidas',
-          'error'  // Usamos 'type' para indicar el tipo de alerta
+          'error'
         );
       }
     });

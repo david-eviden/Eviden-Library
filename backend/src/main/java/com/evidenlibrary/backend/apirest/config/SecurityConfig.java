@@ -24,12 +24,19 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authz -> authz
-                // Permitir acceso público a endpoints específicos
-                .requestMatchers("/api/login").permitAll()
-                .requestMatchers("/api/public/**").permitAll()
-                // Requerir autenticación para otros endpoints
-                .requestMatchers("/api/**").authenticated()
-                .anyRequest().authenticated()
+            // Permitir acceso público a endpoints específicos
+            .requestMatchers("/api/login", "/api/principal", "/api/libros").permitAll()
+
+            // Rutas solo para ADMIN
+            .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+             // Rutas solo para USER
+             .requestMatchers("/api/usuario/**").hasRole("USER")
+
+             // Requerir autenticación para otros endpoints
+             .requestMatchers("/api/**").authenticated()
+              
+             .anyRequest().authenticated()
             )
             .oauth2ResourceServer(oauth2 -> oauth2
                 .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
