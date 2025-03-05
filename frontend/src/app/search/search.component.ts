@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, OnInit, Output } from '@angular/core';
 import { SearchService } from './search.service';
 import { Router } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
@@ -123,8 +123,11 @@ export class SearchComponent implements OnInit {
            (!results.generos || results.generos.length === 0);
   }
 
+  @HostListener('document:click', ['$event'])
   onClickOutside(event: Event): void {
-    if (!(event.target as HTMLElement).closest('.search-container')) {
+    const target = event.target as HTMLElement;
+  
+    if (target && target.closest && !target.closest('.search-container')) {
       this.showDropdown = false;
     }
   }

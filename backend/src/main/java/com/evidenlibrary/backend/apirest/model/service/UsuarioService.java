@@ -15,5 +15,7 @@ public interface UsuarioService {
 	public Usuario save(Usuario usuario);
 	
 	public void delete(Usuario usuario);
+
+	public Usuario findByEmail(String email);
 	
 }

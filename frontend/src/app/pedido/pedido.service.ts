@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { Pedido } from './pedido';
 import { Usuario } from '../usuario/usuario';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -11,10 +12,34 @@ export class PedidoService {
 
   private urlEndPoint: string = 'http://localhost:8080/api/pedidos'; 
   
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient, private router: Router) {}
+
+    // Método para obtener el token del localStorage
+    private getToken(): string | null {
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        this.router.navigate(['/login']);  // Redirigir al login si el token no está presente
+      }
+      return token;
+    }
+
+    // Método para crear cabeceras con el token
+    private createHeaders(): HttpHeaders {
+      const token = this.getToken();
+      let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    
+      if (token) {
+        headers = headers.append('Authorization', `Bearer ${token}`);
+        console.log('Token añadido en cabecera:', token);  // Log para ver si el token es correcto
+      } else {
+        console.log('No se encontró token en localStorage');
+      }
+    
+      return headers;
+    }
   
     getPedidos(): Observable<Pedido[]> {
-      return this.http.get<any[]>(this.urlEndPoint).pipe(
+      return this.http.get<any[]>(this.urlEndPoint, { headers: this.createHeaders() }).pipe(
         map(response => {
           return response.map(item => {
             const pedido = new Pedido();

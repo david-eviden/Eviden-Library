@@ -25,33 +25,33 @@ import { LoginComponent } from './login/login.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/principal', pathMatch: 'full' }, // Defecto
-  { path: 'principal', component: PrincipalComponent },
-  { path: 'admin', component: AdminComponent },
-  { path: 'libros', component: LibroComponent },
-  { path: 'libros/page/:page', component: LibroComponent},
-  { path: 'libro/form', component: FormLibroComponent },
-  { path: 'libro/form/:id', component: FormLibroComponent },
-  { path: 'libro/:id/comprar', component: DetallesLibroComponent },
-  { path: 'libro/:id', component: DetallesLibroComponent },
-  { path: 'autores', component: AutorComponent },
-  { path: 'autor/form', component: FormAutorComponent },
-  { path: 'autor/form/:id', component: FormAutorComponent },
-  { path: 'usuarios', component: UsuarioComponent },
-  { path: 'usuario/:id', component: DetallesUsuarioComponent },
-  { path: 'usuario/form/:id', component: FormUsuarioComponent },
-  { path: 'generos', component: GenerosComponent },
-  { path: 'genero/form', component: FormGeneroComponent },
-  { path: 'genero/form/:id', component: FormGeneroComponent },
-  { path: 'favoritos', component: FavoritoComponent },
-  { path: 'carrito', component: CarritoComponent },
-  { path: 'carrito/:id', component: DetallesCarritoComponent },
-  { path: 'pedidos', component: PedidoComponent },
-  { path: 'pedido/:id', component: DetallesPedidoComponent },
-  { path: 'valoraciones', component: ValoracionComponent },
-  { path: 'valoracion/form', component: FormValoracionComponent },
-  { path: 'valoracion/form/:id', component: FormValoracionComponent },
-  { path: 'search-results', component: ResultadoBusquedaComponent},
-  { path: 'login', component: LoginComponent },
+  { path: 'principal', component: PrincipalComponent }, // Todos
+  { path: 'admin', component: AdminComponent }, // Admin
+  { path: 'libros', component: LibroComponent }, // Todos
+  { path: 'libros/page/:page', component: LibroComponent}, // Todos
+  { path: 'libro/form', component: FormLibroComponent }, // Admin
+  { path: 'libro/form/:id', component: FormLibroComponent }, // Admin
+  { path: 'libro/:id/comprar', component: DetallesLibroComponent }, // Usuario
+  { path: 'libro/:id', component: DetallesLibroComponent }, // Todos
+  { path: 'autores', component: AutorComponent }, // Todos
+  { path: 'autor/form', component: FormAutorComponent }, // Admin
+  { path: 'autor/form/:id', component: FormAutorComponent }, // Admin
+  { path: 'usuarios', component: UsuarioComponent }, // Admin
+  { path: 'usuario/:id', component: DetallesUsuarioComponent }, // Usuario
+  { path: 'usuario/form/:id', component: FormUsuarioComponent }, // Usuario
+  { path: 'generos', component: GenerosComponent }, // Todos
+  { path: 'genero/form', component: FormGeneroComponent }, // Admin
+  { path: 'genero/form/:id', component: FormGeneroComponent }, // Admin
+  { path: 'favoritos', component: FavoritoComponent }, // Admin
+  { path: 'carrito', component: CarritoComponent }, // Admin
+  { path: 'carrito/:id', component: DetallesCarritoComponent }, // Admin y Usuario
+  { path: 'pedidos', component: PedidoComponent }, // Admin
+  { path: 'pedido/:id', component: DetallesPedidoComponent }, // Admin y Usuario
+  { path: 'valoraciones', component: ValoracionComponent }, // Todos
+  { path: 'valoracion/form', component: FormValoracionComponent }, // Admin y Usuario
+  { path: 'valoracion/form/:id', component: FormValoracionComponent }, // Admin y Usuario
+  { path: 'search-results', component: ResultadoBusquedaComponent}, // Todos
+  { path: 'login', component: LoginComponent }, // Todos
   { 
     path: 'admin', 
     component: AdminComponent,

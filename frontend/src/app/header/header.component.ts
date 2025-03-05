@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../login/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -9,6 +10,9 @@ import { RouterModule } from '@angular/router';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent {
+
+  constructor( private authService: AuthService) {}
+
   // Array de categorías (puedes añadir más según lo necesites)
   categorias = [
     { nombre: 'Ficción' },
@@ -21,5 +25,9 @@ export class HeaderComponent {
 
   onSearch(searchTerm: string){
     console.log('Busqueda: ', searchTerm);
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }
