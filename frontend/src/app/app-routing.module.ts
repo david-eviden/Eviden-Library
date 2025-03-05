@@ -24,46 +24,129 @@ import { AuthGuard } from './login/auth.guard';
 import { LoginComponent } from './login/login.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/principal', pathMatch: 'full' }, // Defecto
-  { path: 'principal', component: PrincipalComponent }, // Todos
-  { path: 'admin', component: AdminComponent }, // Admin
-  { path: 'libros', component: LibroComponent }, // Todos
-  { path: 'libros/page/:page', component: LibroComponent}, // Todos
-  { path: 'libro/form', component: FormLibroComponent }, // Admin
-  { path: 'libro/form/:id', component: FormLibroComponent }, // Admin
-  { path: 'libro/:id/comprar', component: DetallesLibroComponent }, // Usuario
-  { path: 'libro/:id', component: DetallesLibroComponent }, // Todos
-  { path: 'autores', component: AutorComponent }, // Todos
-  { path: 'autor/form', component: FormAutorComponent }, // Admin
-  { path: 'autor/form/:id', component: FormAutorComponent }, // Admin
-  { path: 'usuarios', component: UsuarioComponent }, // Admin
-  { path: 'usuario/:id', component: DetallesUsuarioComponent }, // Usuario
-  { path: 'usuario/form/:id', component: FormUsuarioComponent }, // Usuario
-  { path: 'generos', component: GenerosComponent }, // Todos
-  { path: 'genero/form', component: FormGeneroComponent }, // Admin
-  { path: 'genero/form/:id', component: FormGeneroComponent }, // Admin
-  { path: 'favoritos', component: FavoritoComponent }, // Admin
-  { path: 'carrito', component: CarritoComponent }, // Admin
-  { path: 'carrito/:id', component: DetallesCarritoComponent }, // Admin y Usuario
-  { path: 'pedidos', component: PedidoComponent }, // Admin
-  { path: 'pedido/:id', component: DetallesPedidoComponent }, // Admin y Usuario
-  { path: 'valoraciones', component: ValoracionComponent }, // Todos
-  { path: 'valoracion/form', component: FormValoracionComponent }, // Admin y Usuario
-  { path: 'valoracion/form/:id', component: FormValoracionComponent }, // Admin y Usuario
-  { path: 'search-results', component: ResultadoBusquedaComponent}, // Todos
-  { path: 'login', component: LoginComponent }, // Todos
+  // Rutas públicas (todos)
+  { path: '', redirectTo: '/principal', pathMatch: 'full' },
+  { path: 'principal', component: PrincipalComponent },
+  { path: 'libros', component: LibroComponent },
+  { path: 'libros/page/:page', component: LibroComponent},
+  { path: 'libro/:id', component: DetallesLibroComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'search-results', component: ResultadoBusquedaComponent},
+
+  // Rutas protegidas para ADMIN
   { 
     path: 'admin', 
     component: AdminComponent,
     canActivate: [AuthGuard],
-    data: { roles: ['admin'] } 
+    data: { roles: ['ADMIN'] } 
   },
   { 
-    path: 'usuario', 
+    path: 'libro/form', 
+    component: FormLibroComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { 
+    path: 'libro/form/:id', 
+    component: FormLibroComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { 
+    path: 'favoritos', 
+    component: FavoritoComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { path: 'autores', 
+    component: AutorComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { 
+    path: 'autor/form', 
+    component: FormAutorComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { 
+    path: 'autor/form/:id', 
+    component: FormAutorComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { path: 'generos', 
+    component: GenerosComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { 
+    path: 'genero/form', 
+    component: FormGeneroComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { 
+    path: 'genero/form/:id', 
+    component: FormGeneroComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { path: 'valoraciones', 
+    component: ValoracionComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { 
+    path: 'valoracion/form', 
+    component: FormValoracionComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { 
+    path: 'valoracion/form/:id', 
+    component: FormValoracionComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { path: 'usuarios', 
     component: UsuarioComponent,
     canActivate: [AuthGuard],
-    data: { roles: ['user', 'admin'] } 
+    data: { roles: ['ADMIN'] } 
   },
+  { path: 'pedidos', 
+    component: PedidoComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { 
+    path: 'carrito', 
+    component: CarritoComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+
+  // Rutas protegidas para USUARIO
+  { 
+    path: 'libro/:id/comprar', 
+    component: DetallesLibroComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['USER'] } 
+  },
+  { 
+    path: 'usuario/:id', 
+    component: DetallesUsuarioComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['USER', 'ADMIN'] } 
+  },
+  { 
+    path: 'usuario/form/:id', 
+    component: FormUsuarioComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['USER', 'ADMIN'] } 
+  },
+
+  // Ruta de error al final
   { path: '**', redirectTo: '/error' }
 ];
 
