@@ -140,26 +140,9 @@ export class FormLibroComponent implements OnInit {
     );
   }
 
-  // portada
-  onFileChange(event: any): void {
-    const file = event.target.files[0];  // Obtener el archivo seleccionado
-    if (file) {
-      // Establecer el tipo de imagen
-      this.libro.tipoImagen = file.type; // Almacenar el tipo de imagen (por ejemplo, "image/jpeg")
-
-      // Leer el archivo como ArrayBuffer
-      const reader = new FileReader();
-      
-
-      reader.onload = () => {
-        // Convertir el ArrayBuffer a un Uint8Array (representación en bytes)
-        const byteArray = new Uint8Array(reader.result as ArrayBuffer);
-        this.libro.imagen = byteArray;  // Almacenar los bytes en el libro
-      };
-
-      reader.readAsArrayBuffer(file);
-    }
-  }
+ imageLoad($fileContent: any){
+  this.libro.imagen = $fileContent;
+ }
 
   // Obtener libro por ID
   public cargarLibro(): void {
