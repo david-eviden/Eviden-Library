@@ -35,10 +35,19 @@ public class LibroServiceImpl implements LibroService {
         return libroDao.findAll(pageable);
     }
     
+    
     @Override
     @Transactional(readOnly = true)
     public List<Libro> getMejorValorados() {
         return libroDao.findTop10MejorValorados();
+    }
+    
+    // Método para obtener el libro y su valoración media
+    @Override
+    @Transactional(readOnly = true)
+    public Libro obtenerLibroConValoracionMedia(Long libroId) {
+        Libro libro = libroDao.findById(libroId).orElseThrow(() -> new RuntimeException("Libro no encontrado"));
+        return libro;
     }
 
 	@Override

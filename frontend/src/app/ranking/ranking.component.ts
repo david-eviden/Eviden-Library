@@ -32,7 +32,7 @@ export class RankingComponent implements OnInit {
         console.log('Fragmentos creados:', this.fragmentos);
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Error al obtener los libros:', error);
+        console.error('Error al obtener los libros carrusel :', error);
       }
     });
   }
