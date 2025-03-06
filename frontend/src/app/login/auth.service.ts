@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap, of } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -13,9 +13,20 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {
     // Intentar recuperar usuario del localStorage al iniciar
+    const accessToken = localStorage.getItem('access_token');
     const usuarioGuardado = localStorage.getItem('usuario');
-    if (usuarioGuardado) {
-      this.usuarioActualSubject.next(JSON.parse(usuarioGuardado));
+    
+    if (accessToken && usuarioGuardado) {
+      try {
+        const usuario = JSON.parse(usuarioGuardado);
+        this.usuarioActualSubject.next(usuario);
+      } catch (error) {
+        console.error('Error parsing user from localStorage', error);
+        this.logout(); // Limpiar datos inválidos
+      }
+    } else {
+      // Si no hay token, establecer explícitamente el valor a null
+      this.usuarioActualSubject.next(null);
     }
   }
 
@@ -107,14 +118,16 @@ export class AuthService {
   }
 
   get esAdmin() {
-    return this.usuarioActualSubject.value?.rol === 'admin';
+    return this.usuarioActualSubject.value?.rol === 'ADMIN';
   }
 
   get esUsuario() {
-    return this.usuarioActualSubject.value?.rol === 'user';
+    return this.usuarioActualSubject.value?.rol === 'USER';
   }
 
   estaLogueado(): boolean {
-    return !!this.usuarioActualSubject.value;
+    // Verificar si hay un token en localStorage
+    const token = localStorage.getItem('access_token');
+    return !!token;
   }
 }
