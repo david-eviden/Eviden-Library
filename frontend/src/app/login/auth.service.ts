@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthService {
+
   private urlEndPoint = 'http://localhost:8082/realms/EvidenLibrary/protocol/openid-connect/token';
   private usuarioActualSubject = new BehaviorSubject<any>(null);
   public usuarioActual = this.usuarioActualSubject.asObservable();
@@ -129,5 +130,13 @@ export class AuthService {
     // Verificar si hay un token en localStorage
     const token = localStorage.getItem('access_token');
     return !!token;
+  }
+
+  getCurrentUserId(): number {
+    // Obtener el usuario actual del BehaviorSubject
+    const usuarioActual = this.usuarioActualSubject.value;
+
+    // Devolver el ID si existe, o null si no hay usuario
+    return usuarioActual ? usuarioActual.id : 0;
   }
 }

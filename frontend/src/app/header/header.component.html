@@ -77,31 +77,49 @@
 
             <!-- Iconos de usuario, favoritos y carrito (visibles en pantallas grandes) -->
             <div class="d-none d-sm-flex gap-3">
-                <a routerLink="/usuario/1" class="btn btn-link text-decoration-none text-dark">
-                    <i class="bi bi-person-circle mx-2"></i> <span class="d-none d-md-inline">Perfil</span>
-                </a>
-                <a href="#" class="btn btn-link text-decoration-none text-dark">
-                    <i class="bi bi-heart-fill mx-2"></i> <span class="d-none d-md-inline">Favoritos</span>
-                </a>
-                <a href="#" class="btn btn-link text-dark">
-                    <i class="bi bi-cart4 mx-2"></i>
-                    <span class="badge bg-danger">3</span>
-                </a>
+                <div *ngIf="getLogueado()">
+                    <a [routerLink]="['/usuario', userId]" class="btn btn-link text-decoration-none text-dark">
+                        <i class="bi bi-person-circle mx-2"></i> <span class="d-none d-md-inline">Perfil</span>
+                    </a>
+                    <a href="#" class="btn btn-link text-decoration-none text-dark">
+                        <i class="bi bi-heart-fill mx-2"></i> <span class="d-none d-md-inline">Favoritos</span>
+                    </a>
+                    <a href="#" class="btn btn-link text-dark">
+                        <i class="bi bi-cart4 mx-2"></i>
+                        <span class="badge bg-danger">3</span>
+                    </a>
+                </div>
+
+                <!-- Si no esta logeado -->
+                <div *ngIf="!getLogueado()">
+                    <a [routerLink]="['/login']" class="btn btn-link text-decoration-none text-dark">
+                        <i class="bi bi-person-circle"></i> Inciar sesión
+                    </a>
+                </div>
             </div>
         </div>
 
         <!-- Segunda fila: iconos centrados (solo visible en móvil) -->
         <div class="nav-bottom-row d-sm-none d-flex justify-content-center gap-3 w-100 pt-2">
-            <a href="#" class="btn btn-link text-decoration-none text-dark">
-                <i class="bi bi-person-circle"></i> Perfil
-            </a>
-            <a href="#" class="btn btn-link text-decoration-none text-dark">
-                <i class="bi bi-heart-fill"></i> Favoritos
-            </a>
-            <a href="#" class="btn btn-link text-dark">
-                <i class="bi bi-cart4 m-1"></i>
-                <span class="badge bg-danger">3</span>
-            </a>
+            <div  *ngIf="getLogueado()">
+                <a [routerLink]="['/usuario', userId]" class="btn btn-link text-decoration-none text-dark">
+                    <i class="bi bi-person-circle"></i> Perfil
+                </a>
+                <a href="#" class="btn btn-link text-decoration-none text-dark">
+                    <i class="bi bi-heart-fill"></i> Favoritos
+                </a>
+                <a href="#" class="btn btn-link text-dark">
+                    <i class="bi bi-cart4 m-1"></i>
+                    <span class="badge bg-danger">3</span>
+                </a>
+            </div>
+
+            <!-- Si no esta logeado -->
+            <div *ngIf="!getLogueado()" class="d-flex align-items-center">
+                <a [routerLink]="['/login']" class="btn btn-primary rounded-pill px-4 py-2 text-white d-flex align-items-center">
+                  <i class="bi bi-person-circle me-2"></i> Iniciar sesión
+                </a>
+            </div>              
         </div>
     </div>
 </nav>

@@ -37,6 +37,12 @@ export class PedidoService {
     
       return headers;
     }
+
+    getPedidosPorUsuarioId(usuarioId: number): Observable<Pedido[]> {
+      return this.http.get<Pedido[]>(`${this.urlEndPoint}/usuario/${usuarioId}`, 
+        { headers: this.createHeaders() }
+      );
+    }
   
     getPedidos(): Observable<Pedido[]> {
       return this.http.get<any[]>(this.urlEndPoint, { headers: this.createHeaders() }).pipe(

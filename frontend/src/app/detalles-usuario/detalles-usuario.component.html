@@ -45,9 +45,9 @@
                         <!-- Rol (solo visible en desktop) -->
                         <p class="d-none d-md-flex align-items-center">
                             <i class="bi bi-person-badge me-2 text-primary"></i>
-                            <span [ngClass]="{'badge bg-primary': usuario.rol === 'ROLE_USER', 
-                                            'badge bg-danger': usuario.rol === 'ROLE_ADMIN'}">
-                                {{ usuario.rol === 'ROLE_USER' ? 'Cliente' : 'Administrador' }}
+                            <span [ngClass]="{'badge bg-primary': usuario.rol === 'USER', 
+                                            'badge bg-danger': usuario.rol === 'ADMIN'}">
+                                {{ usuario.rol === 'USER' ? 'Cliente' : 'Administrador' }}
                             </span>
                         </p>
                     </div>
@@ -64,13 +64,13 @@
                 </div>
             </div>
 
-            <!-- Sección de Pedidos
+            <!-- Sección de Pedidos -->
             <div class="row mt-5">
                 <div class="card-header bg-transparent text-center">
                     <h3 class="mb-0">Historial de Pedidos</h3>
                 </div>
                 <div class="card-body">
-                    <div *ngIf="usuario.pedidos.length === 0" class="alert alert-info">
+                    <div *ngIf="!usuario.pedidos || usuario.pedidos.length === 0" class="alert alert-info">
                         Este usuario aún no ha realizado ningún pedido.
                     </div>
                     <div class="table-responsive" *ngIf="usuario.pedidos.length != 0">
@@ -109,13 +109,13 @@
                 </div>
             </div>
 
-            <!-- Sección de Valoraciones 
+            <!-- Sección de Valoraciones -->
             <div class="row mt-4">
                 <div class="card-header bg-transparent text-center">
                     <h3 class="mb-0">Valoraciones Realizadas</h3>
                 </div>
                 <div class="card-body">
-                    <div *ngIf="usuario.valoraciones?.length === 0" class="alert alert-info">
+                    <div *ngIf="!usuario.valoraciones || usuario.valoraciones.length === 0" class="alert alert-info">
                         Este usuario aún no ha realizado valoraciones.
                     </div>
                     <div class="card mb-3" *ngFor="let valoracion of usuario.valoraciones">
@@ -156,7 +156,7 @@
                         </div>
                     </div>
                 </div>
-            </div> -->
+            </div>
         </div>
     </div>
 </div>

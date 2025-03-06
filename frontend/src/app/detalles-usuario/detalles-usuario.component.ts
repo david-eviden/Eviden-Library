@@ -33,31 +33,35 @@ export class DetallesUsuarioComponent implements OnInit {
   ngOnInit(): void {
     // Obtener el id del usuario desde la ruta
     const usuarioId = +this.route.snapshot.paramMap.get('id')!;
-
+  
     // Llamar al servicio para obtener el usuario por id
     this.usuarioService.obtenerUsuarioPorId(usuarioId).subscribe((usuario) => {
       this.usuario = usuario;
+      
+      // Inicializar las colecciones si no existen
+      if (!this.usuario.pedidos) this.usuario.pedidos = [];
+      if (!this.usuario.valoraciones) this.usuario.valoraciones = [];
+      
+      // Cargar los pedidos del usuario específico
+      this.pedidoService.getPedidosPorUsuarioId(usuarioId).subscribe(
+        (pedidos) => {
+          this.usuario.pedidos = pedidos;
+        },
+        (error) => {
+          console.error('Error al obtener los pedidos del usuario:', error);
+        }
+      );
+      
+      // Cargar las valoraciones del usuario específico
+      this.valoracionService.getValoracionesPorUsuarioId(usuarioId).subscribe(
+        (valoraciones) => {
+          this.usuario.valoraciones = valoraciones;
+        },
+        (error) => {
+          console.error('Error al obtener las valoraciones del usuario:', error);
+        }
+      );
     });
-
-    // Cargar pedidos
-    this.pedidoService.getPedidos().subscribe(
-      (pedidos) => {
-        this.pedidos = pedidos;
-      },
-      (error) => {
-        console.error('Error al obtener los pedidos:', error);
-      }
-    );
-
-    // Cargar valoraciones
-    this.valoracionService.getValoraciones().subscribe(
-      (valoraciones) => {
-        this.valoraciones = valoraciones;
-      },
-      (error) => {
-        console.error('Error al obtener las valoraciones:', error);
-      }
-    );
   }
 
   // Método helper para generar array de estrellas
