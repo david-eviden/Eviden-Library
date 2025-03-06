@@ -12,7 +12,7 @@ public interface LibroDao extends JpaRepository<Libro, Long> {
 	public List<Libro> findByTituloContainingIgnoreCaseOrAutores_NombreContainingIgnoreCaseOrGeneros_NombreContainingIgnoreCase(
             String titulo, String autor, String genero);
 	
-	@Query("SELECT l FROM Libro l ORDER BY l.valoracionMedia DESC")
+	@Query("SELECT l FROM Libro l ORDER BY l.valoracionMedia DESC LIMIT 10")
     List<Libro> findTop10MejorValorados();
 
 

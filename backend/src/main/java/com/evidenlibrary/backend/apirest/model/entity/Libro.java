@@ -145,15 +145,25 @@ public class Libro implements Serializable {
 	
 	//Valoracion media
 	public Double getValoracionMedia() {
-        if (valoraciones.isEmpty()) {
-            return 0.0; // Si no hay valoraciones, retornamos 0.0
+        if (valoraciones.isEmpty()) { // No hay valoraciones
+        	this.valoracionMedia = 0.0;
+        	return this.valoracionMedia;
         }
         // Calcular la media
-        double suma = 0.0;
+        /*double suma = 0.0;
         for (Valoracion v : valoraciones) {
             suma += v.getPuntuacion();
-        }
-        valoracionMedia = suma / valoraciones.size();
+        }*/
+        double suma = valoraciones.stream()
+        			.mapToDouble(Valoracion::getPuntuacion)
+        			.sum();
+        this.valoracionMedia = suma / valoraciones.size();
         return valoracionMedia;
     }
+
+	public void setValoracionMedia(Double valoracionMedia) {
+		this.valoracionMedia = valoracionMedia;
+	}
+	
+	
 }
