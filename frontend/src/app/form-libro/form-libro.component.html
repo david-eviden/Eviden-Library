@@ -11,21 +11,22 @@
             <h5 *ngIf="libro.id">Editar un Libro</h5>
         </div>
         <div class="card-body">
-            <form #librosForm="ngForm">
+            <form [formGroup]="libroForm">
                 <!-- Campo Titulo -->
                 <div class="form-group row mb-4">
                     <label for="titulo" class="col-sm-3 col-form-label">Título:</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control form-control-lg" [(ngModel)]="libro.titulo" name="titulo"
-                            #titulo="ngModel" placeholder="Título del libro..." maxlength="25" minlength="2" required>
-                        <div class="alert alert-danger mt-2" *ngIf="titulo.invalid && (titulo.dirty || titulo.touched)">
-                            <div *ngIf="titulo.errors?.['required']">
+                        <input type="text" class="form-control form-control-lg" formControlName="titulo"
+                            placeholder="Título del libro..." maxlength="25" minlength="2">
+                        <div class="alert alert-danger mt-2"
+                            *ngIf="libroForm.get('titulo')?.invalid && libroForm.get('titulo')?.touched">
+                            <div *ngIf="libroForm.get('titulo')?.errors?.['required']">
                                 El título es requerido
                             </div>
-                            <div *ngIf="titulo.errors?.['maxlength']">
+                            <div *ngIf="libroForm.get('titulo')?.errors?.['maxlength']">
                                 El título debe estar entre 2 y 25 caracteres
                             </div>
-                            <div *ngIf="titulo.errors?.['minlength']">
+                            <div *ngIf="libroForm.get('titulo')?.errors?.['minlength']">
                                 El título debe estar entre 2 y 25 caracteres
                             </div>
                         </div>
@@ -36,18 +37,17 @@
                 <div class="form-group row mb-4">
                     <label for="descripcion" class="col-sm-3 col-form-label">Descripción:</label>
                     <div class="col-sm-9">
-                        <textarea class="form-control form-control-lg" [(ngModel)]="libro.descripcion"
-                            name="descripcion" #descripcion="ngModel" rows="3" placeholder="Descripción del libro..."
-                            minlength="10" maxlength="250" required></textarea>
+                        <textarea class="form-control form-control-lg" formControlName="descripcion" rows="3"
+                            placeholder="Descripción del libro..." minlength="10" maxlength="250"></textarea>
                         <div class="alert alert-danger mt-2"
-                            *ngIf="descripcion.invalid && (descripcion.dirty || descripcion.touched)">
-                            <div *ngIf="descripcion.errors?.['required']">
+                            *ngIf="libroForm.get('descripcion')?.invalid && libroForm.get('descripcion')?.touched">
+                            <div *ngIf="libroForm.get('descripcion')?.errors?.['required']">
                                 La descripción es requerida
                             </div>
-                            <div *ngIf="descripcion.errors?.['maxlength']">
+                            <div *ngIf="libroForm.get('descripcion')?.errors?.['maxlength']">
                                 La descripcion debe estar entre 25 y 250 caracteres
                             </div>
-                            <div *ngIf="descripcion.errors?.['minlength']">
+                            <div *ngIf="libroForm.get('descripcion')?.errors?.['minlength']">
                                 La descripcion debe estar entre 25 y 250 caracteres
                             </div>
                         </div>
@@ -58,10 +58,10 @@
                 <div class="form-group row mb-4">
                     <label for="precio" class="col-sm-3 col-form-label">Precio:</label>
                     <div class="col-sm-9">
-                        <input type="number" class="form-control form-control-lg" [(ngModel)]="libro.precio"
-                            name="precio" #precio="ngModel" required>
-                        <div class="alert alert-danger mt-2" *ngIf="precio.invalid && (precio.dirty || precio.touched)">
-                            <div *ngIf="precio.errors?.['required']">
+                        <input type="number" class="form-control form-control-lg" formControlName="precio">
+                        <div class="alert alert-danger mt-2"
+                            *ngIf="libroForm.get('precio')?.invalid && libroForm.get('precio')?.touched">
+                            <div *ngIf="libroForm.get('precio')?.errors?.['required']">
                                 El precio es requerido
                             </div>
                         </div>
@@ -72,10 +72,10 @@
                 <div class="form-group row mb-4">
                     <label for="stock" class="col-sm-3 col-form-label">Stock:</label>
                     <div class="col-sm-9">
-                        <input type="number" class="form-control form-control-lg" [(ngModel)]="libro.stock" name="stock"
-                            #stock="ngModel" required>
-                        <div class="alert alert-danger mt-2" *ngIf="stock.invalid && (stock.dirty || stock.touched)">
-                            <div *ngIf="stock.errors?.['required']">
+                        <input type="number" class="form-control form-control-lg" formControlName="stock">
+                        <div class="alert alert-danger mt-2"
+                            *ngIf="libroForm.get('stock')?.invalid && libroForm.get('stock')?.touched">
+                            <div *ngIf="libroForm.get('stock')?.errors?.['required']">
                                 El stock es requerido
                             </div>
                         </div>
@@ -87,34 +87,34 @@
                     <label for="imagen" class="col-sm-3 col-form-label">Imagen:</label>
                     <div class="col-sm-9">
                         <input type="file" class="form-control form-control-lg" (change)="onFileChange($event)"
-                            name="imagen" [(ngModel)]="libro.imagen" #imagen="ngModel"
-                            placeholder="Imagen del libro...">
-                        <div class="alert alert-danger mt-2" *ngIf="imagen.invalid && (imagen.dirty || imagen.touched)">
-                            <div *ngIf="imagen.errors?.['required']">
+                            accept="image/*">
+                        <div class="alert alert-danger mt-2"
+                            *ngIf="libroForm.get('imagen')?.invalid && libroForm.get('imagen')?.touched">
+                            <div *ngIf="libroForm.get('imagen')?.errors?.['required']">
                                 La imagen es requerida
                             </div>
                         </div>
                     </div>
                 </div>
 
-
                 <!-- Campo Autor -->
                 <div class="form-group row mb-4">
                     <label for="autor" class="col-sm-3 col-form-label">Autor:</label>
                     <div class="col-sm-9">
-                        <select class="form-select form-select-lg" [(ngModel)]="autorSeleccionado.id" name="autor"
-                            #autor="ngModel" required (change)="seleccionarAutor($event)">
+                        <select class="form-select form-select-lg" formControlName="autor"
+                            (change)="seleccionarAutor($event)">
                             <option value="0">Seleccione un autor</option>
                             <option *ngFor="let autor of autores" [value]="autor.id">{{ autor.nombre }}</option>
                             <option value="crearAutor">+ Añadir un autor</option>
                         </select>
-                        <div class="alert alert-danger mt-2" *ngIf="autor.invalid && (autor.dirty || autor.touched)">
-                            <div *ngIf="autor.errors?.['required']">
+                        <div class="alert alert-danger mt-2"
+                            *ngIf="libroForm.get('autor')?.invalid && libroForm.get('autor')?.touched">
+                            <div *ngIf="libroForm.get('autor')?.errors?.['required']">
                                 El autor es requerido
                             </div>
                         </div>
                         <div class="alert alert-danger mt-2"
-                            *ngIf="autor.valid && autorSeleccionado.id === 0 && (autor.dirty || autor.touched)">
+                            *ngIf="libroForm.get('autor')?.valid && autorSeleccionado.id === 0 && libroForm.get('autor')?.touched">
                             Debe seleccionar un autor válido
                         </div>
                     </div>
@@ -124,19 +124,20 @@
                 <div class="form-group row mb-4">
                     <label for="genero" class="col-sm-3 col-form-label">Género:</label>
                     <div class="col-sm-9">
-                        <select class="form-select form-select-lg" [(ngModel)]="generoSeleccionado.id" name="genero"
-                            #genero="ngModel" required (change)="seleccionarGenero($event)">
+                        <select class="form-select form-select-lg" formControlName="genero"
+                            (change)="seleccionarGenero($event)">
                             <option value="0">Seleccione un género</option>
                             <option *ngFor="let genero of generos" [value]="genero.id">{{ genero.nombre }}</option>
                             <option value="crearGenero">+ Añadir un género</option>
                         </select>
-                        <div class="alert alert-danger mt-2" *ngIf="genero.invalid && (genero.dirty || genero.touched)">
-                            <div *ngIf="genero.errors?.['required']">
+                        <div class="alert alert-danger mt-2"
+                            *ngIf="libroForm.get('genero')?.invalid && libroForm.get('genero')?.touched">
+                            <div *ngIf="libroForm.get('genero')?.errors?.['required']">
                                 El género es requerido
                             </div>
                         </div>
                         <div class="alert alert-danger mt-2"
-                            *ngIf="genero.valid && generoSeleccionado.id === 0 && (genero.dirty || genero.touched)">
+                            *ngIf="libroForm.get('genero')?.valid && generoSeleccionado.id === 0 && libroForm.get('genero')?.touched">
                             Debe seleccionar un género válido
                         </div>
                     </div>
@@ -146,12 +147,12 @@
                 <div class="form-group row mt-5">
                     <div class="col-sm-9 offset-sm-3">
                         <button class="btn btn-success me-3" role="button" (click)="create()" *ngIf="!libro.id"
-                            [disabled]="!librosForm.form.valid || autorSeleccionado.id === 0 || generoSeleccionado.id === 0">
+                            [disabled]="!libroForm.valid || autorSeleccionado.id === 0 || generoSeleccionado.id === 0">
                             <i class="bi bi-plus-lg"></i> Crear
                         </button>
 
                         <button class="btn btn-warning" role="button" (click)="update()" *ngIf="libro.id"
-                            [disabled]="!librosForm.form.valid || autorSeleccionado.id === 0 || generoSeleccionado.id === 0">
+                            [disabled]="!libroForm.valid || autorSeleccionado.id === 0 || generoSeleccionado.id === 0">
                             <i class="bi bi-pencil"></i> Editar
                         </button>
                     </div>
