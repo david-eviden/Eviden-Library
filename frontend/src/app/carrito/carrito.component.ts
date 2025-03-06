@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Carrito } from './carrito';
 import { CarritoService } from './carrito.service';
+import { AuthService } from '../login/auth.service';
 
 @Component({
   selector: 'app-carrito',
@@ -11,7 +12,7 @@ import { CarritoService } from './carrito.service';
 export class CarritoComponent implements OnInit {
   carritos: Carrito[] = [];
 
-  constructor(private carritoService: CarritoService) {}
+  constructor(private carritoService: CarritoService,  public authService: AuthService ) {}
 
   ngOnInit(): void {
     this.carritoService.getCarritos().subscribe(

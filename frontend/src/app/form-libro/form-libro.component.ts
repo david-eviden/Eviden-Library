@@ -7,6 +7,7 @@ import { Autor } from '../autor/autor';
 import { AutorService } from '../autor/autor.service';
 import { GeneroService } from '../generos/generos.service';
 import { Genero } from '../generos/generos';
+import { AuthService } from '../login/auth.service';
 
 @Component({
   selector: 'app-form-libro',
@@ -29,6 +30,7 @@ export class FormLibroComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private autorService: AutorService,
     private generoService: GeneroService,
+    public authService: AuthService
   ) { }
 
   ngOnInit(): void {

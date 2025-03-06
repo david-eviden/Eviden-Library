@@ -7,6 +7,7 @@ import { PedidoService } from '../pedido/pedido.service';
 import { Pedido } from '../pedido/pedido';
 import { Valoracion } from '../valoracion/valoracion';
 import { ValoracionService } from '../valoracion/valoracion.service';
+import { AuthService } from '../login/auth.service';
 
 @Component({
   selector: 'app-detalles-usuario',
@@ -25,7 +26,8 @@ export class DetallesUsuarioComponent implements OnInit {
     private router: Router,
     private usuarioService: DetallesUsuarioService,
     private pedidoService: PedidoService,
-    private valoracionService: ValoracionService
+    private valoracionService: ValoracionService,
+    public authService: AuthService
   ) {}
 
   ngOnInit(): void {

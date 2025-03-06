@@ -5,7 +5,7 @@
         </div>
     </ul>
 
-    <div class="card shadow-lg">
+    <div *ngIf="authService.esAdmin" class="card shadow-lg">
         <div class="card-header">
             <h5 *ngIf="!autor.id">Crear un Autor</h5>
             <h4 *ngIf="autor.id">Editar un Autor</h4>

@@ -4,6 +4,7 @@ import { Libro } from './libro';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { filter, tap } from 'rxjs';
 import swal from 'sweetalert2';
+import { AuthService } from '../login/auth.service';
 
 @Component({
   selector: 'app-libro',
@@ -20,7 +21,12 @@ export class LibroComponent implements OnInit{
   currentPageSize: number = 6; // Tamaño de página por defecto
   currentPage: number = 0; // Página actual
 
-  constructor(private libroService: LibroService, private router: Router, private activatedRoute: ActivatedRoute) {
+  constructor(
+    private libroService: LibroService, 
+    private router: Router, 
+    private activatedRoute: ActivatedRoute, 
+    public authService: AuthService
+  ) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationStart)
     ).subscribe(() => {

@@ -6,6 +6,7 @@ import { Valoracion } from '../valoracion/valoracion';
 import { ValoracionService } from '../valoracion/valoracion.service';
 import swal from 'sweetalert2';
 import { filter, tap } from 'rxjs';
+import { AuthService } from '../login/auth.service';
 
 
 @Component({
@@ -22,7 +23,8 @@ export class DetallesLibroComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private libroService: DetallesLibroService,
-    private valoracionService: ValoracionService
+    private valoracionService: ValoracionService,
+    public authService: AuthService
   ) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationStart)

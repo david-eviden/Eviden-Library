@@ -25,7 +25,7 @@
                 <h4 class="mb-2 text-muted">{{ genero.nombre }}</h4>
                 <p class="text-muted">{{ genero.descripcion }}</p>
             </div>
-            <div class="d-flex flex-sm-row flex-md-row gap-2">
+            <div  *ngIf="authService.esAdmin" class="d-flex flex-sm-row flex-md-row gap-2">
                 <button type="button" name="editar" [routerLink]="['/genero/form', genero.id]" class="btn btn-secondary text-nowrap">
                     <i class="bi bi-pencil me-2"></i>Editar
                 </button>

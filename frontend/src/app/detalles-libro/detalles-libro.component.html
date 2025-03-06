@@ -54,7 +54,7 @@
                     </div>
                     
                     <!-- Botones de acción (solo si cliente)-->
-                    <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 mt-custom">
+                    <div *ngIf="authService.esUsuario" class="d-flex flex-column flex-sm-row justify-content-between gap-2 mt-custom">
                         <button class="btn btn-primary btn-lg">
                             <i class="bi bi-cart-plus me-2"></i>Añadir al carrito
                         </button>
@@ -64,7 +64,7 @@
                     </div>
 
                     <!-- Botones de acción (solo si admin) -->
-                    <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 mb-5">
+                    <div *ngIf="authService.esAdmin" class="d-flex flex-column flex-sm-row justify-content-between gap-2 mb-5">
                         <button type="button" name="editar" [routerLink]="['/libro/form', libro.id]" class="btn btn-secondary btn-lg">
                             <i class="bi bi-pencil me-2"></i>Editar libro
                         </button>
@@ -115,7 +115,7 @@
                                 {{ valoracion.fecha | date:'dd/MM/yyyy' }}
                             </small>
                         </a>
-                        <div class="d-flex justify-content-end gap-2 mt-3">
+                        <div *ngIf="authService.esAdmin" class="d-flex justify-content-end gap-2 mt-3">
                             <button type="button" name="editar" [routerLink]="['/valoracion/form', valoracion.id]" class="btn btn-secondary text-nowrap">
                                 <i class="bi bi-pencil me-2"></i>Editar
                             </button>

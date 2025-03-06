@@ -7,6 +7,7 @@ import { Usuario } from '../usuario/usuario';
 import { UsuarioService } from '../usuario/usuario.service';
 import { Libro } from '../libro/libro';
 import { LibroService } from '../libro/libro.service';
+import { AuthService } from '../login/auth.service';
 
 @Component({
   selector: 'app-form-valoracion',
@@ -27,6 +28,7 @@ export class FormValoracionComponent implements OnInit {
     private libroService: LibroService,
     public router: Router, 
     private activatedRoute: ActivatedRoute,
+    public authService: AuthService
   ) { }
 
   ngOnInit(): void {

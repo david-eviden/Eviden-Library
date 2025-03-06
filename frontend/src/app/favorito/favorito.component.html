@@ -18,7 +18,7 @@
                 <p class="mb-0">{{item.libro.titulo}} - ${{item.libro.precio}}</p>
                 <small class="text-muted">Fecha: {{item.fechaAgregado | date:'dd/MM/yyyy'}}</small>
               </div>
-              <a [routerLink]="['/libro', item.libro?.id]" routerLinkActive="active"><button class="btn btn-primary btn-sm" >Ver</button></a>
+              <a *ngIf="authService.esAdmin" [routerLink]="['/libro', item.libro?.id]" routerLinkActive="active"><button class="btn btn-primary btn-sm" >Ver</button></a>
             </li>
           </ul>
         </div>

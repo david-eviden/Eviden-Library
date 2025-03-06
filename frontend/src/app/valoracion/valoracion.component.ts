@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Valoracion } from './valoracion';
 import { ValoracionService } from './valoracion.service';
 import swal from 'sweetalert2';
+import { AuthService } from '../login/auth.service';
 
 @Component({
   selector: 'app-valoracion',
@@ -12,7 +13,7 @@ import swal from 'sweetalert2';
 export class ValoracionComponent implements OnInit {
   valoraciones: Valoracion[] = [];
 
-  constructor(private valoracionService: ValoracionService) {}
+  constructor(private valoracionService: ValoracionService, public authService: AuthService ) {}
 
   ngOnInit(): void {
     this.valoracionService.getValoraciones().subscribe(

@@ -57,7 +57,7 @@
                         <button type="button" name="editar" [routerLink]="['/usuario/form', usuario.id]" class="btn btn-secondary btn-lg">
                             <i class="bi bi-pencil me-2"></i>Editar perfil
                         </button>
-                        <button type="button" name="eliminar" (click)="delete(usuario)" class="btn btn-danger btn-lg">
+                        <button *ngIf="authService.esAdmin" type="button" name="eliminar" (click)="delete(usuario)" class="btn btn-danger btn-lg">
                             <i class="bi bi-trash3 me-2"></i>Eliminar usuario
                         </button>
                     </div>
