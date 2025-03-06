@@ -302,9 +302,14 @@ export class FormLibroComponent implements OnInit {
 
         // Si error
         err => {
-          this.errors = err.error.errores as string[];
-          console.error('Código del error (backend): ' + err.error.status);
-          console.error(err.error.errores);
+          if(err.error && err.error.errores){
+            this.errors = err.error.errores as string[];
+            console.error('Código del error (backend): ' + err.error.status);
+            console.error(err.error.errores);
+          }else{
+            this.errors = ['Error de comunicacion con el servidor'];
+            console.error('Error general:', err);
+          }
         }
       );
     } else {
