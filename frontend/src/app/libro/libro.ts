@@ -10,6 +10,7 @@ export class Libro {
     imagen: string = "";
     descripcion: String = "";
     valoraciones: Valoracion[] = [];
+    valoracionMedia: number = 0;
     autores: Autor[] = [];
     generos: Genero[] = [];
 }

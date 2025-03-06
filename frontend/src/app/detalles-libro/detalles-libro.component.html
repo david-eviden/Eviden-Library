@@ -10,20 +10,25 @@
         <div class="card-body">
             <div class="row m-1">
                 <div class="col-md-4 text-center mb-4 mb-md-0">
-                    <img [src]="'/img/libroEjemplo.jpg'" 
-                         [id]="'imagen-libro-' + libro.id" 
-                         class="img-fluid book-cover" 
-                         alt="Imagen de {{ libro.titulo }}"
-                         [style.view-transition-name]="'imagen-libro-' + libro.id">
+                    <img [src]="'/img/libroEjemplo.jpg'" [id]="'imagen-libro-' + libro.id" class="img-fluid book-cover"
+                        alt="Imagen de {{ libro.titulo }}" [style.view-transition-name]="'imagen-libro-' + libro.id">
                 </div>
 
 
                 <div class="col-md-8">
                     <!-- Información del libro -->
-                    <h3 class="book-title" [style.view-transition-name]="'titulo-libro-' + libro.id">{{ libro.titulo }}</h3>
+                    <h3 class="book-title" [style.view-transition-name]="'titulo-libro-' + libro.id">{{ libro.titulo }}
+                    </h3>
                     <p class="text-muted autor" [style.view-transition-name]="'autor-libro-' + libro.autores[0].id">
                         Por <strong>{{ libro.autores[0].nombre }}</strong>
                     </p>
+                    <div class="stars-container">
+                        <span class="star-rating">
+                            <i class="bi bi-star-fill text-warning"
+                                *ngFor="let star of getStarsArray(libro.valoracionMedia)"></i>
+                            <i class="bi bi-star" *ngFor="let star of getEmptyStarsArray(libro.valoracionMedia)"></i>
+                        </span>
+                    </div>
                     <p class="text-muted descripcion">
                         {{ libro.descripcion }}
                     </p>
@@ -52,7 +57,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Botones de acción (solo si cliente)-->
                     <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 mt-custom">
                         <button class="btn btn-primary btn-lg">
@@ -65,7 +70,8 @@
 
                     <!-- Botones de acción (solo si admin) -->
                     <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 mb-5">
-                        <button type="button" name="editar" [routerLink]="['/libro/form', libro.id]" class="btn btn-secondary btn-lg">
+                        <button type="button" name="editar" [routerLink]="['/libro/form', libro.id]"
+                            class="btn btn-secondary btn-lg">
                             <i class="bi bi-pencil me-2"></i>Editar libro
                         </button>
                         <button type="button" name="eliminar" (click)="delete(libro)" class="btn btn-danger btn-lg">
@@ -85,48 +91,50 @@
                     <div *ngIf="libro.valoraciones.length === 0" class="alert alert-info">
                         Este libro aún no tiene valoraciones.
                     </div>
-                <div class="card mb-3" *ngFor="let valoracion of libro.valoraciones">
-                    <div class="card-body">
-                        <a [routerLink]="['/usuario', valoracion.usuario?.id]">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <h5 class="card-title">{{ valoracion.usuario?.nombre }} {{ valoracion.usuario?.apellido }}</h5>
-                                    <h6 class="text-muted">
-                                        {{ valoracion.usuario?.email }}
-                                    </h6>
+                    <div class="card mb-3" *ngFor="let valoracion of libro.valoraciones">
+                        <div class="card-body">
+                            <a [routerLink]="['/usuario', valoracion.usuario?.id]">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h5 class="card-title">{{ valoracion.usuario?.nombre }} {{
+                                            valoracion.usuario?.apellido }}</h5>
+                                        <h6 class="text-muted">
+                                            {{ valoracion.usuario?.email }}
+                                        </h6>
+                                    </div>
+                                    <div class="stars-container">
+                                        <span class="star-rating">
+                                            <i class="bi bi-star-fill text-warning"
+                                                *ngFor="let star of getStarsArray(valoracion.puntuacion)"></i>
+                                            <i class="bi bi-star"
+                                                *ngFor="let star of getEmptyStarsArray(valoracion.puntuacion)"></i>
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="stars-container">
-                                    <span class="star-rating">
-                                        <i class="bi bi-star-fill text-warning" 
-                                           *ngFor="let star of getStarsArray(valoracion.puntuacion)"></i>
-                                        <i class="bi bi-star" 
-                                           *ngFor="let star of getEmptyStarsArray(valoracion.puntuacion)"></i>
-                                    </span>
-                                </div>
+
+                                <p class="card-text mt-3">
+                                    <i class="bi bi-quote"></i>
+                                    {{ valoracion.comentario }}
+                                    <i class="bi bi-quote"></i>
+                                </p>
+
+                                <small class="text-muted">
+                                    {{ valoracion.fecha | date:'dd/MM/yyyy' }}
+                                </small>
+                            </a>
+                            <div class="d-flex justify-content-end gap-2 mt-3">
+                                <button type="button" name="editar" [routerLink]="['/valoracion/form', valoracion.id]"
+                                    class="btn btn-secondary text-nowrap">
+                                    <i class="bi bi-pencil me-2"></i>Editar
+                                </button>
+                                <button type="button" name="eliminar" (click)="deleteValoracion(valoracion)"
+                                    class="btn btn-danger text-nowrap">
+                                    <i class="bi bi-person-x me-2"></i>Eliminar
+                                </button>
                             </div>
-
-                            <p class="card-text mt-3">
-                                <i class="bi bi-quote"></i>
-                                {{ valoracion.comentario }}
-                                <i class="bi bi-quote"></i>
-                            </p>
-
-                            <small class="text-muted">
-                                {{ valoracion.fecha | date:'dd/MM/yyyy' }}
-                            </small>
-                        </a>
-                        <div class="d-flex justify-content-end gap-2 mt-3">
-                            <button type="button" name="editar" [routerLink]="['/valoracion/form', valoracion.id]" class="btn btn-secondary text-nowrap">
-                                <i class="bi bi-pencil me-2"></i>Editar
-                            </button>
-                            <button type="button" name="eliminar" (click)="deleteValoracion(valoracion)" class="btn btn-danger text-nowrap">
-                                <i class="bi bi-person-x me-2"></i>Eliminar
-                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
