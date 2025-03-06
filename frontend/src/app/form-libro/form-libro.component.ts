@@ -202,7 +202,7 @@ export class FormLibroComponent implements OnInit {
         json => {
           this.router.navigate(['/libros']);
           // Mensaje SweetAlert
-          swal('Nuevo libro', `Libro ${json.libro.titulo} creado con éxito`, 'success');
+          swal('Nuevo libro', `Libro ${this.libro.titulo} creado con éxito`, 'success');
         },
 
         // Si error
@@ -297,7 +297,7 @@ export class FormLibroComponent implements OnInit {
         json => {
           this.router.navigate(['/libros']);
           //Mensaje
-          swal('Libro Actualizado', `Libro ${json.libro.titulo} actualizado con éxito`, 'success');
+          swal('Libro Actualizado', `Libro ${this.libro.titulo} actualizado con éxito`, 'success');
         },
 
         // Si error
