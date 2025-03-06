@@ -9,7 +9,7 @@ import { Usuario } from '../usuario/usuario';
 })
 export class PedidoService {
 
-  private urlEndPoint: string = 'http://localhost:8080/api/pedidos'; 
+  private urlEndPoint: string = 'http://localhost:8081/api/pedidos'; 
   
     constructor(private http: HttpClient) {}
   

@@ -35,10 +35,41 @@ public class LibroServiceImpl implements LibroService {
         return libroDao.findAll(pageable);
     }
     
+    
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public List<Libro> getMejorValorados() {
+    	//Actualizo valoraciones medias
+    	List<Libro> todosLibros = libroDao.findAll();
+    	for (Libro libro : todosLibros) {
+    		if(!libro.getValoraciones().isEmpty()) {
+    			double suma = libro.getValoraciones().stream()
+    							.mapToDouble(valoracion -> valoracion.getPuntuacion())
+    							.sum();
+    			libro.setValoracionMedia(suma / libro.getValoraciones().size());
+    			libroDao.save(libro);
+    		}
+    	}
         return libroDao.findTop10MejorValorados();
+    }
+    
+    // Método para obtener el libro y su valoración media
+    @Override
+    @Transactional
+    public Libro obtenerLibroConValoracionMedia(Long libroId) {
+        Libro libro = libroDao.findById(libroId).orElseThrow(() -> new RuntimeException("Libro no encontrado"));
+        
+        //Actualizo valoracion media
+        if(libro.getValoraciones().isEmpty()) {
+        	libro.setValoracionMedia(0.0);
+        } else {
+        	double suma = libro.getValoraciones().stream()
+        					.mapToDouble(valoracion -> valoracion.getPuntuacion())
+        					.sum();
+        	libro.setValoracionMedia(suma / libro.getValoraciones().size());
+        }
+        
+        return libroDao.save(libro);
     }
 
 	@Override

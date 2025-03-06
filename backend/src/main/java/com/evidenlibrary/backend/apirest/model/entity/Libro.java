@@ -20,6 +20,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -76,7 +77,9 @@ public class Libro implements Serializable {
     @OneToMany(mappedBy = "libro", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
     private final List<Favorito> favoritos = new ArrayList<>();
-
+    
+    @Column(name = "valoracion_media", nullable = true)
+    private Double valoracionMedia;
     
     // Getter/Setter
     
@@ -139,4 +142,28 @@ public class Libro implements Serializable {
 	public Long getId() {
 		return id;
 	}
+	
+	//Valoracion media
+	public Double getValoracionMedia() {
+        if (valoraciones.isEmpty()) { // No hay valoraciones
+        	this.valoracionMedia = 0.0;
+        	return this.valoracionMedia;
+        }
+        // Calcular la media
+        /*double suma = 0.0;
+        for (Valoracion v : valoraciones) {
+            suma += v.getPuntuacion();
+        }*/
+        double suma = valoraciones.stream()
+        			.mapToDouble(Valoracion::getPuntuacion)
+        			.sum();
+        this.valoracionMedia = suma / valoraciones.size();
+        return valoracionMedia;
+    }
+
+	public void setValoracionMedia(Double valoracionMedia) {
+		this.valoracionMedia = valoracionMedia;
+	}
+	
+	
 }

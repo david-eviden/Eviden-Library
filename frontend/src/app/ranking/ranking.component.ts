@@ -28,11 +28,11 @@ export class RankingComponent implements OnInit {
         this.libros = data;
         this.fragmentos = []; // Reiniciar fragmentos antes de dividir
         this.slide(); // dividir los libros en fragmentos
-        console.log('Libros cargados:', this.libros);
-        console.log('Fragmentos creados:', this.fragmentos);
+        //console.log('Libros cargados:', this.libros);
+        //console.log('Fragmentos creados:', this.fragmentos);
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Error al obtener los libros:', error);
+        console.error('Error al obtener los libros carrusel :', error);
       }
     });
   }

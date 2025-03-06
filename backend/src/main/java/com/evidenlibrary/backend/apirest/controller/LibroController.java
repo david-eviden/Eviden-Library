@@ -73,6 +73,7 @@ public class LibroController {
     public List<Libro> getMejorValorados() {
         return libroService.getMejorValorados();
     }
+    
 
 	// Obtener libros por ID
 	@GetMapping("/libro/{id}")
@@ -82,6 +83,8 @@ public class LibroController {
 		Map<String, Object> response = new HashMap<>();
 
 		try {
+			//calcula la media cada vez que carga
+			libroService.obtenerLibroConValoracionMedia(id);
 			libro = libroService.findById(id);
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar la consulta en la base de datos");
