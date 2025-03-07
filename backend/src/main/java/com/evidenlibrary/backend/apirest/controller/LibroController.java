@@ -121,7 +121,7 @@ public class LibroController {
 	// Actualizar libro
 	@PutMapping("/libro/{id}")
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<?> update(@RequestBody Libro libro, BindingResult result, @PathVariable Long id) {
+	public ResponseEntity<?> update(@RequestBody Libro libro,@RequestParam("imagen") MultipartFile imagen, BindingResult result, @PathVariable Long id) throws IOException {
 
 		Libro currentLibro = this.libroService.findById(id);
 		Libro nuevoLibro;
@@ -148,6 +148,16 @@ public class LibroController {
 			currentLibro.setPrecio(libro.getPrecio());
 			currentLibro.setStock(libro.getStock());
 			currentLibro.setTitulo(libro.getTitulo());
+			currentLibro.setDescripcion(libro.getDescripcion());
+			
+			// Si se ha enviado una nueva imagen, actualizar la portada
+	        if (imagen != null && !imagen.isEmpty()) {
+	        	byte[] imagenBytes = imagen.getBytes();
+		        String tipoImagen = imagen.getContentType();
+
+	            currentLibro.setPortada(imagenBytes);
+	            currentLibro.setTipoImagen(tipoImagen);
+	        }
 
 			nuevoLibro = libroService.save(currentLibro);
 		} catch (DataAccessException e) {

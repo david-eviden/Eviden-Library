@@ -211,9 +211,11 @@ export class FormLibroComponent implements OnInit {
             this.errors = err.error.errores as string[];
             console.error('Código del error (backend): ' + err.error.status);
             console.error(err.error.errores);
+            swal(err.error.mensaje, err.error.error, 'error');
           } else {
             this.errors = ['Error de comunicación con el servidor'];
             console.error('Error general:', err);
+            swal('Error', 'Ocurrió un error en el servidor', 'error');
           }
         }
       );
@@ -227,99 +229,77 @@ export class FormLibroComponent implements OnInit {
   }
 
   // Update libro por ID
-  public update(): void {
-    if (this.libroForm.valid) {
-      // Verificar si se seleccionaron las opciones predeterminadas
-      if (this.autorSeleccionado.id === 0 || this.generoSeleccionado.id === 0) {
-        if (this.autorSeleccionado.id === 0) {
-          this.errors.push("Debe seleccionar un autor válido");
-        }
-        if (this.generoSeleccionado.id === 0) {
-          this.errors.push("Debe seleccionar un género válido");
-        }
-        return; // No continuar con la actualización
+public update(): void {
+  if (this.libroForm.valid) {
+    // Verificar si se seleccionaron las opciones predeterminadas
+    if (this.autorSeleccionado.id === 0 || this.generoSeleccionado.id === 0) {
+      if (this.autorSeleccionado.id === 0) {
+        this.errors.push("Debe seleccionar un autor válido");
       }
-
-      // Limpiar errores previos
-      this.errors = [];
-
-      // Actualizar el libro con los valores del formulario
-      this.libro.titulo = this.libroForm.get('titulo')?.value;
-      this.libro.descripcion = this.libroForm.get('descripcion')?.value;
-      this.libro.precio = this.libroForm.get('precio')?.value;
-      this.libro.stock = this.libroForm.get('stock')?.value;
-
-      // Asegurarse de que el autor seleccionado se añada al libro
-      if (this.autorSeleccionado && this.autorSeleccionado.id && this.autorSeleccionado.id !== 0) {
-        // Verificar si el autor ya está en la lista
-        const autorExistente = this.libro.autores.find(a => a.id === this.autorSeleccionado.id);
-        if (!autorExistente) {
-          this.libro.autores.push(this.autorSeleccionado);
-        }
+      if (this.generoSeleccionado.id === 0) {
+        this.errors.push("Debe seleccionar un género válido");
       }
-
-      // Asegurarse de que el género seleccionado se añada al libro
-      if (this.generoSeleccionado && this.generoSeleccionado.id && this.generoSeleccionado.id !== 0) {
-        // Verificar si el género ya está en la lista
-        const generoExistente = this.libro.generos.find(g => g.id === this.generoSeleccionado.id);
-        if (!generoExistente) {
-          this.libro.generos.push(this.generoSeleccionado);
-        }
-      }
-
-      // Crear una nueva instancia de FormData
-      const formData = new FormData();
-
-      // Agregar los datos del libro al FormData
-      formData.append('id', this.libro.id.toString());
-      formData.append('titulo', this.libro.titulo);
-      formData.append('precio', this.libro.precio.toString());
-      formData.append('stock', this.libro.stock.toString());
-      formData.append('descripcion', this.libro.descripcion);
-
-      // Agregar autores y géneros
-      this.libro.autores.forEach((autor) => {
-        formData.append('autores', autor.id.toString());
-      });
-
-      this.libro.generos.forEach((genero) => {
-        formData.append('generos', genero.id.toString());
-      });
-
-      // Agregar la portada (imagen) si existe
-      if (this.libro.imagen) {
-        const blob = new Blob([this.libro.imagen], { type: this.libro.tipoImagen });
-        formData.append('imagen', blob, 'portada.jpg');
-      }
-
-      this.libroService.updateLibro(formData).subscribe(
-        // Si OK
-        json => {
-          this.router.navigate(['/libros']);
-          //Mensaje
-          swal('Libro Actualizado', `Libro ${this.libro.titulo} actualizado con éxito`, 'success');
-        },
-
-        // Si error
-        err => {
-          if(err.error && err.error.errores){
-            this.errors = err.error.errores as string[];
-            console.error('Código del error (backend): ' + err.error.status);
-            console.error(err.error.errores);
-          }else{
-            this.errors = ['Error de comunicacion con el servidor'];
-            console.error('Error general:', err);
-          }
-        }
-      );
-    } else {
-      // Marcar todos los campos como touched para mostrar los errores
-      Object.keys(this.libroForm.controls).forEach(key => {
-        const control = this.libroForm.get(key);
-        control?.markAsTouched();
-      });
+      return; // No continuar con la actualización
     }
+
+    // Limpiar errores previos
+    this.errors = [];
+
+    // Actualizar el libro con los valores del formulario
+    this.libro.titulo = this.libroForm.get('titulo')?.value;
+    this.libro.descripcion = this.libroForm.get('descripcion')?.value;
+    this.libro.precio = this.libroForm.get('precio')?.value;
+    this.libro.stock = this.libroForm.get('stock')?.value;
+
+    // Asegurarse de que el autor seleccionado se añada al libro
+    if (this.autorSeleccionado && this.autorSeleccionado.id && this.autorSeleccionado.id !== 0) {
+      // Verificar si el autor ya está en la lista
+      const autorExistente = this.libro.autores.find(a => a.id === this.autorSeleccionado.id);
+      if (!autorExistente) {
+        this.libro.autores.push(this.autorSeleccionado);
+      }
+    }
+
+    // Asegurarse de que el género seleccionado se añada al libro
+    if (this.generoSeleccionado && this.generoSeleccionado.id && this.generoSeleccionado.id !== 0) {
+      // Verificar si el género ya está en la lista
+      const generoExistente = this.libro.generos.find(g => g.id === this.generoSeleccionado.id);
+      if (!generoExistente) {
+        this.libro.generos.push(this.generoSeleccionado);
+      }
+    }
+
+    // Si se necesita imagen, establecerla en el libro
+    if (this.libro.imagen) {
+      this.libro.imagen = this.libro.imagen;
+    }
+
+    // Actualizar el libro utilizando el servicio
+    this.libroService.updateLibro(this.libro).subscribe(
+      (json) => {
+        this.router.navigate(['/libros']);
+        swal('Libro Actualizado', `Libro ${this.libro.titulo} actualizado con éxito`, 'success');
+      },
+      (err) => {
+        if (err.error && err.error.errores) {
+          this.errors = err.error.errores as string[];
+          console.error('Código del error (backend): ' + err.error.status);
+          console.error(err.error.errores);
+        } else {
+          this.errors = ['Error de comunicación con el servidor'];
+          console.error('Error general:', err);
+        }
+      }
+    );
+  } else {
+    // Marcar todos los campos como touched para mostrar los errores
+    Object.keys(this.libroForm.controls).forEach(key => {
+      const control = this.libroForm.get(key);
+      control?.markAsTouched();
+    });
   }
+}
+
 
   // Obtener autores
   public cargarAutores(): void {
