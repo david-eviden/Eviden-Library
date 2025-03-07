@@ -22,6 +22,10 @@ export class AuthGuard implements CanActivate {
       '/libros',
       '/libros/page',
       '/login',
+      '/search-results',
+      '/generos',
+      '/autores',
+      '/valoraciones',
       '/search-results'
     ];
       

@@ -22,6 +22,8 @@ import { DetallesUsuarioComponent } from './detalles-usuario/detalles-usuario.co
 import { FormUsuarioComponent } from './form-usuario/form-usuario.component';
 import { AuthGuard } from './login/auth.guard';
 import { LoginComponent } from './login/login.component';
+import { RegistroComponent } from './registro/registro.component';
+import { ErrorComponent } from './error/error.component';
 
 export const routes: Routes = [
 
@@ -124,10 +126,12 @@ export const routes: Routes = [
   { path: 'libros/page/:page', component: LibroComponent},
   { path: 'libro/:id', component: DetallesLibroComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'registro', component: RegistroComponent },
   { path: 'valoraciones', component: ValoracionComponent},
   { path: 'generos', component: GenerosComponent},
   { path: 'autores', component: AutorComponent},
   { path: 'search-results', component: ResultadoBusquedaComponent},
+  { path: 'error', component: ErrorComponent },
 
   // Ruta de error
   { path: '**', redirectTo: '/error' }

@@ -1,5 +1,7 @@
 package com.evidenlibrary.backend.apirest.config;
 
+import java.util.Arrays;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,8 +16,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.util.Arrays;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -27,7 +27,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authz -> authz
             		 // Permitir acceso público a endpoints específicos
-                    .requestMatchers("/api/login", "/api/principal", "/api/generos", "/api/valoraciones", "/api/libros/**", "/api/autores", "/usuario/{id}").permitAll()
+                    .requestMatchers("/api/login", "/api/registro", "/api/principal", "/api/generos", "/api/valoraciones", "/api/libros/**", "/api/autores", "/usuario/{id}").permitAll()
 
                     // Requerir autenticación para ciertos endpoints, tanto para USER como para ADMIN
                     .requestMatchers("/api/valoraciones").hasRole("USER")
@@ -45,6 +45,7 @@ public class SecurityConfig {
             	        // Solo redirigir a login si la ruta no es pública
             	        String requestPath = request.getRequestURI();
             	        if (!requestPath.startsWith("/api/login") && 
+            	            !requestPath.startsWith("/api/registro") &&
             	            !requestPath.startsWith("/api/principal") && 
             	            !requestPath.startsWith("/api/libros")) {
             	            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

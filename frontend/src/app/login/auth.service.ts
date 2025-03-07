@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 export class AuthService {
 
   private urlEndPoint = 'http://localhost:8082/realms/EvidenLibrary/protocol/openid-connect/token';
+  private registroEndPoint = 'http://localhost:8082/admin/realms/EvidenLibrary/users';
   private usuarioActualSubject = new BehaviorSubject<any>(null);
   public usuarioActual = this.usuarioActualSubject.asObservable();
 
@@ -138,5 +139,32 @@ export class AuthService {
 
     // Devolver el ID si existe, o null si no hay usuario
     return usuarioActual ? usuarioActual.id : 0;
+  }
+
+  registro(usuario: { 
+    firstName: string,
+    lastName: string,
+    email: string, 
+    password: string 
+  }): Observable<any> {
+    const registroPublicoEndPoint = 'http://localhost:8080/api/registro';
+    
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+
+    const body = {
+      firstName: usuario.firstName,
+      lastName: usuario.lastName,
+      email: usuario.email,
+      password: usuario.password
+    };
+
+    return this.http.post(registroPublicoEndPoint, body, { headers }).pipe(
+      tap(() => {
+        // Después del registro exitoso, intentamos hacer login automáticamente
+        console.log('Registro exitoso, intentando iniciar sesión automáticamente');
+      })
+    );
   }
 }
