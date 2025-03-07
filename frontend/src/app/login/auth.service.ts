@@ -52,8 +52,7 @@ export class AuthService {
           const roles = this.extractRolesFromPayload(tokenPayload);
           
           // Asignar rol (priorizar ADMIN)
-          usuario.rol = roles.includes('ADMIN') ? 'ADMIN' : 
-                        roles.includes('USER') ? 'USER' : 'GUEST';
+          usuario.rol = roles.includes('ADMIN') ? 'ADMIN' : 'USER';
           
           console.log('Rol final:', usuario.rol);
   
@@ -79,7 +78,7 @@ export class AuthService {
       const base64 = base64Url.replace('-', '+').replace('_', '/');
       return JSON.parse(window.atob(base64));
     } catch (error) {
-      console.error('Error decoding token', error);
+      console.error('Error decoding el token', error);
       return {};
     }
   }
