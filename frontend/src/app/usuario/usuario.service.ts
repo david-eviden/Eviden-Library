@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   providedIn: 'root'  //disponible a nivel global
 })
 export class UsuarioService {
-  private urlEndPoint: string = 'http://localhost:8080/api/usuarios'; 
+  private urlEndPoint: string = 'http://localhost:8081/api/usuarios'; 
 
   constructor(private http: HttpClient, private router: Router) {}
 
