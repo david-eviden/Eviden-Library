@@ -1,0 +1,40 @@
+<div class="container2">
+    <!-- Mensaje de carga -->
+    <div *ngIf="loading" class="loading-container">
+        <p>Cargando libros por categorías...</p>
+    </div>
+
+    <!-- Mensaje de error -->
+    <div *ngIf="error" class="error-container">
+        <p>No se pudieron cargar los libros. Por favor, intente más tarde.</p>
+    </div>
+
+    <!-- Categorías y libros -->
+    <div *ngIf="!loading && !error">
+        <section class="category" *ngFor="let genero of generosMostrados">
+            <h2>{{ genero }}</h2>
+            <div class="category-books">
+                <div class="book" *ngFor="let libro of librosPorGenero.get(genero)">
+                    <div class="book-card" (click)="verDetallesLibro(libro.id)">
+                        <div class="book-img">
+                            <img [src]="'/img/libroEjemplo.jpg'" class="card-img-top" alt="Portada del libro">
+                        </div>
+                        <div class="info">
+                            <h3>{{ libro.titulo }}</h3>
+                            <span *ngFor="let autor of libro.autores; let last = last">
+                                {{ autor.nombre }}<span *ngIf="!last">, </span>
+                            </span>
+                            <span *ngIf="!libro.autores || libro.autores.length === 0">Sin autores</span>
+                            <p class="precio">{{ libro.precio | currency:'EUR' }}</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Mensaje si no hay libros en la categoría -->
+                <div *ngIf="!(librosPorGenero.get(genero)?.length)" class="no-books">
+                    <p>No hay libros disponibles en esta categoría</p>
+                </div>
+
+            </div>
+        </section>
+    </div>
+</div>

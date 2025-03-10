@@ -38,6 +38,7 @@ import { ClickOutsideDirective } from './directives/click-outside.directive';
 import { LoginComponent } from './login/login.component';
 import { ErrorComponent } from './error/error.component';
 import { RegistroComponent } from './registro/registro.component';
+import { SeccionCategoriaComponent } from './seccion-categoria/seccion-categoria.component';
 
 
 @NgModule({
@@ -71,7 +72,8 @@ import { RegistroComponent } from './registro/registro.component';
     ClickOutsideDirective,
     LoginComponent,
     ErrorComponent,
-    RegistroComponent
+    RegistroComponent,
+    SeccionCategoriaComponent
   ],
   imports: [
     BrowserModule,
