@@ -1,5 +1,9 @@
 package com.evidenlibrary.backend.apirest.model.service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +30,18 @@ public class LibroServiceImpl implements LibroService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<Libro> findAll() {
-		return (List<Libro>) libroDao.findAll();
+		List<Libro> libros = (List<Libro>) libroDao.findAll();
+        libros.forEach(libro -> {
+            if (libro.getPortada() == null && libro.getRutaImagen() != null) {
+                try {
+                    convertirImagenABytes(libro);
+                    libroDao.save(libro); // Guardar los cambios
+                } catch (IOException e) {
+                    System.err.println("Error al convertir imagen a bytes para libro " + libro.getId() + ": " + e.getMessage());
+                }
+            }
+        });
+        return libros;
 	}
 	
     @Override
@@ -44,7 +59,19 @@ public class LibroServiceImpl implements LibroService {
 	@Override
 	@Transactional(readOnly = true)
 	public Libro findById(Long id) {
-		return libroDao.findById(id).orElse(null);
+		Libro libro = libroDao.findById(id).orElse(null);
+        if (libro != null) {
+            // Verificar si se necesita convertir la imagen a bytes
+            if (libro.getPortada() == null && libro.getRutaImagen() != null) {
+                try {
+                    convertirImagenABytes(libro);
+                    libroDao.save(libro); // Guardar los cambios
+                } catch (IOException e) {
+                    System.err.println("Error al convertir imagen a bytes para libro " + libro.getId() + ": " + e.getMessage());
+                }
+            }
+        }
+        return libro;
 	}
 	
 	@Override
@@ -149,5 +176,28 @@ public class LibroServiceImpl implements LibroService {
         // Eliminar todos los libros
         libroDao.deleteAll();
 	}
+	
+	// Método privado para convertir la imagen a bytes
+    private void convertirImagenABytes(Libro libro) throws IOException {
+        Path imagePath = Paths.get(libro.getRutaImagen());
+        if (Files.exists(imagePath)) {
+            byte[] imageBytes = Files.readAllBytes(imagePath);
+            libro.setPortada(imageBytes); // Asignar los bytes de la imagen a la propiedad portada
+            libro.setTipoImagen(determinarTipoImagen(imagePath.toString())); // Determinar el tipo de imagen
+        }
+    }
+
+    // Método privado para determinar el tipo de la imagen
+    private String determinarTipoImagen(String path) {
+        if (path.toLowerCase().endsWith(".jpg") || path.toLowerCase().endsWith(".jpeg")) {
+            return "image/jpeg";
+        } else if (path.toLowerCase().endsWith(".png")) {
+            return "image/png";
+        } else if (path.toLowerCase().endsWith(".gif")) {
+            return "image/gif";
+        } else {
+            return "application/octet-stream";
+        }
+    }
 
 }

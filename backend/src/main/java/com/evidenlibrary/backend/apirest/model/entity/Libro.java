@@ -53,7 +53,7 @@ public class Libro implements Serializable {
     private String descripcion;
     
     @Column(nullable = true)
-    private String imagen;
+    private String rutaImagen;
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -93,12 +93,12 @@ public class Libro implements Serializable {
 		return descripcion;
 	}
 
-	public String getImagen() {
-		return imagen;
+	public String getRutaImagen() {
+		return rutaImagen;
 	}
 
-	public void setImagen(String imagen) {
-		this.imagen = imagen;
+	public void setRutaImagen(String imagen) {
+		this.rutaImagen = imagen;
 	}
 
 	public List<Favorito> getFavoritos() {
