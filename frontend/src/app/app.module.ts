@@ -71,7 +71,8 @@ import { RegistroComponent } from './registro/registro.component';
     ClickOutsideDirective,
     LoginComponent,
     ErrorComponent,
-    RegistroComponent
+    RegistroComponent,
+    FormUsuarioComponent
   ],
   imports: [
     BrowserModule,

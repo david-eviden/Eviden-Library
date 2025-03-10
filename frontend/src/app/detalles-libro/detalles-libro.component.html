@@ -71,7 +71,7 @@
                     </div>
 
                     <!-- Botones de acción (solo si admin) -->
-                    <div *ngIf="authService.esAdmin" class="d-flex flex-column flex-sm-row justify-content-between gap-2 mb-5">
+                    <div *ngIf="authService.esAdmin" class="d-flex flex-column flex-sm-row justify-content-end gap-4 mb-5">
                         <button *ngIf="libro" class="btn btn-warning" [routerLink]="['/libro/form', libro?.id]">
                             <i class="bi bi-pencil"></i> Editar
                         </button>

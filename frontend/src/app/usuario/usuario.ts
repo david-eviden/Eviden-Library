@@ -7,7 +7,7 @@ export class Usuario {
     direccion: string = "";
     email: string = "";
     nombre: string = "";
-    password: string = "";
+    password?: string = "";
     rol: string = "";
     foto: string = "";
     pedidos: Pedido[] = [];
