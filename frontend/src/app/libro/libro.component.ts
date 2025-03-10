@@ -47,7 +47,7 @@ export class LibroComponent implements OnInit{
   ngOnInit(): void {
     //Cargamos la lista de autores
     this.cargarAutores();
-    
+
     // Obtenemos el numero de pagina del observable
     this.activatedRoute.paramMap.subscribe(params => {
       let page: number = +params.get('page')!;
@@ -177,14 +177,22 @@ export class LibroComponent implements OnInit{
   // Método para cargar libros con el tamaño de página actual y filtro de autor
   cargarLibros(): void {
     if (this.selectedAutorId > 0) {
+      console.log("Libros del autor con ID. ", this.selectedAutorId);
       // Si hay un autor seleccionado, cargar libros filtrados
       this.libroService.getLibrosPorAutor(this.currentPage, this.currentPageSize, this.selectedAutorId)
-        .subscribe(response => {
-          this.libros = response.content as Libro[];
-          this.paginador = response;
-        });
+        .subscribe(
+            response => {
+            console.log("Respuesta recibida: ", response);
+            this.libros = response.content as Libro[];
+            this.paginador = response;
+          },
+          error => {
+            console.error('Error cargando los libros del autor: ', error);
+          }
+      );
     } else {
       // Si no hay autor seleccionado, cargar todos los libros
+      console.log("Cragar todos los libros");
       this.libroService.getLibrosConTamanio(this.currentPage, this.currentPageSize)
         .subscribe(response => {
           this.libros = response.content as Libro[];

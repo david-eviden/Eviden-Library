@@ -68,7 +68,7 @@ public class LibroController {
         return libroService.findAllPaginado(PageRequest.of(page, size));
     }
     
- // Obtener libros de un autor específico (paginado con tamaño personalizado)
+    // Obtener libros de un autor específico (paginado con tamaño personalizado)
     @GetMapping("/libros/autor/{autorId}/page/{page}/size/{size}")
     public Page<Libro> getLibrosPorAutor(
             @PathVariable(name = "autorId") Long autorId,
