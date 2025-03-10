@@ -45,6 +45,9 @@ export class LibroComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    //Cargamos la lista de autores
+    this.cargarAutores();
+    
     // Obtenemos el numero de pagina del observable
     this.activatedRoute.paramMap.subscribe(params => {
       let page: number = +params.get('page')!;
@@ -135,13 +138,13 @@ export class LibroComponent implements OnInit{
   }
 
   // Método para cargar libros con el tamaño de página actual
-  cargarLibros(): void {
+  /* cargarLibros(): void {
     this.libroService.getLibrosConTamanio(this.currentPage, this.currentPageSize)
     .subscribe(response => {
       this.libros = response.content as Libro[];
       this.paginador = response;
     });
-  }
+  } */
 
   // Cargar autores para el filtro
   cargarAutores(): void {
