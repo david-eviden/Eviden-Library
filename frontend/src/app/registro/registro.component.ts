@@ -38,18 +38,24 @@ export class RegistroComponent {
       password: this.password
     }).subscribe({
       next: () => {
-        swal(
-          '¡Registro exitoso!',
-          'Tu cuenta ha sido creada correctamente',
-          'success'
-        );
-        this.router.navigate(['/login']);
+        swal({
+          title: '¡Registro exitoso!',
+          text: 'Tu cuenta ha sido creada correctamente. Ahora puedes iniciar sesión con tus credenciales.',
+          type: 'success',
+          showCancelButton: true,
+          confirmButtonText: 'Iniciar sesión',
+          cancelButtonText: 'Cancelar'
+        }).then((result) => {
+          if (result.value) {
+            this.router.navigate(['/login']);
+          }
+        });
       },
       error: (error) => {
         console.error('Error de registro:', error);
         swal(
           'Error de registro',
-          error.error?.mensaje || 'No se pudo completar el registro',
+          error.error?.mensaje || 'No se pudo completar el registro. Por favor, intenta de nuevo.',
           'error'
         );
       }

@@ -70,9 +70,49 @@ export class DetallesUsuarioService  implements OnInit{
   }
   
   obtenerUsuarioPorId(id: number): Observable<Usuario> {
+    console.log('Solicitando usuario con ID:', id);
+    
+    // Verificar que el ID sea válido
+    if (!id || isNaN(Number(id))) {
+      console.error('ID de usuario no válido:', id);
+      return throwError(() => new Error('ID de usuario no válido'));
+    }
+    
     return this.http.get<Usuario>(`${this.urlEndPoint1}/${id}`, { headers: this.createHeaders() }).pipe(
       map(usuario => {
+        console.log('Usuario obtenido del servidor:', usuario);
+        // Asegurarse de que las colecciones estén inicializadas
+        if (!usuario.pedidos) usuario.pedidos = [];
+        if (!usuario.valoraciones) usuario.valoraciones = [];
         return usuario;
+      }),
+      catchError(e => {
+        console.error('Error al obtener el usuario:', e);
+        return throwError(() => e);
+      })
+    );
+  }
+
+  obtenerUsuarioPorEmail(email: string): Observable<Usuario> {
+    console.log('Solicitando usuario con email:', email);
+    
+    // Verificar que el email sea válido
+    if (!email) {
+      console.error('Email de usuario no válido');
+      return throwError(() => new Error('Email de usuario no válido'));
+    }
+    
+    return this.http.get<Usuario>(`${this.urlEndPoint1}/email/${email}`, { headers: this.createHeaders() }).pipe(
+      map(usuario => {
+        console.log('Usuario obtenido por email:', usuario);
+        // Asegurarse de que las colecciones estén inicializadas
+        if (!usuario.pedidos) usuario.pedidos = [];
+        if (!usuario.valoraciones) usuario.valoraciones = [];
+        return usuario;
+      }),
+      catchError(e => {
+        console.error('Error al obtener el usuario por email:', e);
+        return throwError(() => e);
       })
     );
   }

@@ -28,10 +28,17 @@
                         <a class="dropdown-item" routerLink="/autores" routerLinkActive="active">Autores</a>
                     </li>
                     <li>
-                        <a class="dropdown-item" routerLink="/usuarios" routerLinkActive="active">Usuarios</a>
+                        <a class="dropdown-item" routerLink="/generos" routerLinkActive="active">Géneros</a>
                     </li>
                     <li>
-                        <a class="dropdown-item" routerLink="/generos" routerLinkActive="active">Géneros</a>
+                        <a class="dropdown-item" routerLink="/valoraciones" routerLinkActive="active">Valoraciones</a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item" routerLink="/admin" routerLinkActive="active">Admin</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" routerLink="/usuarios" routerLinkActive="active">Usuarios</a>
                     </li>
                     <li>
                         <a class="dropdown-item" routerLink="/favoritos" routerLinkActive="active">Favoritos</a>
@@ -41,13 +48,6 @@
                     </li>
                     <li>
                         <a class="dropdown-item" routerLink="/pedidos" routerLinkActive="active">Pedidos</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" routerLink="/valoraciones" routerLinkActive="active">Valoraciones</a>
-                    </li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li>
-                        <a class="dropdown-item" routerLink="/admin" routerLinkActive="active">Admin</a>
                     </li>
                     <li>
                         <a class="dropdown-item" routerLink="/libro/form" routerLinkActive="active">Form Libro</a>
@@ -61,6 +61,7 @@
                     <li>
                         <a class="dropdown-item" routerLink="/valoracion/form" routerLinkActive="active">Form Valoracion</a>
                     </li>
+                    <li><hr class="dropdown-divider"></li>
                     <li>
                         <a class="dropdown-item" routerLink="/login" routerLinkActive="active">Login</a>
                     </li>
@@ -78,10 +79,13 @@
             <!-- Iconos de usuario, favoritos y carrito (visibles en pantallas grandes) -->
             <div class="d-none d-sm-flex gap-3">
                 <div *ngIf="getLogueado()">
-                    <a [routerLink]="['/usuario', userId]" class="btn btn-link text-decoration-none text-dark">
+                    <a *ngIf="userId && userId > 0" [routerLink]="['/detalles-usuario', userId]" class="btn btn-link text-decoration-none text-dark">
                         <i class="bi bi-person-circle mx-2"></i> <span class="d-none d-md-inline">Perfil</span>
                     </a>
-                    <a href="#" class="btn btn-link text-decoration-none text-dark">
+                    <a *ngIf="authService.esUsuario" [routerLink]="['/mis-favoritos']" class="btn btn-link text-decoration-none text-dark">
+                        <i class="bi bi-heart-fill mx-2"></i> <span class="d-none d-md-inline">Favoritos</span>
+                    </a>
+                    <a *ngIf="authService.esAdmin" [routerLink]="['/favoritos']" class="btn btn-link text-decoration-none text-dark">
                         <i class="bi bi-heart-fill mx-2"></i> <span class="d-none d-md-inline">Favoritos</span>
                     </a>
                     <a href="#" class="btn btn-link text-dark">
@@ -102,10 +106,13 @@
         <!-- Segunda fila: iconos centrados (solo visible en móvil) -->
         <div class="nav-bottom-row d-sm-none d-flex justify-content-center gap-3 w-100 pt-2">
             <div  *ngIf="getLogueado()">
-                <a [routerLink]="['/usuario', userId]" class="btn btn-link text-decoration-none text-dark">
+                <a *ngIf="userId && userId > 0" [routerLink]="['/detalles-usuario', userId]" class="btn btn-link text-decoration-none text-dark">
                     <i class="bi bi-person-circle"></i> Perfil
                 </a>
-                <a href="#" class="btn btn-link text-decoration-none text-dark">
+                <a *ngIf="authService.esUsuario" [routerLink]="['/mis-favoritos']" class="btn btn-link text-decoration-none text-dark">
+                    <i class="bi bi-heart-fill"></i> Favoritos
+                </a>
+                <a *ngIf="authService.esAdmin" [routerLink]="['/favoritos']" class="btn btn-link text-decoration-none text-dark">
                     <i class="bi bi-heart-fill"></i> Favoritos
                 </a>
                 <a href="#" class="btn btn-link text-dark">

@@ -163,4 +163,26 @@ public class UsuarioController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    // Obtener usuario por email
+    @GetMapping("/usuario/email/{email}")
+    public ResponseEntity<?> findByEmail(@PathVariable(name = "email") String email) {
+        Usuario usuario;
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            usuario = usuarioService.findByEmail(email);
+        } catch (DataAccessException e) {
+            response.put("mensaje", "Error al realizar la consulta en la base de datos");
+            response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if (usuario == null) {
+            response.put("mensaje", "El usuario con email: ".concat(email.concat(" no existe en la base de datos")));
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(usuario, HttpStatus.OK);
+    }
+
 }

@@ -24,6 +24,7 @@ import { AuthGuard } from './login/auth.guard';
 import { LoginComponent } from './login/login.component';
 import { RegistroComponent } from './registro/registro.component';
 import { ErrorComponent } from './error/error.component';
+import { DetallesFavoritoComponent } from './detalles-favorito/detalles-favorito.component';
 
 export const routes: Routes = [
 
@@ -113,10 +114,22 @@ export const routes: Routes = [
     data: { roles: ['USER', 'ADMIN'] } 
   },
   { 
+    path: 'detalles-usuario/:id', 
+    component: DetallesUsuarioComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['USER', 'ADMIN'] } 
+  },
+  { 
     path: 'usuario/form/:id', 
     component: FormUsuarioComponent,
     canActivate: [AuthGuard],
     data: { roles: ['USER', 'ADMIN'] } 
+  },
+  { 
+    path: 'mis-favoritos', 
+    component: DetallesFavoritoComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['USER'] } 
   },
 
   // Rutas públicas (todos)

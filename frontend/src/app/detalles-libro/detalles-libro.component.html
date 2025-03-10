@@ -54,22 +54,29 @@
                     </div>
                     
                     <!-- Botones de acción (solo si cliente)-->
-                    <div *ngIf="authService.esUsuario" class="d-flex flex-column flex-sm-row justify-content-between gap-2 mt-custom">
-                        <button class="btn btn-primary btn-lg">
+                    <div *ngIf="authService.esUsuario" class="d-flex flex-column flex-sm-row justify-content-between gap-2 mb-5">
+                        <button class="btn btn-primary">
                             <i class="bi bi-cart-plus me-2"></i>Añadir al carrito
                         </button>
-                        <a [routerLink]="['/libro', libro.id, 'comprar']" class="btn btn-success btn-lg">
+                        <button class="btn" 
+                                [ngClass]="{'btn-danger': esFavorito, 'btn-outline-danger': !esFavorito}"
+                                (click)="toggleFavorito()"
+                                [disabled]="verificandoFavorito">
+                            <i class="bi" [ngClass]="{'bi-heart-fill': esFavorito, 'bi-heart': !esFavorito}"></i>
+                            {{ esFavorito ? ' Quitar de favoritos' : ' Añadir a favoritos' }}
+                        </button>
+                        <a [routerLink]="['/libro', libro.id, 'comprar']" class="btn btn-success">
                             <i class="bi bi-credit-card me-2"></i>Comprar ahora
                         </a>
                     </div>
 
                     <!-- Botones de acción (solo si admin) -->
                     <div *ngIf="authService.esAdmin" class="d-flex flex-column flex-sm-row justify-content-between gap-2 mb-5">
-                        <button type="button" name="editar" [routerLink]="['/libro/form', libro.id]" class="btn btn-secondary btn-lg">
-                            <i class="bi bi-pencil me-2"></i>Editar libro
+                        <button *ngIf="libro" class="btn btn-warning" [routerLink]="['/libro/form', libro?.id]">
+                            <i class="bi bi-pencil"></i> Editar
                         </button>
-                        <button type="button" name="eliminar" (click)="delete(libro)" class="btn btn-danger btn-lg">
-                            <i class="bi bi-trash3 me-2"></i>Eliminar libro
+                        <button *ngIf="libro" class="btn btn-danger" (click)="delete(libro)">
+                            <i class="bi bi-trash"></i> Eliminar
                         </button>
                     </div>
                 </div>
