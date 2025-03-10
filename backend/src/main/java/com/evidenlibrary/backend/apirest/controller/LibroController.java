@@ -68,6 +68,15 @@ public class LibroController {
         return libroService.findAllPaginado(PageRequest.of(page, size));
     }
     
+ // Obtener libros de un autor específico (paginado con tamaño personalizado)
+    @GetMapping("/libros/autor/{autorId}/page/{page}/size/{size}")
+    public Page<Libro> getLibrosPorAutor(
+            @PathVariable(name = "autorId") Long autorId,
+            @PathVariable(name = "page") Integer page, 
+            @PathVariable(name = "size") Integer size) {
+        return libroService.findByAutorIdPaginado(autorId, PageRequest.of(page, size));
+    }
+    
     //Obtener mejor valorados
     @GetMapping("/libros/mejor-valorados")
     public List<Libro> getMejorValorados() {

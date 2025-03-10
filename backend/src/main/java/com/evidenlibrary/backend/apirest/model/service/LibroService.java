@@ -13,6 +13,8 @@ public interface LibroService {
 	
 	public Page<Libro> findAllPaginado(Pageable pageable); // Paginación
 	
+	public Page<Libro> findByAutorIdPaginado(Long autorId, Pageable pageable); //Paginacion con autor
+	
 	public List<Libro> getMejorValorados();//Mejor valorados
 	
 	public Libro findById(Long id);
