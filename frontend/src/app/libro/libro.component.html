@@ -3,20 +3,22 @@
     <div class="alert alert-info" *ngIf="libros.length === 0">
         No hay libros disponibles en el catálogo.
     </div>
-    <!-- Filtro por autor -->
-    <div class="col-md-6">
-        <div class="input-group">
-            <label class="input-group-text" for="autorSelect">Filtrar por autor:</label>
-            <select class="form-select" id="autorSelect" [ngModel]="selectedAutorId" (change)="filtrarPorAutor($event)">
-                <option value="0">Todos los autores</option>
-                <option *ngFor="let autor of autores" [value]="autor.id">{{ autor.nombre }}</option>
-            </select>
-        </div>
-    </div>
 
-    <!--Tamaño de pagina-->
-    <div class="row mb-4">
-        <div class="col-md-4 offset-md-8">
+    <!-- Filtros -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+        <!-- Autor -->
+        <div class="flex-grow-1 me-2">
+            <div class="input-group">
+                <label class="input-group-text" for="autorSelect">Filtrar por autor:</label>
+                <select class="form-select" id="autorSelect" [ngModel]="selectedAutorId" (change)="filtrarPorAutor($event)">
+                    <option value="0">Todos los autores</option>
+                    <option *ngFor="let autor of autores" [value]="autor.id">{{ autor.nombre }}</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Tamaño de página -->
+        <div class="flex-grow-0">
             <div class="input-group">
                 <label class="input-group-text" for="pageSizeSelect">Libros por página:</label>
                 <select class="form-select" id="pageSizeSelect" [ngModel]="currentPageSize"

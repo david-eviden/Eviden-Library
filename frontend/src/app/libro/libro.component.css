@@ -24,5 +24,10 @@
   .card-img-top {
     height: 200px;
   }
+  .input-group {
+    width: 100%;
+  }
+  .flex-grow-0 {
+    flex-basis: 98.5%;
+  }
 }
-

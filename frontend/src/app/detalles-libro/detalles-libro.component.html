@@ -72,7 +72,7 @@
 
                     <!-- Botones de acción (solo si admin) -->
                     <div *ngIf="authService.esAdmin" class="d-flex flex-column flex-sm-row justify-content-end gap-4 mb-5">
-                        <button *ngIf="libro" class="btn btn-warning" [routerLink]="['/libro/form', libro?.id]">
+                        <button *ngIf="libro" class="btn btn-warning" [routerLink]="['/libro/form', libro.id]">
                             <i class="bi bi-pencil"></i> Editar
                         </button>
                         <button *ngIf="libro" class="btn btn-danger" (click)="delete(libro)">

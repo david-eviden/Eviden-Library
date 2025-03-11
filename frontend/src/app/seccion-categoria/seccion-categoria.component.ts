@@ -19,7 +19,7 @@ export class SeccionCategoriaComponent implements OnInit {
   librosPorGenero: Map<string, Libro[]> = new Map();
   
   // Número máximo de libros a mostrar por género/columna
-  maxLibrosPorColumna: number = 4;
+  maxLibrosPorColumna: number = 3;
   
   // Variables para manejar la carga
   loading: boolean = true;
