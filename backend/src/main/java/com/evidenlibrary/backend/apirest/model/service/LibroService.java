@@ -17,6 +17,8 @@ public interface LibroService {
 	
 	public List<Libro> getMejorValorados();//Mejor valorados
 	
+	public Libro obtenerLibroConValoracionMedia (Long id);//calcula media
+	
 	public Libro findById(Long id);
 	
 	//public Libro findByTitulo(String titulo);

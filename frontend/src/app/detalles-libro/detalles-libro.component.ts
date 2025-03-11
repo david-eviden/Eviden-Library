@@ -223,11 +223,13 @@ export class DetallesLibroComponent implements OnInit {
 
   // Método helper para generar array de estrellas
   getStarsArray(puntuacion: number): number[] {
+    puntuacion = Math.min(Math.max(Math.round(puntuacion || 0), 0), 5);
     return Array(puntuacion).fill(0);
   }
 
   // Método helper para generar array de estrellas vacías
   getEmptyStarsArray(puntuacion: number): number[] {
+    puntuacion = Math.min(Math.max(Math.round(puntuacion || 0), 0), 5);
     return Array(5 - puntuacion).fill(0);
   }
 
