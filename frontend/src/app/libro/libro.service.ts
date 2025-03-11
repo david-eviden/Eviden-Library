@@ -5,13 +5,15 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import swal from 'sweetalert2';
+import { Autor } from '../autor/autor';
 
 @Injectable({
   providedIn: 'root'  //disponible a nivel global
 })
 export class LibroService {
-  private urlEndPoint: string = 'http://localhost:8080/api/libros'; 
-  private urlEndPoint1: string = 'http://localhost:8080/api/libro'; 
+  private urlEndPoint: string = 'http://localhost:8081/api/libros'; 
+  private urlEndPoint1: string = 'http://localhost:8081/api/libro';
+  private urlAutores: string = 'http://localhost:8081/api/autores'; 
   private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
 
   constructor(private http: HttpClient, private router: Router) {}
@@ -184,6 +186,29 @@ export class LibroService {
   // Delete todos
   deleteAll(): Observable<void> {
     return this.http.delete<void>(`${this.urlEndPoint}`, { headers: this.createHeaders() });
+  }
+
+  //Obtener autores para el filtro
+  getAutores(): Observable<Autor[]> {
+    return this.http.get<Autor[]>(this.urlAutores, { headers: this.createHeaders() });
+  }
+
+  // Obtener libros filtrados por autor
+  getLibrosPorAutor(page: number, size: number, autorId: number): Observable<any> {
+    return this.http.get(`${this.urlEndPoint}/autor/${autorId}/page/${page}/size/${size}`, { headers: this.createHeaders() })
+      .pipe(
+        map((response: any) => {
+          (response.content as Libro[]).map(libro => {
+            libro.titulo = libro.titulo;
+            libro.precio = libro.precio;
+            libro.stock = libro.stock;
+            libro.descripcion = libro.descripcion;
+            
+            return libro;
+          });
+          return response;
+        })
+      );
   }
 
 }

@@ -11,6 +11,7 @@ export class UsuarioService {
   private urlEndPoint: string = 'http://localhost:8080/api/usuarios'; 
   private urlEndPoint1: string = 'http://localhost:8080/api/usuario/';
 
+
   constructor(private http: HttpClient, private router: Router) {}
 
   // Método para obtener el token del localStorage

@@ -3,18 +3,31 @@
     <div class="alert alert-info" *ngIf="libros.length === 0">
         No hay libros disponibles en el catálogo.
     </div>
+    <!-- Filtro por autor -->
+    <div class="col-md-6">
+        <div class="input-group">
+            <label class="input-group-text" for="autorSelect">Filtrar por autor:</label>
+            <select class="form-select" id="autorSelect" [ngModel]="selectedAutorId" (change)="filtrarPorAutor($event)">
+                <option value="0">Todos los autores</option>
+                <option *ngFor="let autor of autores" [value]="autor.id">{{ autor.nombre }}</option>
+            </select>
+        </div>
+    </div>
 
+    <!--Tamaño de pagina-->
     <div class="row mb-4">
         <div class="col-md-4 offset-md-8">
             <div class="input-group">
                 <label class="input-group-text" for="pageSizeSelect">Libros por página:</label>
-                <select class="form-select" id="pageSizeSelect" [ngModel]="currentPageSize" (change)="cambiarTamanioPagina($event)">
+                <select class="form-select" id="pageSizeSelect" [ngModel]="currentPageSize"
+                    (change)="cambiarTamanioPagina($event)">
                     <option *ngFor="let size of pageSizes" [value]="size">{{ size }}</option>
                 </select>
             </div>
         </div>
     </div>
-    
+
+    <!--Administrador-->
     <div *ngIf="authService.esAdmin" class="text-center mb-4 w-100">
         <div class="btn-group gap-2 w-100">
             <button class="btn btn-primary btn-lg" type="button" [routerLink]="['/libro/form']">
@@ -29,14 +42,14 @@
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         <div class="col" *ngFor="let libro of libros">
             <div class="card h-100 shadow-sm" (click)="getDetallesLibro(libro.id)">
-                <img [src]="'/img/libroEjemplo.jpg'" class="card-img-top" 
-                     [id]="'imagen-libro-' + libro.id" 
-                     [alt]="'Imagen de ' + libro.titulo"
-                     [style.view-transition-name]="'imagen-libro-' + libro.id">
+                <img [src]="'/img/libroEjemplo.jpg'" class="card-img-top" [id]="'imagen-libro-' + libro.id"
+                    [alt]="'Imagen de ' + libro.titulo" [style.view-transition-name]="'imagen-libro-' + libro.id">
                 <div class="card-body d-flex flex-column">
-                    <h5 class="card-title" [style.view-transition-name]="'titulo-libro-' + libro.id">{{ libro.titulo }}</h5>
+                    <h5 class="card-title" [style.view-transition-name]="'titulo-libro-' + libro.id">{{ libro.titulo }}
+                    </h5>
                     <p class="card-text text-muted mb-2">
-                        <span *ngIf="libro.autores && libro.autores.length > 0" [style.view-transition-name]="'autor-libro-' + libro.autores[0].id">
+                        <span *ngIf="libro.autores && libro.autores.length > 0"
+                            [style.view-transition-name]="'autor-libro-' + libro.autores[0].id">
                             Por <strong>{{ libro.autores[0].nombre }}</strong>
                         </span>
                         <span *ngIf="!libro.autores || libro.autores.length === 0">
@@ -46,7 +59,7 @@
                     <p class="card-text fw-bold mt-auto" [style.view-transition-name]="'precio-libro-' + libro.id">
                         {{ libro.precio | currency:'EUR':'symbol':'1.2-2' }}
                     </p>
-                    <button  *ngIf="authService.esUsuario" class="btn btn-primary mt-2">Añadir al carrito</button>
+                    <button *ngIf="authService.esUsuario" class="btn btn-primary mt-2">Añadir al carrito</button>
                 </div>
             </div>
         </div>
@@ -57,5 +70,5 @@
             <paginator-nav *ngIf="paginador" [paginador]="paginador" [pageSize]="currentPageSize"></paginator-nav>
         </div>
     </div>
-    
+
 </div>

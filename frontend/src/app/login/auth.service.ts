@@ -195,7 +195,7 @@ export class AuthService {
     email: string,
     password: string 
   }): Observable<any> {
-    const registroPublicoEndPoint = 'http://localhost:8080/api/registro';
+    const registroPublicoEndPoint = 'http://localhost:8081/api/registro';
     
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'

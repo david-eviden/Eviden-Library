@@ -38,6 +38,7 @@ import { ClickOutsideDirective } from './directives/click-outside.directive';
 import { LoginComponent } from './login/login.component';
 import { ErrorComponent } from './error/error.component';
 import { RegistroComponent } from './registro/registro.component';
+import { SeccionCategoriaComponent } from './seccion-categoria/seccion-categoria.component';
 
 
 @NgModule({
@@ -72,7 +73,10 @@ import { RegistroComponent } from './registro/registro.component';
     LoginComponent,
     ErrorComponent,
     RegistroComponent,
-    FormUsuarioComponent
+    filtroAutorLibro,
+    SeccionCategoriaComponent,
+    FormUsuarioComponent,
+    keycloakV2
   ],
   imports: [
     BrowserModule,

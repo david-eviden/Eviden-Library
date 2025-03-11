@@ -5,6 +5,7 @@ import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { filter, tap } from 'rxjs';
 import swal from 'sweetalert2';
 import { AuthService } from '../login/auth.service';
+import { Autor } from '../autor/autor';
 
 @Component({
   selector: 'app-libro',
@@ -15,11 +16,13 @@ import { AuthService } from '../login/auth.service';
 export class LibroComponent implements OnInit{
 
   libros : Libro[]= [];
+  autores : Autor[]= [];
   paginador: any;
   animationState = "in"
   pageSizes: number[] = [3, 6, 9, 12]; // Opciones de tamaño de página
   currentPageSize: number = 6; // Tamaño de página por defecto
   currentPage: number = 0; // Página actual
+  selectedAutorId: number = 0; // ID del autor seleccionado (0 para todos)
 
   constructor(
     private libroService: LibroService, 
@@ -42,6 +45,9 @@ export class LibroComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    //Cargamos la lista de autores
+    this.cargarAutores();
+
     // Obtenemos el numero de pagina del observable
     this.activatedRoute.paramMap.subscribe(params => {
       let page: number = +params.get('page')!;
@@ -132,12 +138,24 @@ export class LibroComponent implements OnInit{
   }
 
   // Método para cargar libros con el tamaño de página actual
-  cargarLibros(): void {
+  /* cargarLibros(): void {
     this.libroService.getLibrosConTamanio(this.currentPage, this.currentPageSize)
     .subscribe(response => {
       this.libros = response.content as Libro[];
       this.paginador = response;
     });
+  } */
+
+  // Cargar autores para el filtro
+  cargarAutores(): void {
+    this.libroService.getAutores().subscribe(
+      autores => {
+        this.autores = autores;
+      },
+      error => {
+        console.error('Error al cargar autores:', error);
+      }
+    );
   }
   
   // Método para cambiar el tamaño de la página
@@ -148,4 +166,38 @@ export class LibroComponent implements OnInit{
     this.router.navigate(['/libros/page', 0]); // Actualizamos la URL
   }
 
+  // Método para filtrar por autor
+  filtrarPorAutor(event: any): void {
+    this.selectedAutorId = +event.target.value;
+    this.currentPage = 0; // Volvemos a la primera página al cambiar el filtro
+    this.cargarLibros();
+    this.router.navigate(['/libros/page', 0]); // Actualizamos la URL
+  }
+
+  // Método para cargar libros con el tamaño de página actual y filtro de autor
+  cargarLibros(): void {
+    if (this.selectedAutorId > 0) {
+      console.log("Libros del autor con ID. ", this.selectedAutorId);
+      // Si hay un autor seleccionado, cargar libros filtrados
+      this.libroService.getLibrosPorAutor(this.currentPage, this.currentPageSize, this.selectedAutorId)
+        .subscribe(
+            response => {
+            console.log("Respuesta recibida: ", response);
+            this.libros = response.content as Libro[];
+            this.paginador = response;
+          },
+          error => {
+            console.error('Error cargando los libros del autor: ', error);
+          }
+      );
+    } else {
+      // Si no hay autor seleccionado, cargar todos los libros
+      console.log("Cragar todos los libros");
+      this.libroService.getLibrosConTamanio(this.currentPage, this.currentPageSize)
+        .subscribe(response => {
+          this.libros = response.content as Libro[];
+          this.paginador = response;
+        });
+    }
+  }
 }

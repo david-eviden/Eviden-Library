@@ -37,6 +37,13 @@ public class LibroServiceImpl implements LibroService {
     
     @Override
     @Transactional(readOnly = true)
+    public Page<Libro> findByAutorIdPaginado(Long autorId, Pageable pageable) {
+        return libroDao.findByAutoresId(autorId, pageable);
+    }
+    
+    
+    @Override
+    @Transactional(readOnly = true)
     public List<Libro> getMejorValorados() {
         return libroDao.findTop10MejorValorados();
     }
