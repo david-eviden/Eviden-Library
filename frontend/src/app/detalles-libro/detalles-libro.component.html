@@ -60,8 +60,11 @@
 
                     <!-- Botones de acción (solo si cliente)-->
                     <div *ngIf="authService.esUsuario" class="d-flex flex-column flex-sm-row justify-content-between gap-2 mb-5">
-                        <button class="btn btn-primary">
-                            <i class="bi bi-cart-plus me-2"></i>Añadir al carrito
+                        <button class="btn btn-primary" 
+                                (click)="addToCart()"
+                                [disabled]="agregandoAlCarrito">
+                            <i class="bi" [ngClass]="{'bi-cart-plus': !agregandoAlCarrito, 'bi-hourglass-split': agregandoAlCarrito}"></i>
+                            {{agregandoAlCarrito ? ' Añadiendo...' : ' Añadir al carrito'}}
                         </button>
                         <button class="btn" 
                                 [ngClass]="{'btn-danger': esFavorito, 'btn-outline-danger': !esFavorito}"

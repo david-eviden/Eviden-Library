@@ -131,6 +131,12 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     data: { roles: ['USER'] } 
   },
+  { 
+    path: 'mi-carrito', 
+    component: DetallesCarritoComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['USER'] } 
+  },
 
   // Rutas públicas (todos)
   { path: '', redirectTo: '/principal', pathMatch: 'full' },

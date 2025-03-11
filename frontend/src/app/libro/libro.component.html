@@ -61,7 +61,7 @@
                     <p class="card-text fw-bold mt-auto" [style.view-transition-name]="'precio-libro-' + libro.id">
                         {{ libro.precio | currency:'EUR':'symbol':'1.2-2' }}
                     </p>
-                    <button *ngIf="authService.esUsuario" class="btn btn-primary mt-2">Añadir al carrito</button>
+                    <button *ngIf="authService.esUsuario" class="btn btn-primary mt-2" (click)="addToCart(libro); $event.stopPropagation()">Añadir al carrito</button>
                 </div>
             </div>
         </div>
