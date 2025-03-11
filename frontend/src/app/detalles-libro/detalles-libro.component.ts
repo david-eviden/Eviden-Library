@@ -7,6 +7,7 @@ import { ValoracionService } from '../valoracion/valoracion.service';
 import swal from 'sweetalert2';
 import { filter, tap } from 'rxjs';
 import { AuthService } from '../login/auth.service';
+import { FavoritoService } from '../favorito/favorito.service';
 
 
 @Component({
@@ -18,12 +19,15 @@ import { AuthService } from '../login/auth.service';
 export class DetallesLibroComponent implements OnInit {
   libro: Libro = new Libro();
   valoraciones: Valoracion[] = [];
+  esFavorito: boolean = false;
+  verificandoFavorito: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private libroService: DetallesLibroService,
     private valoracionService: ValoracionService,
+    private favoritoService: FavoritoService,
     public authService: AuthService
   ) {
     this.router.events.pipe(
@@ -40,12 +44,34 @@ export class DetallesLibroComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Obtener el id del libro desde la ruta
-    const libroId = +this.route.snapshot.paramMap.get('id')!;
-
-    // Llamar al servicio para obtener el libro por id
-    this.libroService.obtenerLibroPorId(libroId).subscribe((libro) => {
-      this.libro = libro;
+    this.route.params.subscribe(params => {
+      let id = params['id'];
+      if (id) {
+        this.libroService.getLibro(id).subscribe(
+          (libro) => {
+            this.libro = libro;
+            // Verificar si el libro está en favoritos
+            if (this.authService.estaLogueado() && this.authService.esUsuario) {
+              this.verificandoFavorito = true;
+              this.favoritoService.checkFavorito(libro.id).subscribe({
+                next: (esFavorito) => {
+                  console.log(`El libro ${libro.id} ${esFavorito ? 'es' : 'no es'} favorito`);
+                  this.esFavorito = esFavorito;
+                  this.verificandoFavorito = false;
+                },
+                error: (error) => {
+                  console.error('Error al verificar favorito:', error);
+                  this.verificandoFavorito = false;
+                }
+              });
+            }
+          },
+          (error) => {
+            console.error(error);
+            this.router.navigate(['/libros']);
+          }
+        );
+      }
     });
 
     this.valoracionService.getValoraciones().subscribe(
@@ -56,6 +82,133 @@ export class DetallesLibroComponent implements OnInit {
         console.error('Error al obtener las valoraciones:', error);
       }
     );
+  }
+
+  // Verificar si el libro está en favoritos
+  verificarFavorito(libroId: number): void {
+    if (!libroId) {
+      console.error('No se puede verificar favorito: ID de libro no válido');
+      this.verificandoFavorito = false;
+      return;
+    }
+    
+    this.verificandoFavorito = true;
+    console.log(`Verificando si el libro ${libroId} está en favoritos`);
+    
+    this.favoritoService.checkFavorito(libroId).subscribe(
+      (esFavorito) => {
+        console.log(`Resultado de verificación: el libro ${libroId} ${esFavorito ? 'es' : 'no es'} favorito`);
+        this.esFavorito = esFavorito;
+        this.verificandoFavorito = false;
+      },
+      (error) => {
+        console.error('Error al verificar favorito:', error);
+        this.verificandoFavorito = false;
+        
+        // No mostrar errores al usuario en este caso, simplemente asumir que no es favorito
+        this.esFavorito = false;
+        
+        // Si es un error de autenticación, podríamos redirigir al login
+        if (error.status === 401) {
+          console.warn('Sesión expirada durante la verificación de favoritos');
+          // No redirigir automáticamente para no interrumpir la experiencia del usuario
+          // this.authService.logout();
+        }
+      }
+    );
+  }
+
+  // Agregar o quitar de favoritos
+  toggleFavorito(): void {
+    // Verificar si el usuario está logueado
+    if (!this.authService.estaLogueado()) {
+      swal({
+        title: 'Inicia sesión',
+        text: 'Debes iniciar sesión para guardar libros en favoritos',
+        type: 'info',
+        showCancelButton: true,
+        confirmButtonText: 'Ir a login',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.value) {
+          this.router.navigate(['/login']);
+        }
+      });
+      return;
+    }
+
+    // Verificar si el usuario tiene el rol adecuado
+    if (!this.authService.esUsuario) {
+      swal('Acceso denegado', 'Solo los usuarios pueden agregar libros a favoritos', 'warning');
+      return;
+    }
+
+    // Verificar si el libro tiene ID
+    if (!this.libro.id) {
+      swal('Error', 'No se pudo identificar el libro', 'error');
+      return;
+    }
+
+    // Mostrar indicador de carga
+    this.verificandoFavorito = true;
+
+    const usuarioId = this.authService.getCurrentUserId();
+    if (!usuarioId) {
+      swal('Error', 'No se pudo identificar el usuario', 'error');
+      this.verificandoFavorito = false;
+      return;
+    }
+
+    if (this.esFavorito) {
+      // Eliminar de favoritos
+      console.log(`Intentando eliminar libro ${this.libro.id} de favoritos para usuario ${usuarioId}`);
+      
+      this.favoritoService.deleteFavoritoByLibroAndUsuario(this.libro.id, usuarioId).subscribe({
+        next: () => {
+          this.esFavorito = false;
+          this.verificandoFavorito = false;
+          swal('Eliminado', 'El libro ha sido eliminado de tus favoritos', 'success');
+        },
+        error: (error) => {
+          console.error('Error al eliminar de favoritos:', error);
+          this.verificandoFavorito = false;
+          
+          if (error.status === 403) {
+            swal('Error de permisos', 'No tienes permisos para realizar esta acción', 'error');
+          } else if (error.status === 401) {
+            swal('Sesión expirada', 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.', 'warning');
+            this.authService.logout();
+          } else {
+            swal('Error', 'No se pudo eliminar el libro de favoritos', 'error');
+          }
+        }
+      });
+    } else {
+      // Agregar a favoritos
+      console.log(`Intentando agregar libro ${this.libro.id} a favoritos`);
+      
+      this.favoritoService.addFavorito(this.libro).subscribe({
+        next: (response) => {
+          console.log('Respuesta al agregar favorito:', response);
+          this.esFavorito = true;
+          this.verificandoFavorito = false;
+          swal('Agregado', 'El libro ha sido agregado a tus favoritos', 'success');
+        },
+        error: (error) => {
+          console.error('Error al agregar a favoritos:', error);
+          this.verificandoFavorito = false;
+          
+          if (error.status === 403) {
+            swal('Error de permisos', 'No tienes permisos para realizar esta acción', 'error');
+          } else if (error.status === 401) {
+            swal('Sesión expirada', 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.', 'warning');
+            this.authService.logout();
+          } else {
+            swal('Error', 'No se pudo agregar el libro a favoritos', 'error');
+          }
+        }
+      });
+    }
   }
 
   irAtras(): void {

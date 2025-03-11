@@ -1,5 +1,7 @@
 package com.evidenlibrary.backend.apirest.config;
 
+import java.util.Arrays;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,8 +16,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.util.Arrays;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -26,30 +26,17 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authz -> authz
-            // Permitir acceso público a endpoints específicos
-            .requestMatchers("/api/login", "/api/principal", "/api/libros/**").permitAll()
+            		 // Permitir acceso público a endpoints específicos
+                    .requestMatchers("/api/login", "/api/registro", "/api/principal", "/api/generos", "/api/valoraciones", "/api/valoracion", "/api/favorito", "/api/libros", "/api/libros/page", "/api/libros/mejor-valorados", "/api/libro", "/api/autores", "/usuario").permitAll()
 
-             // Requerir autenticación para otros endpoints
-             .requestMatchers("/api/autores").hasRole("ADMIN")
-             .requestMatchers("/api/autor").hasRole("ADMIN")
-             .requestMatchers("/api/carritos").hasRole("ADMIN")
-             .requestMatchers("/api/carrito").hasRole("ADMIN")
-             .requestMatchers("/api/pedidos").hasRole("ADMIN")
-             .requestMatchers("/api/pedido").hasRole("ADMIN")
-             .requestMatchers("/api/favoritos").hasRole("ADMIN")
-             .requestMatchers("/api/favorito").hasRole("ADMIN")
-             .requestMatchers("/api/generos").hasRole("ADMIN")
-             .requestMatchers("/api/genero").hasRole("ADMIN")
-             .requestMatchers("/api/usuarios").hasRole("ADMIN")
-             .requestMatchers("/api/usuario").hasRole("ADMIN")
-             .requestMatchers("/api/valoraciones").hasRole("ADMIN")
-             .requestMatchers("/api/valoracion").hasRole("ADMIN")
-             .requestMatchers("/api/libro").hasRole("ADMIN")
-             
-             .requestMatchers("/api/libros").permitAll()
-             .requestMatchers("/usuario/{id}").permitAll()
-              
-             .anyRequest().authenticated()
+                    // Requerir autenticación para ciertos endpoints, tanto para USER como para ADMIN
+                    .requestMatchers("/api/valoraciones").hasRole("USER")
+
+                    // Requerir ADMIN para endpoints específicos
+                    .requestMatchers("/api/autor", "/api/carritos", "/api/carrito", "/api/pedidos", "/api/pedido", 
+                                     "/api/favoritos", "/api/genero", "/api/usuarios", "/api/usuario", "/api/valoracion", "/api/libro").hasRole("ADMIN")
+                    
+                    .anyRequest().authenticated()
             )
             .oauth2ResourceServer(oauth2 -> oauth2
             	    .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
@@ -57,6 +44,7 @@ public class SecurityConfig {
             	        // Solo redirigir a login si la ruta no es pública
             	        String requestPath = request.getRequestURI();
             	        if (!requestPath.startsWith("/api/login") && 
+            	            !requestPath.startsWith("/api/registro") &&
             	            !requestPath.startsWith("/api/principal") && 
             	            !requestPath.startsWith("/api/libros")) {
             	            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

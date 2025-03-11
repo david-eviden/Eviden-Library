@@ -37,6 +37,7 @@ import { FormUsuarioComponent } from './form-usuario/form-usuario.component';
 import { ClickOutsideDirective } from './directives/click-outside.directive';
 import { LoginComponent } from './login/login.component';
 import { ErrorComponent } from './error/error.component';
+import { RegistroComponent } from './registro/registro.component';
 
 
 @NgModule({
@@ -69,7 +70,9 @@ import { ErrorComponent } from './error/error.component';
     DetallesUsuarioComponent,
     ClickOutsideDirective,
     LoginComponent,
-    ErrorComponent
+    ErrorComponent,
+    RegistroComponent,
+    FormUsuarioComponent
   ],
   imports: [
     BrowserModule,

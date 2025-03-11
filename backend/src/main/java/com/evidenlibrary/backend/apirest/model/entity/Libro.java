@@ -73,7 +73,7 @@ public class Libro implements Serializable {
     @OneToMany(mappedBy = "libro", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private final List<Valoracion> valoraciones = new ArrayList<>();
     
-    @OneToMany(mappedBy = "libro", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "libro", fetch = FetchType.EAGER)
     @JsonIgnore
     private final List<Favorito> favoritos = new ArrayList<>();
 

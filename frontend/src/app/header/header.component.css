@@ -40,6 +40,12 @@
   justify-content: center;
 }
 
+.btn-gradient {
+  background: linear-gradient(45deg, #007bff, #00bcd4);
+  border: none;
+}
+
+
 @media (max-width: 700px) {
   .navbar .d-flex {
     flex-wrap: nowrap;

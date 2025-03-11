@@ -46,6 +46,12 @@ export class ValoracionService implements OnInit {
     return headers;
   }
 
+  getValoracionesPorUsuarioId(usuarioId: number): Observable<Valoracion[]> {
+    return this.http.get<Valoracion[]>(`${this.urlEndPoint}/usuario/${usuarioId}`, 
+      { headers: this.createHeaders() }
+    );
+  }
+
   getValoraciones(): Observable<Valoracion[]> {
     return this.http.get<any[]>(this.urlEndPoint, { headers: this.createHeaders() }).pipe(
       map(response => {

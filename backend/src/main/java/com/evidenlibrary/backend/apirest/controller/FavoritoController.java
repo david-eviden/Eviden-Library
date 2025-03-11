@@ -143,10 +143,16 @@ public class FavoritoController {
 	// Eliminar favorito por ID
 	@DeleteMapping("/favorito/{id}")
 	public ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
-		Favorito currentFavorito = this.favoritoService.findById(id);
 		Map<String, Object> response = new HashMap<>();
-		
+
 		try {
+			Favorito currentFavorito = this.favoritoService.findById(id);
+			
+			if (currentFavorito == null) {
+				response.put("mensaje", "El favorito con ID: " + id + " no existe en la base de datos");
+				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+			}
+
 			favoritoService.delete(currentFavorito);
 		} catch(DataAccessException e) {
 			response.put("mensaje", "Error al eliminar el favorito en la base de datos");
@@ -155,8 +161,60 @@ public class FavoritoController {
 		}
 		
 		response.put("mensaje", "El favorito ha sido eliminado con éxito");
-		response.put("cliente", currentFavorito);
 		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+ 
+	// Eliminar favorito por usuario y libro
+	@DeleteMapping("/favorito/usuario/{usuarioId}/libro/{libroId}")
+	public ResponseEntity<?> deleteByUsuarioAndLibro(
+		@PathVariable Long usuarioId,
+		@PathVariable Long libroId
+	) {
+		Map<String, Object> response = new HashMap<>();
+
+		try {
+			List<Favorito> favoritos = favoritoService.findByUsuarioId(usuarioId);
+			Favorito favoritoToDelete = favoritos.stream()
+				.filter(f -> f.getLibro().getId().equals(libroId))
+				.findFirst()
+				.orElse(null);
+
+			if (favoritoToDelete == null) {
+				response.put("mensaje", "No se encontró el favorito para el usuario " + usuarioId + " y libro " + libroId);
+				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+			}
+
+			favoritoService.delete(favoritoToDelete);
+			response.put("mensaje", "El favorito ha sido eliminado con éxito");
+			return new ResponseEntity<>(response, HttpStatus.OK);
+
+		} catch(DataAccessException e) {
+			response.put("mensaje", "Error al eliminar el favorito en la base de datos");
+			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+ 
+	// Obtener favoritos por ID de usuario
+	@GetMapping("/favorito/usuario/{usuarioId}")
+	public ResponseEntity<?> getFavoritosByUsuarioId(@PathVariable Long usuarioId) {
+		List<Favorito> favoritos;
+		Map<String, Object> response = new HashMap<>();
+		
+		try {
+			favoritos = favoritoService.findByUsuarioId(usuarioId);
+		} catch(DataAccessException e) {
+			response.put("mensaje", "Error al realizar la consulta en la base de datos");
+			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		if(favoritos.isEmpty()) {
+			response.put("mensaje", "El usuario con ID: ".concat(usuarioId.toString().concat(" no tiene favoritos")));
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+		}
+		
+		return new ResponseEntity<>(favoritos, HttpStatus.OK);
 	}
  
 }

@@ -119,11 +119,14 @@ public class UsuarioController {
         }
 
         try {
-        	currentUsuario.setApellido(usuario.getApellido());
-        	currentUsuario.setDireccion(usuario.getDireccion());
+            currentUsuario.setApellido(usuario.getApellido());
+            currentUsuario.setDireccion(usuario.getDireccion());
             currentUsuario.setNombre(usuario.getNombre());
             currentUsuario.setEmail(usuario.getEmail());
-            currentUsuario.setPassword(usuario.getPassword());
+            // Solo actualizar la contraseña si se proporciona una nueva
+            if (usuario.getPassword() != null && !usuario.getPassword().isEmpty()) {
+                currentUsuario.setPassword(usuario.getPassword());
+            }
             currentUsuario.setRol(usuario.getRol());
 
             nuevoUsuario = usuarioService.save(currentUsuario);
@@ -161,6 +164,28 @@ public class UsuarioController {
         response.put("mensaje", "El usuario ha sido eliminado con éxito");
         response.put("usuario", currentUsuario);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // Obtener usuario por email
+    @GetMapping("/usuario/email/{email}")
+    public ResponseEntity<?> findByEmail(@PathVariable(name = "email") String email) {
+        Usuario usuario;
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            usuario = usuarioService.findByEmail(email);
+        } catch (DataAccessException e) {
+            response.put("mensaje", "Error al realizar la consulta en la base de datos");
+            response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if (usuario == null) {
+            response.put("mensaje", "El usuario con email: ".concat(email.concat(" no existe en la base de datos")));
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 
 }
