@@ -22,8 +22,38 @@ export class ValoracionService implements OnInit {
 
   ngOnInit(): void {}
 
+  // Método para obtener el token del localStorage
+  private getToken(): string | null {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      this.router.navigate(['/login']);  // Redirigir al login si el token no está presente
+    }
+    return token;
+  }
+
+  // Método para crear cabeceras con el token
+  private createHeaders(): HttpHeaders {
+    const token = this.getToken();
+    let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  
+    if (token) {
+      headers = headers.append('Authorization', `Bearer ${token}`);
+      console.log('Token añadido en cabecera:', token);  // Log para ver si el token es correcto
+    } else {
+      console.log('No se encontró token en localStorage');
+    }
+  
+    return headers;
+  }
+
+  getValoracionesPorUsuarioId(usuarioId: number): Observable<Valoracion[]> {
+    return this.http.get<Valoracion[]>(`${this.urlEndPoint}/usuario/${usuarioId}`, 
+      { headers: this.createHeaders() }
+    );
+  }
+
   getValoraciones(): Observable<Valoracion[]> {
-    return this.http.get<any[]>(this.urlEndPoint).pipe(
+    return this.http.get<any[]>(this.urlEndPoint, { headers: this.createHeaders() }).pipe(
       map(response => {
         console.log('Respuesta del servidor:', response);
         return response.map(item => {
@@ -43,7 +73,7 @@ export class ValoracionService implements OnInit {
 
   // Crear valoracion
   create(valoracion: Valoracion): Observable<any> {
-    return this.http.post<any>(this.urlEndPoint1, valoracion, {headers: this.httpHeaders}).pipe(
+    return this.http.post<any>(this.urlEndPoint1, valoracion, { headers: this.createHeaders() }).pipe(
       catchError(e => {
         if (e.status == 400) {
           return throwError(e);
@@ -59,7 +89,7 @@ export class ValoracionService implements OnInit {
 
   // Obtener valoracion individual
   getValoracion(id: number): Observable<Valoracion> {
-    return this.http.get<Valoracion>(`${this.urlEndPoint1}/${id}`).pipe(
+    return this.http.get<Valoracion>(`${this.urlEndPoint1}/${id}`, { headers: this.createHeaders() }).pipe(
       catchError(e => {
         this.router.navigate(['/valoraciones']);
         console.log(e.error.mensaje);
@@ -71,7 +101,7 @@ export class ValoracionService implements OnInit {
 
   // Actualizar valoracion
   updateValoracion(valoracion: Valoracion): Observable<any> {
-    return this.http.put<any>(`${this.urlEndPoint1}/${valoracion.id}`, valoracion, {headers: this.httpHeaders}).pipe(
+    return this.http.put<any>(`${this.urlEndPoint1}/${valoracion.id}`, valoracion, { headers: this.createHeaders() }).pipe(
       catchError(e => {
         if (e.status == 400) {
           return throwError(e);
@@ -87,7 +117,7 @@ export class ValoracionService implements OnInit {
 
   // Eliminar valoracion
   delete(id: number): Observable<Valoracion> {
-    return this.http.delete<Valoracion>(`${this.urlEndPoint1}/${id}`, {headers: this.httpHeaders}).pipe(
+    return this.http.delete<Valoracion>(`${this.urlEndPoint1}/${id}`, { headers: this.createHeaders() }).pipe(
       catchError(e => {
         this.router.navigate(['/valoraciones']);
         console.log(e.error.mensaje);

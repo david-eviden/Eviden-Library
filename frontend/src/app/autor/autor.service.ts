@@ -21,9 +21,33 @@ export class AutorService implements OnInit{
 
   ngOnInit(): void {}
 
+  // Método para obtener el token del localStorage
+  private getToken(): string | null {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      this.router.navigate(['/login']);  // Redirigir al login si el token no está presente
+    }
+    return token;
+  }
+
+  // Método para crear cabeceras con el token
+  private createHeaders(): HttpHeaders {
+    const token = this.getToken();
+    let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  
+    if (token) {
+      headers = headers.append('Authorization', `Bearer ${token}`);
+      console.log('Token añadido en cabecera:', token);  // Log para ver si el token es correcto
+    } else {
+      console.log('No se encontró token en localStorage');
+    }
+  
+    return headers;
+  }
+
   // Obtener lista de autores
   getAutores(): Observable<Autor[]> {
-    return this.http.get(this.urlEndPoint).pipe(
+    return this.http.get(this.urlEndPoint, { headers: this.createHeaders() }).pipe(
       map(response => {
         let autores = response as Autor[];
         return autores.map(autor => {
@@ -41,7 +65,7 @@ export class AutorService implements OnInit{
 
   // Crear autor
   create(autor: Autor): Observable<any> {
-    return this.http.post<any>(this.urlEndPoint1, autor, {headers: this.httpHeaders}).pipe(
+    return this.http.post<any>(this.urlEndPoint1, autor, { headers: this.createHeaders() }).pipe(
       catchError(e => {
         if (e.status == 400) {
           return throwError(e);
@@ -57,7 +81,7 @@ export class AutorService implements OnInit{
 
   // Obtener autor individual
   getAutor(id: number): Observable<Autor> {
-    return this.http.get<Autor>(`${this.urlEndPoint1}/${id}`).pipe(
+    return this.http.get<Autor>(`${this.urlEndPoint1}/${id}`, { headers: this.createHeaders() }).pipe(
       catchError(e => {
         this.router.navigate(['/autores']);
         console.log(e.error.mensaje);
@@ -69,7 +93,7 @@ export class AutorService implements OnInit{
 
   // Actualizar autor
   updateAutor(autor: Autor): Observable<any> {
-    return this.http.put<any>(`${this.urlEndPoint1}/${autor.id}`, autor, {headers: this.httpHeaders}).pipe(
+    return this.http.put<any>(`${this.urlEndPoint1}/${autor.id}`, autor, { headers: this.createHeaders() }).pipe(
       catchError(e => {
         if (e.status == 400) {
           return throwError(e);
@@ -85,7 +109,7 @@ export class AutorService implements OnInit{
 
   // Eliminar autor
   delete(id: number): Observable<Autor> {
-    return this.http.delete<Autor>(`${this.urlEndPoint1}/${id}`, {headers: this.httpHeaders}).pipe(
+    return this.http.delete<Autor>(`${this.urlEndPoint1}/${id}`, { headers: this.createHeaders() }).pipe(
       catchError(e => {
         this.router.navigate(['/autores']);
         console.log(e.error.mensaje);
@@ -100,7 +124,7 @@ export class AutorService implements OnInit{
 
   // Eliminar todos los autores
   deleteAll(): Observable<void> {
-    return this.http.delete<void>(`${this.urlEndPoint}`);
+    return this.http.delete<void>(`${this.urlEndPoint}`, { headers: this.createHeaders() });
   }
 }
 

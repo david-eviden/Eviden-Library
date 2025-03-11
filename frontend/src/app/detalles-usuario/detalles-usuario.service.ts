@@ -18,11 +18,35 @@ export class DetallesUsuarioService  implements OnInit{
   constructor(private http: HttpClient, private router: Router) {}
   ngOnInit(): void {}
 
+  // Método para obtener el token del localStorage
+  private getToken(): string | null {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      this.router.navigate(['/login']);  // Redirigir al login si el token no está presente
+    }
+    return token;
+  }
+
+  // Método para crear cabeceras con el token
+  private createHeaders(): HttpHeaders {
+    const token = this.getToken();
+    let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  
+    if (token) {
+      headers = headers.append('Authorization', `Bearer ${token}`);
+      console.log('Token añadido en cabecera:', token);  // Log para ver si el token es correcto
+    } else {
+      console.log('No se encontró token en localStorage');
+    }
+  
+    return headers;
+  }
+
   // Observable para que sea asíncrono (se actualice en tiempo real)
   getDetallesUsuarios(): Observable<DetallesUsuario[]> {
     // return of(LIBROS);
 
-    return this.http.get(this.urlEndPoint).pipe(
+    return this.http.get(this.urlEndPoint, { headers: this.createHeaders() }).pipe(
       // Conversión a usuarios (response de Object a Usuario[])
       map((response) => {
         const detallesUsuario = response as DetallesUsuario[]
@@ -46,16 +70,56 @@ export class DetallesUsuarioService  implements OnInit{
   }
   
   obtenerUsuarioPorId(id: number): Observable<Usuario> {
-    return this.http.get<Usuario>(`${this.urlEndPoint1}/${id}`).pipe(
+    console.log('Solicitando usuario con ID:', id);
+    
+    // Verificar que el ID sea válido
+    if (!id || isNaN(Number(id))) {
+      console.error('ID de usuario no válido:', id);
+      return throwError(() => new Error('ID de usuario no válido'));
+    }
+    
+    return this.http.get<Usuario>(`${this.urlEndPoint1}/${id}`, { headers: this.createHeaders() }).pipe(
       map(usuario => {
+        console.log('Usuario obtenido del servidor:', usuario);
+        // Asegurarse de que las colecciones estén inicializadas
+        if (!usuario.pedidos) usuario.pedidos = [];
+        if (!usuario.valoraciones) usuario.valoraciones = [];
         return usuario;
+      }),
+      catchError(e => {
+        console.error('Error al obtener el usuario:', e);
+        return throwError(() => e);
+      })
+    );
+  }
+
+  obtenerUsuarioPorEmail(email: string): Observable<Usuario> {
+    console.log('Solicitando usuario con email:', email);
+    
+    // Verificar que el email sea válido
+    if (!email) {
+      console.error('Email de usuario no válido');
+      return throwError(() => new Error('Email de usuario no válido'));
+    }
+    
+    return this.http.get<Usuario>(`${this.urlEndPoint1}/email/${email}`, { headers: this.createHeaders() }).pipe(
+      map(usuario => {
+        console.log('Usuario obtenido por email:', usuario);
+        // Asegurarse de que las colecciones estén inicializadas
+        if (!usuario.pedidos) usuario.pedidos = [];
+        if (!usuario.valoraciones) usuario.valoraciones = [];
+        return usuario;
+      }),
+      catchError(e => {
+        console.error('Error al obtener el usuario por email:', e);
+        return throwError(() => e);
       })
     );
   }
 
   // Crear usuario
   create(usuario: Usuario) : Observable<any> {
-    return this.http.post<any>(this.urlEndPoint, usuario, {headers: this.httpHeaders}).pipe(
+    return this.http.post<any>(this.urlEndPoint, usuario, {headers: this.createHeaders()}).pipe(
       catchError(e => {
 
         // Validamos
@@ -75,7 +139,7 @@ export class DetallesUsuarioService  implements OnInit{
   // Obtener
   getUsuario(id: number): Observable<Usuario> {
     // pipe para canalizar errores
-    return this.http.get<Usuario>(`${this.urlEndPoint1}/${id}`).pipe(
+    return this.http.get<Usuario>(`${this.urlEndPoint1}/${id}`, { headers: this.createHeaders() }).pipe(
       catchError(e => {
         this.router.navigate(['/usuarios']);
         console.log(e.error.mensaje);
@@ -87,7 +151,7 @@ export class DetallesUsuarioService  implements OnInit{
 
   // Update
   updateUsuario(usuario: Usuario): Observable<any> {
-    return this.http.put<any>(`${this.urlEndPoint1}/${usuario.id}`, usuario, {headers: this.httpHeaders}).pipe(
+    return this.http.put<any>(`${this.urlEndPoint1}/${usuario.id}`, usuario, {headers: this.createHeaders()}).pipe(
       catchError(e => {
 
         // Validamos
@@ -106,7 +170,7 @@ export class DetallesUsuarioService  implements OnInit{
 
   // Delete
   delete(id: number): Observable<Usuario> {
-    return this.http.delete<Usuario>(`${this.urlEndPoint1}/${id}`, {headers: this.httpHeaders}).pipe(
+    return this.http.delete<Usuario>(`${this.urlEndPoint1}/${id}`, { headers: this.createHeaders() }).pipe(
       catchError(e => {
         console.error(e.error.mensaje);
         return throwError(e);

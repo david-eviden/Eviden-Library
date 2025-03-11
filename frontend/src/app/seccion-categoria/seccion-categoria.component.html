@@ -1,0 +1,36 @@
+<div class="container2">
+    <!-- Mensaje de carga -->
+      <div class="loading-container" *ngIf="loading">
+        <p>Cargando libros...</p>
+      </div>
+      
+      <!-- Mensaje de error -->
+      <div class="error-container" *ngIf="error">
+        <p>Ocurrió un error al cargar los libros. Por favor, intente nuevamente.</p>
+      </div>
+      
+      <!-- Categorías con libros -->
+      <div class="category" *ngFor="let genero of generosMostrados">
+        <h2>{{ genero }}</h2>
+        <div class="category-books">
+          <!-- Mostrar libros para cada género (limitado a 4) -->
+          <div class="book-card" *ngFor="let libro of getLibrosPorGenero(genero)" 
+               (click)="verDetallesLibro(libro.id)">
+            <div class="book-img">
+              <img [src]="libro.imagen || '/img/libroEjemplo.jpg'"
+                   [alt]="libro.titulo">
+            </div>
+            <div class="info">
+              <h3>{{ libro.titulo }}</h3>
+              <p>{{ libro.autores[0].nombre || 'Autor desconocido' }}</p>
+            </div>
+          </div>
+          
+          <!-- Mensaje cuando no hay libros -->
+          <div class="no-books" *ngIf="getLibrosPorGenero(genero).length === 0">
+            No hay libros disponibles en esta categoría.
+          </div>
+
+        </div>
+    </div>
+</div>

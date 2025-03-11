@@ -8,7 +8,7 @@
     </div>
     
     <!-- Menú de navegación principal -->
-    <div class="container my-5">
+    <div *ngIf="authService.esAdmin" class="container my-5">
       <div class="row justify-content-center">
         <div class="col-lg-8 col-md-10 col-sm-12">
           <div class="card border-0 shadow-sm mb-4">

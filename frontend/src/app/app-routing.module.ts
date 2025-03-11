@@ -20,36 +20,134 @@ import { FormValoracionComponent } from './form-valoracion/form-valoracion.compo
 import { ResultadoBusquedaComponent } from './resultado-busqueda/resultado-busqueda.component';
 import { DetallesUsuarioComponent } from './detalles-usuario/detalles-usuario.component';
 import { FormUsuarioComponent } from './form-usuario/form-usuario.component';
+import { AuthGuard } from './login/auth.guard';
+import { LoginComponent } from './login/login.component';
+import { RegistroComponent } from './registro/registro.component';
+import { ErrorComponent } from './error/error.component';
+import { DetallesFavoritoComponent } from './detalles-favorito/detalles-favorito.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/principal', pathMatch: 'full' }, // Defecto
+
+  // Rutas protegidas para ADMIN
+  { 
+    path: 'admin', 
+    component: AdminComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { 
+    path: 'libro/form', 
+    component: FormLibroComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { 
+    path: 'libro/form/:id', 
+    component: FormLibroComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { 
+    path: 'favoritos', 
+    component: FavoritoComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { 
+    path: 'autor/form', 
+    component: FormAutorComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { 
+    path: 'autor/form/:id', 
+    component: FormAutorComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { 
+    path: 'genero/form', 
+    component: FormGeneroComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { 
+    path: 'genero/form/:id', 
+    component: FormGeneroComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { 
+    path: 'valoracion/form', 
+    component: FormValoracionComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { 
+    path: 'valoracion/form/:id', 
+    component: FormValoracionComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { path: 'usuarios', 
+    component: UsuarioComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { path: 'pedidos', 
+    component: PedidoComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+  { 
+    path: 'carrito', 
+    component: CarritoComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['ADMIN'] } 
+  },
+
+  // Rutas protegidas para USUARIO
+  { 
+    path: 'usuario/:id', 
+    component: DetallesUsuarioComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['USER', 'ADMIN'] } 
+  },
+  { 
+    path: 'detalles-usuario/:id', 
+    component: DetallesUsuarioComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['USER', 'ADMIN'] } 
+  },
+  { 
+    path: 'usuario/form/:id', 
+    component: FormUsuarioComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['USER', 'ADMIN'] } 
+  },
+  { 
+    path: 'mis-favoritos', 
+    component: DetallesFavoritoComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['USER'] } 
+  },
+
+  // Rutas públicas (todos)
+  { path: '', redirectTo: '/principal', pathMatch: 'full' },
   { path: 'principal', component: PrincipalComponent },
-  { path: 'admin', component: AdminComponent },
   { path: 'libros', component: LibroComponent },
   { path: 'libros/page/:page', component: LibroComponent},
-  { path: 'libro/form', component: FormLibroComponent },
-  { path: 'libro/form/:id', component: FormLibroComponent },
-  { path: 'libro/:id/comprar', component: DetallesLibroComponent },
   { path: 'libro/:id', component: DetallesLibroComponent },
-  { path: 'autores', component: AutorComponent },
-  { path: 'autor/form', component: FormAutorComponent },
-  { path: 'autor/form/:id', component: FormAutorComponent },
-  { path: 'usuarios', component: UsuarioComponent },
-  { path: 'usuario/:id', component: DetallesUsuarioComponent },
-  { path: 'usuario/form/:id', component: FormUsuarioComponent },
-  { path: 'generos', component: GenerosComponent },
-  { path: 'genero/form', component: FormGeneroComponent },
-  { path: 'genero/form/:id', component: FormGeneroComponent },
-  { path: 'favoritos', component: FavoritoComponent },
-  { path: 'carrito', component: CarritoComponent },
-  { path: 'carrito/:id', component: DetallesCarritoComponent },
-  { path: 'pedidos', component: PedidoComponent },
-  { path: 'pedido/:id', component: DetallesPedidoComponent },
-  { path: 'valoraciones', component: ValoracionComponent },
-  { path: 'valoracion/form', component: FormValoracionComponent },
-  { path: 'valoracion/form/:id', component: FormValoracionComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'registro', component: RegistroComponent },
+  { path: 'valoraciones', component: ValoracionComponent},
+  { path: 'generos', component: GenerosComponent},
+  { path: 'autores', component: AutorComponent},
   { path: 'search-results', component: ResultadoBusquedaComponent},
-  { path: '**', redirectTo: '/error' } // Ruta de error
+  { path: 'error', component: ErrorComponent },
+
+  // Ruta de error
+  { path: '**', redirectTo: '/error' }
 ];
 
 @NgModule({

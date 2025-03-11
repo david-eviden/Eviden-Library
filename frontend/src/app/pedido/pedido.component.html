@@ -4,7 +4,7 @@
     <div class="alert alert-info" *ngIf="pedidos.length === 0 && !error">
         No hay pedidos disponibles.
     </div>
-    <ul class="list-group">
+    <ul *ngIf="authService.esAdmin" class="list-group">
         <li *ngFor="let pedido of pedidos" class="list-group-item">
             <div class="mb-3">
                 <h5 class="mb-1">

@@ -1,7 +1,7 @@
 <div class="container mt-4">
     <h2 class="text-center mb-4">Valoraciones de Libros</h2>
 
-    <div class="d-flex justify-content-end my-3">
+    <div class="d-flex justify-content-end my-3 d-flex justify-content-center">
         <a [routerLink]="['/valoracion/form']" class="btn btn-primary btn-lg">
             <i class="bi bi-plus-circle me-2"></i>Nueva valoración
         </a>
@@ -46,7 +46,7 @@
                                 {{ valoracion.fecha | date:'dd/MM/yyyy' }}
                             </small>
                         </a>
-                        <div class="d-flex justify-content-end gap-2 mt-3">
+                        <div *ngIf="authService.esAdmin" class="d-flex justify-content-end gap-2 mt-3">
                             <button type="button" name="editar" [routerLink]="['/valoracion/form', valoracion.id]" class="btn btn-secondary text-nowrap">
                                 <i class="bi bi-pencil me-2"></i>Editar
                             </button>

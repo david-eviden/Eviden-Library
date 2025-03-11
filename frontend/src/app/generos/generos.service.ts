@@ -21,9 +21,33 @@ export class GeneroService implements OnInit{
 
   ngOnInit(): void {}
 
+  // Método para obtener el token del localStorage
+  private getToken(): string | null {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      this.router.navigate(['/login']);  // Redirigir al login si el token no está presente
+    }
+    return token;
+  }
+
+  // Método para crear cabeceras con el token
+  private createHeaders(): HttpHeaders {
+    const token = this.getToken();
+    let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  
+    if (token) {
+      headers = headers.append('Authorization', `Bearer ${token}`);
+      console.log('Token añadido en cabecera:', token);  // Log para ver si el token es correcto
+    } else {
+      console.log('No se encontró token en localStorage');
+    }
+  
+    return headers;
+  }
+
   getGeneros(): Observable<Genero[]> {
 
-    return this.http.get(this.urlEndPoint).pipe(
+    return this.http.get(this.urlEndPoint, { headers: this.createHeaders() }).pipe(
       
       // Conversión a generos (response de Object a Genero[])
       map(response => {
@@ -41,7 +65,7 @@ export class GeneroService implements OnInit{
 
   // Crear genero
   create(genero: Genero): Observable<any> {
-    return this.http.post<any>(this.urlEndPoint1, genero, {headers: this.httpHeaders}).pipe(
+    return this.http.post<any>(this.urlEndPoint1, genero, { headers: this.createHeaders() }).pipe(
       catchError(e => {
         if (e.status == 400) {
           return throwError(e);
@@ -57,7 +81,7 @@ export class GeneroService implements OnInit{
 
   // Obtener genero individual
   getGenero(id: number): Observable<Genero> {
-    return this.http.get<Genero>(`${this.urlEndPoint1}/${id}`).pipe(
+    return this.http.get<Genero>(`${this.urlEndPoint1}/${id}`, { headers: this.createHeaders() }).pipe(
       catchError(e => {
         this.router.navigate(['/generos']);
         console.log(e.error.mensaje);
@@ -69,7 +93,7 @@ export class GeneroService implements OnInit{
 
   // Actualizar genero
   updateGenero(genero: Genero): Observable<any> {
-    return this.http.put<any>(`${this.urlEndPoint1}/${genero.id}`, genero, {headers: this.httpHeaders}).pipe(
+    return this.http.put<any>(`${this.urlEndPoint1}/${genero.id}`, genero, { headers: this.createHeaders() }).pipe(
       catchError(e => {
         if (e.status == 400) {
           return throwError(e);
@@ -85,7 +109,7 @@ export class GeneroService implements OnInit{
 
   // Eliminar genero
   delete(id: number): Observable<Genero> {
-    return this.http.delete<Genero>(`${this.urlEndPoint}/${id}`, {headers: this.httpHeaders}).pipe(
+    return this.http.delete<Genero>(`${this.urlEndPoint}/${id}`, { headers: this.createHeaders() }).pipe(
       catchError(e => {
         this.router.navigate(['/generos']);
         console.log(e.error.mensaje);
@@ -100,6 +124,6 @@ export class GeneroService implements OnInit{
 
   // Eliminar todos los generoes
   deleteAll(): Observable<void> {
-    return this.http.delete<void>(`${this.urlEndPoint}`);
+    return this.http.delete<void>(`${this.urlEndPoint}`, { headers: this.createHeaders() });
   }
 }

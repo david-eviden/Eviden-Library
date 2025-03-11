@@ -1,22 +1,48 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { Carrito } from './carrito';
 import { detallesCarrito } from '../detalles-carrito/detalles-carrito';
 import { Libro } from '../libro/libro';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CarritoService {
 
-  private urlEndPoint: string = 'http://localhost:8081/api/carritos'; 
+  private urlEndPoint: string = 'http://localhost:8080/api/carritos'; 
+  private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
   private carrito: any[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
+
+  // Método para obtener el token del localStorage
+  private getToken(): string | null {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      this.router.navigate(['/login']);  // Redirigir al login si el token no está presente
+    }
+    return token;
+  }
+
+  // Método para crear cabeceras con el token
+  private createHeaders(): HttpHeaders {
+    const token = this.getToken();
+    let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  
+    if (token) {
+      headers = headers.append('Authorization', `Bearer ${token}`);
+      console.log('Token añadido en cabecera:', token);  // Log para ver si el token es correcto
+    } else {
+      console.log('No se encontró token en localStorage');
+    }
+  
+    return headers;
+  }
 
   getCarritos(): Observable<Carrito[]> {
-    return this.http.get<any[]>(this.urlEndPoint).pipe(
+    return this.http.get<any[]>(this.urlEndPoint, { headers: this.createHeaders() }).pipe(
       map(response => {
         console.log('Respuesta del servidor:', response);
         return response.map(item => {

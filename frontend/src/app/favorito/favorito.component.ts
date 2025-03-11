@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Favorito } from './favorito';
 import { FavoritoService } from './favorito.service';
 import { FavoritosAgrupados } from './favoritos-agrupados';
+import { AuthService } from '../login/auth.service';
 
 @Component({
   selector: 'app-favorito',
@@ -13,7 +14,7 @@ export class FavoritoComponent {
   favoritos: Favorito[]= [];
   favoritosAgrupados: FavoritosAgrupados[] = [];
 
-  constructor(private favoritoService: FavoritoService) {}
+  constructor(private favoritoService: FavoritoService,  public authService: AuthService ) {}
 
   ngOnInit(): void {
     this.favoritoService.getUsuarios().subscribe(

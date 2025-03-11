@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Genero } from './generos';
 import { GeneroService } from './generos.service';
 import swal from 'sweetalert2';
+import { AuthService } from '../login/auth.service';
 
 @Component({
   selector: 'app-generos',
@@ -11,7 +12,7 @@ import swal from 'sweetalert2';
 })
 export class GenerosComponent implements OnInit{
   generos : Genero[]= [];
-  constructor(private generoService: GeneroService) {}
+  constructor(private generoService: GeneroService, public authService: AuthService ) {}
 
   ngOnInit(): void {
     this.generoService.getGeneros().subscribe(

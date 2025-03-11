@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import swal from 'sweetalert2';
 import { Genero } from '../generos/generos';
 import { GeneroService } from '../generos/generos.service';
+import { AuthService } from '../login/auth.service';
 
 @Component({
   selector: 'app-form-genero',
@@ -20,6 +21,7 @@ export class FormGeneroComponent implements OnInit {
     private generoService: GeneroService, 
     public router: Router, 
     private activatedRoute: ActivatedRoute,
+    public authService: AuthService
   ) { }
 
   ngOnInit(): void {

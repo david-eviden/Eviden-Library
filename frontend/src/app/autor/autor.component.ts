@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AutorService } from './autor.service';
 import { Autor } from './autor';
 import swal from 'sweetalert2';
+import { AuthService } from '../login/auth.service';
 
 @Component({
   selector: 'app-autor',
@@ -12,7 +13,7 @@ import swal from 'sweetalert2';
 export class AutorComponent implements OnInit {
   autores: Autor[] = [];
 
-  constructor(private autorService: AutorService) {}
+  constructor(private autorService: AutorService,  public authService: AuthService ) {}
 
   ngOnInit(): void {
     this.autorService.autores$.subscribe(

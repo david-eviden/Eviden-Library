@@ -12,17 +12,34 @@ import swal from 'sweetalert2';
 })
 export class DetallesLibroService  implements OnInit{
 
-  private urlEndPoint: string = 'http://localhost:8081/api/libro'; 
-    private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
+  private urlEndPoint: string = 'http://localhost:8080/api/libro'; 
+  private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
 
   constructor(private http: HttpClient, private router: Router) {}
   ngOnInit(): void {}
+
+  // Método para obtener el token del localStorage
+  private getToken(): string | null {
+    return localStorage.getItem('access_token');
+  }
+
+  // Método para crear cabeceras con el token
+  private createHeaders(): HttpHeaders {
+    const token = this.getToken();
+    let headers = new HttpHeaders({'Content-Type': 'application/json'});
+
+    if (token) {
+      headers = headers.append('Authorization', `Bearer ${token}`);
+    }
+
+    return headers;
+  }
 
   // Observable para que sea asíncrono (se actualice en tiempo real)
   getDetallesLibros(): Observable<DetallesLibro[]> {
     // return of(LIBROS);
 
-    return this.http.get(this.urlEndPoint).pipe(
+    return this.http.get(this.urlEndPoint, { headers: this.createHeaders() }).pipe(
       // Conversión a libros (response de Object a Libro[])
       map((response) => {
         const detallesLibro = response as DetallesLibro[]
@@ -43,7 +60,7 @@ export class DetallesLibroService  implements OnInit{
   }
   
   obtenerLibroPorId(id: number): Observable<Libro> {
-    return this.http.get<Libro>(`${this.urlEndPoint}/${id}`).pipe(
+    return this.http.get<Libro>(`${this.urlEndPoint}/${id}`, { headers: this.createHeaders() }).pipe(
       map(libro => {
         if (!libro.autores) {
           libro.autores = [];
@@ -55,7 +72,7 @@ export class DetallesLibroService  implements OnInit{
 
   // Crear libro
   create(libro: Libro) : Observable<any> {
-    return this.http.post<any>(this.urlEndPoint, libro, {headers: this.httpHeaders}).pipe(
+    return this.http.post<any>(this.urlEndPoint, libro, { headers: this.createHeaders() }).pipe(
       catchError(e => {
 
         // Validamos
@@ -75,7 +92,7 @@ export class DetallesLibroService  implements OnInit{
   // Obtener
   getLibro(id: number): Observable<Libro> {
     // pipe para canalizar errores
-    return this.http.get<Libro>(`${this.urlEndPoint}/${id}`).pipe(
+    return this.http.get<Libro>(`${this.urlEndPoint}/${id}`, { headers: this.createHeaders() }).pipe(
       catchError(e => {
         this.router.navigate(['/libros']);
         console.log(e.error.mensaje);
@@ -87,7 +104,7 @@ export class DetallesLibroService  implements OnInit{
 
   // Update
   updateLibro(libro: Libro): Observable<any> {
-    return this.http.put<any>(`${this.urlEndPoint}/${libro.id}`, libro, {headers: this.httpHeaders}).pipe(
+    return this.http.put<any>(`${this.urlEndPoint}/${libro.id}`, libro, { headers: this.createHeaders() }).pipe(
       catchError(e => {
 
         // Validamos
@@ -106,7 +123,7 @@ export class DetallesLibroService  implements OnInit{
 
   // Delete
   delete(id: number): Observable<Libro> {
-    return this.http.delete<Libro>(`${this.urlEndPoint}/${id}`, {headers: this.httpHeaders}).pipe(
+    return this.http.delete<Libro>(`${this.urlEndPoint}/${id}`, { headers: this.createHeaders() }).pipe(
       catchError(e => {
         console.error(e.error.mensaje);
         return throwError(e);

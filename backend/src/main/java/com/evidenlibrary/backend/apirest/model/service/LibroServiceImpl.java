@@ -37,7 +37,18 @@ public class LibroServiceImpl implements LibroService {
     
     
     @Override
+<<<<<<< HEAD
+    @Transactional(readOnly = true)
+    public Page<Libro> findByAutorIdPaginado(Long autorId, Pageable pageable) {
+        return libroDao.findByAutoresId(autorId, pageable);
+    }
+    
+    
+    @Override
+    @Transactional(readOnly = true)
+=======
     @Transactional
+>>>>>>> desarrollo
     public List<Libro> getMejorValorados() {
     	//Actualizo valoraciones medias
     	List<Libro> todosLibros = libroDao.findAll();

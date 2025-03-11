@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import swal from 'sweetalert2';
 import { Autor } from '../autor/autor';
 import { AutorService } from '../autor/autor.service';
+import { AuthService } from '../login/auth.service';
 
 @Component({
   selector: 'app-form-autor',
@@ -20,6 +21,7 @@ export class FormAutorComponent implements OnInit {
     private autorService: AutorService, 
     public router: Router, 
     private activatedRoute: ActivatedRoute,
+    public authService: AuthService
   ) { }
 
   ngOnInit(): void {

@@ -51,8 +51,29 @@ public class FavoritoServiceImpl implements FavoritoService {
 	@Override
 	@Transactional
 	public void delete(Favorito detalles) {
-		favoritoDao.delete(detalles);
-		
+		try {
+			// Ensure the entity is managed
+			Favorito managedFavorito = favoritoDao.findById(detalles.getId()).orElse(null);
+			if (managedFavorito != null) {
+				// Clear references
+				managedFavorito.setUsuario(null);
+				managedFavorito.setLibro(null);
+				// Delete the entity
+				favoritoDao.delete(managedFavorito);
+				favoritoDao.flush(); // Force immediate deletion
+			}
+		} catch (Exception e) {
+			// Log the error
+			System.err.println("Error deleting favorito: " + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Favorito> findByUsuarioId(Long usuarioId) {
+		return favoritoDao.findByUsuarioId(usuarioId);
 	}
 
 }
