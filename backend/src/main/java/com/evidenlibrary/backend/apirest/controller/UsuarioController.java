@@ -119,11 +119,14 @@ public class UsuarioController {
         }
 
         try {
-        	currentUsuario.setApellido(usuario.getApellido());
-        	currentUsuario.setDireccion(usuario.getDireccion());
+            currentUsuario.setApellido(usuario.getApellido());
+            currentUsuario.setDireccion(usuario.getDireccion());
             currentUsuario.setNombre(usuario.getNombre());
             currentUsuario.setEmail(usuario.getEmail());
-            currentUsuario.setPassword(usuario.getPassword());
+            // Solo actualizar la contraseña si se proporciona una nueva
+            if (usuario.getPassword() != null && !usuario.getPassword().isEmpty()) {
+                currentUsuario.setPassword(usuario.getPassword());
+            }
             currentUsuario.setRol(usuario.getRol());
 
             nuevoUsuario = usuarioService.save(currentUsuario);

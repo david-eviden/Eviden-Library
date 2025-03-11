@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { map, Observable, catchError, throwError } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Usuario } from './usuario';
 import { Router } from '@angular/router';
@@ -8,7 +8,9 @@ import { Router } from '@angular/router';
   providedIn: 'root'  //disponible a nivel global
 })
 export class UsuarioService {
-  private urlEndPoint: string = 'http://localhost:8081/api/usuarios'; 
+  private urlEndPoint: string = 'http://localhost:8080/api/usuarios'; 
+  private urlEndPoint1: string = 'http://localhost:8080/api/usuario/';
+
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -38,12 +40,9 @@ export class UsuarioService {
 
   getUsuarios(): Observable<Usuario[]> {
     return this.http.get(this.urlEndPoint, { headers: this.createHeaders() }).pipe(
-
       // Conversión a usuarios (response de Object a Usuario[])
       map(response => {
-
         let usuarios = response as Usuario[];
-
         return usuarios.map(usuario => {
           usuario.nombre = usuario.nombre?.toUpperCase();
           usuario.apellido = usuario.apellido;
@@ -51,10 +50,34 @@ export class UsuarioService {
           usuario.direccion = usuario.direccion;
           usuario.password = usuario.password;
           usuario.rol = usuario.rol;
-         
           return usuario;
         });
       }),
+      catchError(e => {
+        console.error('Error al obtener usuarios:', e);
+        return throwError(() => e);
+      })
     ); 
+  }
+
+  // Obtener un usuario por ID
+  getUsuario(id: number): Observable<Usuario> {
+    return this.http.get<Usuario>(`${this.urlEndPoint1}${id}`, { headers: this.createHeaders() }).pipe(
+      map(response => response as Usuario),
+      catchError(e => {
+        console.error('Error al obtener el usuario:', e);
+        return throwError(() => e);
+      })
+    );
+  }
+
+  // Actualizar un usuario
+  update(usuario: Usuario): Observable<any> {
+    return this.http.put<any>(`${this.urlEndPoint1}${usuario.id}`, usuario, { headers: this.createHeaders() }).pipe(
+      catchError(e => {
+        console.error('Error al actualizar el usuario:', e);
+        return throwError(() => e);
+      })
+    );
   }
 }

@@ -5,7 +5,7 @@
         </div>
     </ul>
 
-    <div *ngIf="authService.esUsuario" class="card shadow-lg">
+    <div *ngIf="authService.esUsuario || authService.esAdmin" class="card shadow-lg">
         <div class="card-header">
             <h5 *ngIf="!valoracion.id">Crear una Valoración</h5>
             <h4 *ngIf="valoracion.id">Editar una Valoración</h4>

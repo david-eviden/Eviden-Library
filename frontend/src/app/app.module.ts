@@ -73,7 +73,10 @@ import { SeccionCategoriaComponent } from './seccion-categoria/seccion-categoria
     LoginComponent,
     ErrorComponent,
     RegistroComponent,
-    SeccionCategoriaComponent
+    filtroAutorLibro,
+    SeccionCategoriaComponent,
+    FormUsuarioComponent,
+    keycloakV2
   ],
   imports: [
     BrowserModule,
