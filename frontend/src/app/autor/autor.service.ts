@@ -9,8 +9,8 @@ import { Router } from '@angular/router';
   providedIn: 'root'  //disponible a nivel global
 })
 export class AutorService implements OnInit{
-  private urlEndPoint: string = 'http://localhost:8081/api/autores';
-  private urlEndPoint1: string = 'http://localhost:8081/api/autor'; 
+  private urlEndPoint: string = 'http://localhost:8080/api/autores';
+  private urlEndPoint1: string = 'http://localhost:8080/api/autor'; 
   private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
 
   // Creamos un BehaviorSubject para la lista de autores
