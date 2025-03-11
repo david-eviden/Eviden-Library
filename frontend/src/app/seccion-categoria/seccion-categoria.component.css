@@ -1,15 +1,29 @@
 .container2 {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 15px;
     display: flex;
     flex-wrap: wrap;
-    gap: 30;
+    justify-content: space-between;
 }
 
 .category {
-    flex-basis: 33.33%;
+    display: inline-block;
+    width: 32%;
+    min-width: 350px;
     box-sizing: border-box;
     margin-bottom: 30px;
     border-left: 3px solid #444;
     padding-left: 20px;
+    vertical-align: top;
+}
+
+.category:first-child {
+    margin-left: 0;
+}
+
+.category:last-child {
+    margin-right: 0;
 }
 
 .category h2 {
@@ -29,10 +43,10 @@
     display: flex;
     border: 1px solid #ddd;
     margin-bottom: 20px;
-    margin-right: 25px;
     padding: 15px;
     background-color: #fff;
     border-radius: 8px;
+    width: 100%;
 }
 
 .book-card .book-img {
@@ -69,6 +83,7 @@
     text-align: center;
     padding: 20px;
     color: #666;
+    width: 100%;
 }
 
 .error-container {
@@ -84,65 +99,35 @@
 }
 
 /* Responsive */
-
-@media (max-width: 992px) {
+@media (max-width: 1024px) {
     .category {
-        flex-basis: 100%;
-    }
-
-    .category-books {
-        padding-left: 0;
-    }
-
-    .col-lg-2-4 {
-        flex: 0 0 50%;
-        max-width: 50%;
+        width: 48%;
     }
 }
 
 @media (max-width: 768px) {
+    .category {
+        width: 48%;
+        min-width: 300px;
+    }
+
     .category h2 {
         font-size: 1.5rem;
     }
 }
 
 @media (max-width: 576px) {
-    .row-cols-1>* {
-        flex: 0 0 100%;
-        max-width: 100%;
+    .category {
+        width: 100%;
+        min-width: 250px;
     }
 
-    .row-cols-sm-2>* {
-        flex: 0 0 50%;
-        max-width: 50%;
+    .book-card {
+        flex-direction: column;
     }
 
-    .category h2 {
-        font-size: 1.5rem;
-    }
-
-    .col-lg-2-4 {
-        flex: 0 0 100%;
-        max-width: 100%;
-    }
-
-    .book-grid {
-        display: flex;
-        flex-wrap: nowrap;
-        overflow-x: hidden;
-    }
-
-    .book-item {
-        flex: 0 0 100%;
-        max-width: 100%;
-    }
-
-    .carousel-item .row {
-        flex-wrap: nowrap;
-    }
-
-    .card {
-        margin: 0 auto;
-        max-width: 280px;
+    .book-card .book-img {
+        margin-right: 0;
+        margin-bottom: 15px;
     }
 }
