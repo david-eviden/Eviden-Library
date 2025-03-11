@@ -11,20 +11,11 @@ import com.evidenlibrary.backend.apirest.model.entity.Autor;
 public interface AutorDao extends JpaRepository<Autor, Long> {
 	
     //Busqueda
-	List<Autor> findByNombreContainingIgnoreCase(String nombre);
     
-    List<Autor> findByNombreContainingOrLibros_TituloContainingOrLibros_Generos_NombreContaining(
-            String nombre, String tituloLibro, String nombreGenero);
-    
-    // Nueva consulta para buscar con múltiples términos
     @Query("SELECT DISTINCT a FROM Autor a " +
-           "LEFT JOIN a.libros l " +
-           "LEFT JOIN l.generos g " +
-           "WHERE " +
-           "(:#{#terms.size()} = 0) OR " +
-           "(EXISTS (SELECT 1 FROM :#{#terms} t WHERE LOWER(a.nombre) LIKE CONCAT('%', LOWER(t), '%'))) OR " +
-           "(EXISTS (SELECT 1 FROM :#{#terms} t WHERE LOWER(a.apellido) LIKE CONCAT('%', LOWER(t), '%'))) OR " +
-           "(EXISTS (SELECT 1 FROM :#{#terms} t WHERE LOWER(l.titulo) LIKE CONCAT('%', LOWER(t), '%'))) OR " +
-           "(EXISTS (SELECT 1 FROM :#{#terms} t WHERE LOWER(g.nombre) LIKE CONCAT('%', LOWER(t), '%')))")
-    List<Autor> findByMultipleTerms(@Param("terms") List<String> terms);
+            "WHERE " +
+            "(:term IS NULL OR :term = '') OR " +
+            "LOWER(a.nombre) LIKE LOWER(CONCAT('%', :term, '%')) OR " +
+            "LOWER(a.apellido) LIKE LOWER(CONCAT('%', :term, '%'))")
+     List<Autor> findByTerm(@Param("term") String term);
 }

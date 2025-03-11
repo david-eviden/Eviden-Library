@@ -1,6 +1,11 @@
 package com.evidenlibrary.backend.apirest.model.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,48 +26,71 @@ public class SearchService{
     @Autowired
     private GeneroDao generoDao;
     
-    public List<Libro> searchLibros(String query) {
-        // Dividir la consulta en términos individuales para búsqueda más flexible
-        List<String> terms = Arrays.asList(query.toLowerCase().split("\\s+"))
-                                   .stream()
-                                   .filter(term -> !term.isEmpty())
-                                   .collect(Collectors.toList());
-        
-        if (terms.isEmpty()) {
+  //Metodo dividir las consultas
+    private List<String> parseQuery(String query) {
+        if (query == null || query.trim().isEmpty()) {
             return List.of();
         }
         
-        // Buscar libros que coincidan con cualquiera de los términos en título, autor o género
-        return libroDao.findByMultipleTerms(terms);
+        return Arrays.asList(query.toLowerCase().split("\\s+"))
+                .stream()
+                .filter(term -> !term.isEmpty())
+                .collect(Collectors.toList());
+    }
+    
+    public List<Libro> searchLibros(String query) {
+    	// Dividir la consulta 
+        List<String> terms = parseQuery(query);
+
+        if (terms.isEmpty()) {
+        	return List.of(); // Lista vacía si no hay términos
+        }
+       
+        Set<Libro> allResults = new HashSet<>();
+        
+        // Buscar libros por cada término
+        for (String term : terms) {
+            allResults.addAll(libroDao.findByTerm(term));
+        }
+        
+        return new ArrayList<>(allResults);
     }
     
     public List<Autor> searchAutores(String query) {
-        // Dividir la consulta en términos individuales
-        List<String> terms = Arrays.asList(query.toLowerCase().split("\\s+"))
-                                   .stream()
-                                   .filter(term -> !term.isEmpty())
-                                   .collect(Collectors.toList());
+    	
+        List<String> terms = parseQuery(query);
         
         if (terms.isEmpty()) {
             return List.of();
         }
         
-        // Buscar autores que coincidan con cualquiera de los términos
-        return autorDao.findByMultipleTerms(terms);
+        Set<Autor> allResults = new HashSet<>();
+        
+        // Buscar autores por cada término
+        for (String term : terms) {
+            allResults.addAll(autorDao.findByTerm(term));
+        }
+        
+        return new ArrayList<>(allResults);
     }
     
     public List<Genero> searchGeneros(String query) {
-        // Dividir la consulta en términos individuales
-        List<String> terms = Arrays.asList(query.toLowerCase().split("\\s+"))
-                                   .stream()
-                                   .filter(term -> !term.isEmpty())
-                                   .collect(Collectors.toList());
+    	
+        List<String> terms = parseQuery(query);
         
         if (terms.isEmpty()) {
-            return List.of();
+            return List.of(); 
         }
         
-        // Buscar géneros que coincidan con cualquiera de los términos
-        return generoDao.findByMultipleTerms(terms);
+        Set<Genero> allResults = new HashSet<>();
+        
+        // Buscar géneros por cada término
+        for (String term : terms) {
+            allResults.addAll(generoDao.findByTerm(term));
+        }
+        
+        return new ArrayList<>(allResults);
     }
+    
+    
 }

@@ -3,12 +3,18 @@ package com.evidenlibrary.backend.apirest.model.dao;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.evidenlibrary.backend.apirest.model.entity.Genero;
 
 public interface GeneroDao extends JpaRepository<Genero, Long> {
-	List<Genero> findByNombreContainingIgnoreCaseOrLibros_TituloContainingIgnoreCaseOrLibros_Autores_NombreContainingIgnoreCase(
-            String nombre, String titulo, String autorNombre);
-            
-    List<Genero> findByNombreContainingIgnoreCase(String nombre);
+	
+	//Busqueda
+    
+    @Query("SELECT DISTINCT g FROM Genero g " +
+            "WHERE " +
+            "(:term IS NULL OR :term = '') OR " +
+            "LOWER(g.nombre) LIKE LOWER(CONCAT('%', :term, '%'))")
+     List<Genero> findByTerm(@Param("term") String term);
 }
