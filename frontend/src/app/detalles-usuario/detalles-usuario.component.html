@@ -143,7 +143,7 @@
                             <a [routerLink]="['/libro', valoracion.libro?.id]">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div>
-                                        <h5 class="card-title">{{ valoracion.libro?.titulo }}</h5>
+                                        <h5 class="card-title">{{ valoracion.usuario?.nombre}} ({{ valoracion.usuario?.email }})</h5>
                                     </div>
                                     <div class="stars-container">
                                         <span class="star-rating">
@@ -166,7 +166,7 @@
                                 </small>
                             </a>
                             <div class="d-flex justify-content-end gap-2 mt-3" *ngIf="esPerfilPropio || authService.esAdmin">
-                                <a [routerLink]="['/valoracion/form', valoracion.id]" class="btn btn-secondary text-nowrap">
+                                <a [routerLink]="['/valoracion/form', valoracion.id]" class="btn btn-secondary text-white text-nowrap">
                                     <i class="bi bi-pencil me-2"></i>Editar
                                 </a>
                                 <button type="button" name="eliminar" (click)="deleteValoracion(valoracion)" class="btn btn-danger text-nowrap">
