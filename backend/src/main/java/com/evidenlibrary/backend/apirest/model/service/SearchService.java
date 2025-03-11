@@ -22,29 +22,47 @@ public class SearchService{
     private GeneroDao generoDao;
     
     public List<Libro> searchLibros(String query) {
-        if (query.toLowerCase().startsWith("titulo:") || query.toLowerCase().startsWith("título:") || query.toLowerCase().startsWith("libro:")) {
-            String cleanQuery = query.substring(query.indexOf(":") + 1).trim();
-            return libroDao.findByTituloContainingIgnoreCase(cleanQuery);
-        } else {
-            return libroDao.findByTituloContainingIgnoreCaseOrAutores_NombreContainingIgnoreCaseOrGeneros_NombreContainingIgnoreCase(query, query, query);
+        // Dividir la consulta en términos individuales para búsqueda más flexible
+        List<String> terms = Arrays.asList(query.toLowerCase().split("\\s+"))
+                                   .stream()
+                                   .filter(term -> !term.isEmpty())
+                                   .collect(Collectors.toList());
+        
+        if (terms.isEmpty()) {
+            return List.of();
         }
+        
+        // Buscar libros que coincidan con cualquiera de los términos en título, autor o género
+        return libroDao.findByMultipleTerms(terms);
     }
     
     public List<Autor> searchAutores(String query) {
-        if (query.toLowerCase().startsWith("autor:") || query.toLowerCase().startsWith("por:") || query.toLowerCase().startsWith("escrito por:") || query.toLowerCase().startsWith("de:")) {
-            String cleanQuery = query.substring(query.indexOf(":") + 1).trim();
-            return autorDao.findByNombreContainingIgnoreCase(cleanQuery);
-        } else {
-            return autorDao.findByNombreContainingOrLibros_TituloContainingOrLibros_Generos_NombreContaining(query, query, query);
+        // Dividir la consulta en términos individuales
+        List<String> terms = Arrays.asList(query.toLowerCase().split("\\s+"))
+                                   .stream()
+                                   .filter(term -> !term.isEmpty())
+                                   .collect(Collectors.toList());
+        
+        if (terms.isEmpty()) {
+            return List.of();
         }
+        
+        // Buscar autores que coincidan con cualquiera de los términos
+        return autorDao.findByMultipleTerms(terms);
     }
     
     public List<Genero> searchGeneros(String query) {
-        if (query.toLowerCase().startsWith("genero:") || query.toLowerCase().startsWith("género:") || query.toLowerCase().startsWith("categoria:") || query.toLowerCase().startsWith("categoría:")) {
-            String cleanQuery = query.substring(query.indexOf(":") + 1).trim();
-            return generoDao.findByNombreContainingIgnoreCase(cleanQuery);
-        } else {
-            return generoDao.findByNombreContainingIgnoreCaseOrLibros_TituloContainingIgnoreCaseOrLibros_Autores_NombreContainingIgnoreCase(query, query, query);
+        // Dividir la consulta en términos individuales
+        List<String> terms = Arrays.asList(query.toLowerCase().split("\\s+"))
+                                   .stream()
+                                   .filter(term -> !term.isEmpty())
+                                   .collect(Collectors.toList());
+        
+        if (terms.isEmpty()) {
+            return List.of();
         }
+        
+        // Buscar géneros que coincidan con cualquiera de los términos
+        return generoDao.findByMultipleTerms(terms);
     }
 }
