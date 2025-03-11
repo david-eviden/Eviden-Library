@@ -13,10 +13,13 @@ import { Genero } from '../generos/generos';
 })
 export class SeccionCategoriaComponent implements OnInit {
   // Los géneros que quieres mostrar
-  generosMostrados: string[] = ['Romance', 'Fantasía', 'Misterio'];
+  generosMostrados: string[] = ['Fantasía', 'Romance', 'Misterio'];
   
   // Estructura para almacenar libros por género
   librosPorGenero: Map<string, Libro[]> = new Map();
+  
+  // Número máximo de libros a mostrar por género/columna
+  maxLibrosPorColumna: number = 4;
   
   // Variables para manejar la carga
   loading: boolean = true;
@@ -62,8 +65,8 @@ export class SeccionCategoriaComponent implements OnInit {
           if (this.generosMostrados.includes(genero.nombre)) {
             const librosGenero = this.librosPorGenero.get(genero.nombre) || [];
             
-            // Evitar duplicados
-            if (!librosGenero.find(l => l.id === libro.id)) {
+            // Evitar duplicados y limitar a maxLibrosPorColumna
+            if (!librosGenero.find(l => l.id === libro.id) && librosGenero.length < this.maxLibrosPorColumna) {
               librosGenero.push(libro);
               this.librosPorGenero.set(genero.nombre, librosGenero);
             }
@@ -72,6 +75,14 @@ export class SeccionCategoriaComponent implements OnInit {
       }
     });
     
+    // Si queremos seleccionar 4 libros aleatorios por género en lugar de los primeros 4
+    this.generosMostrados.forEach(genero => {
+      const todosLosLibrosGenero = this.librosPorGenero.get(genero) || [];
+      if (todosLosLibrosGenero.length > this.maxLibrosPorColumna) {
+        const librosAleatorios = this.seleccionarLibrosAleatorios(todosLosLibrosGenero, this.maxLibrosPorColumna);
+        this.librosPorGenero.set(genero, librosAleatorios);
+      }
+    });
   }
   
   seleccionarLibrosAleatorios(libros: Libro[], cantidad: number): Libro[] {
@@ -91,4 +102,8 @@ export class SeccionCategoriaComponent implements OnInit {
     this.router.navigate(['/libro', libroId]);
   }
   
+  // Método útil para el template para obtener los libros de un género específico
+  getLibrosPorGenero(genero: string): Libro[] {
+    return this.librosPorGenero.get(genero) || [];
+  }
 }

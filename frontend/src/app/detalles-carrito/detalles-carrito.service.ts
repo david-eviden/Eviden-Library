@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 })
 export class DetallesCarritoService {
 
-  private urlEndPoint: string = 'http://localhost:8081/api/detallesCarrito'; 
+  private urlEndPoint: string = 'http://localhost:8080/api/detallesCarrito'; 
   private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
 
   constructor(private http: HttpClient, private router: Router) {}

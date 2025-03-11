@@ -34,7 +34,7 @@ public class SecurityConfig {
 
                     // Requerir ADMIN para endpoints específicos
                     .requestMatchers("/api/autor", "/api/carritos", "/api/carrito", "/api/pedidos", "/api/pedido", 
-                                     "/api/favoritos", "/api/genero", "/api/usuarios", "/api/usuario", "/api/valoracion", "/api/libro").hasRole("ADMIN")
+                                     "/api/favoritos", "/api/genero", "/api/usuarios", "/api/usuario", "/api/valoracion", "/api/libro", "/api/libros").hasRole("ADMIN")
                     
                     .anyRequest().authenticated()
             )
