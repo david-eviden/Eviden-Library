@@ -26,7 +26,7 @@ public interface LibroDao extends JpaRepository<Libro, Long> {
 	
 	//Busqueda	
 	List<Libro> findByTituloContainingIgnoreCase(String titulo);
-	List<Libro> findByAnioContaining(String anio);
+	List<Libro> findByAnio(String anio);
 	List<Libro> findByAutoresContaining(Autor autorId);    
     List<Libro> findByGenerosContaining(Genero generoId);
 	

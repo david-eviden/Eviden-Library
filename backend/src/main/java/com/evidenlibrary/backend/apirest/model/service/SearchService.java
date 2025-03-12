@@ -52,7 +52,7 @@ public class SearchService{
         // Buscar libros por cada término
         for (String term : terms) {        	
         	allResults.addAll(libroDao.findByTituloContainingIgnoreCase(term));
-        	allResults.addAll(libroDao.findByAnioContaining(term));
+        	allResults.addAll(libroDao.findByAnio(term));
             //allResults.addAll(libroDao.findByTerm(term));
         }
         
@@ -101,22 +101,28 @@ public class SearchService{
     //Todos los libros asociados  a un autor
     @Transactional(readOnly = true)
     public List<Libro> findLibrosByAutorId(Long autorId) {
-        // Verificamos que el autor exista
+        // autor existe
         Autor autor = autorDao.findById(autorId)
             .orElseThrow(() -> new RuntimeException("Autor no encontrado con ID: " + autorId));
         
-        // Obtenemos los libros asociados a este autor
+        // libros asociados a este autor
         return libroDao.findByAutoresContaining(autor);
     }
     
     //Todos los libros asociados a un género 
     @Transactional(readOnly = true)
     public List<Libro> findLibrosByGeneroId(Long generoId) {
-        // Verificamos que el género exista
+        // género exista
         Genero genero = generoDao.findById(generoId)
             .orElseThrow(() -> new RuntimeException("Género no encontrado con ID: " + generoId));
         
-        // Obtenemos los libros asociados a este género
+        // libros asociados a este género
         return libroDao.findByGenerosContaining(genero);
+    }
+    
+    //Busqueda por año de publicacion
+    @Transactional(readOnly = true)
+    public List<Libro> findLibrosByAnio(String anio) {
+        return libroDao.findByAnio(anio);
     }
 }

@@ -56,4 +56,8 @@ export class SearchService {
   getLibrosByGenero(generoId: number): Observable<Libro[]> {
     return this.http.get<Libro[]>(`${this.urlEndPoint}/libros/genero/${generoId}`, { headers: this.createHeaders() });
   }
+
+  getLibrosByAnio(anio: string): Observable<Libro[]> {
+    return this.http.get<Libro[]>(`${this.urlEndPoint}/libros/anio/${anio}`, { headers: this.createHeaders() });
+  }
 }

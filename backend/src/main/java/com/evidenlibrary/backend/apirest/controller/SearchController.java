@@ -59,4 +59,10 @@ public class SearchController {
 		List<Libro> libros = searchService.findLibrosByGeneroId(generoId);
 		return ResponseEntity.ok(libros);
 	}
+	
+	@GetMapping("/search/libros/anio/{anio}")
+	public ResponseEntity<List<Libro>> getLibrosByAnio(@PathVariable String anio) {
+		List<Libro> libros = searchService.findLibrosByAnio(anio);
+		return ResponseEntity.ok(libros);
+	}
 }
