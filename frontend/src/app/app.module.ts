@@ -34,7 +34,6 @@ import { RankingComponent } from './ranking/ranking.component';
 import { LibroService } from './libro/libro.service';
 import { DetallesUsuarioComponent } from './detalles-usuario/detalles-usuario.component';
 import { FormUsuarioComponent } from './form-usuario/form-usuario.component';
-import { ClickOutsideDirective } from './directives/click-outside.directive';
 import { LoginComponent } from './login/login.component';
 import { ErrorComponent } from './error/error.component';
 import { RegistroComponent } from './registro/registro.component';
@@ -69,7 +68,6 @@ import { SeccionCategoriaComponent } from './seccion-categoria/seccion-categoria
     FormGeneroComponent,
     FormValoracionComponent,
     DetallesUsuarioComponent,
-    ClickOutsideDirective,
     LoginComponent,
     ErrorComponent,
     RegistroComponent,
