@@ -22,6 +22,9 @@
                     <p class="text-muted autor" [style.view-transition-name]="'autor-libro-' + libro.autores[0].id">
                         Por <strong>{{ libro.autores[0].nombre }}</strong>
                     </p>
+                    <p class="text-muted anio" *ngIf="libro.anio">
+                        Año de publicacion <strong>{{ libro.anio }}</strong>
+                    </p>
                     <div class="stars-container">
                         <span class="star-rating">
                             <i class="bi bi-star-fill text-warning"
@@ -59,14 +62,13 @@
                     </div>
 
                     <!-- Botones de acción (solo si cliente)-->
-                    <div *ngIf="authService.esUsuario" class="d-flex flex-column flex-sm-row justify-content-between gap-2 mb-5">
+                    <div *ngIf="authService.esUsuario"
+                        class="d-flex flex-column flex-sm-row justify-content-between gap-2 mb-5">
                         <button class="btn btn-primary">
                             <i class="bi bi-cart-plus me-2"></i>Añadir al carrito
                         </button>
-                        <button class="btn" 
-                                [ngClass]="{'btn-danger': esFavorito, 'btn-outline-danger': !esFavorito}"
-                                (click)="toggleFavorito()"
-                                [disabled]="verificandoFavorito">
+                        <button class="btn" [ngClass]="{'btn-danger': esFavorito, 'btn-outline-danger': !esFavorito}"
+                            (click)="toggleFavorito()" [disabled]="verificandoFavorito">
                             <i class="bi" [ngClass]="{'bi-heart-fill': esFavorito, 'bi-heart': !esFavorito}"></i>
                             {{ esFavorito ? ' Quitar de favoritos' : ' Añadir a favoritos' }}
                         </button>
@@ -76,7 +78,8 @@
                     </div>
 
                     <!-- Botones de acción (solo si admin) -->
-                    <div *ngIf="authService.esAdmin" class="d-flex flex-column flex-sm-row justify-content-end gap-4 mb-5">
+                    <div *ngIf="authService.esAdmin"
+                        class="d-flex flex-column flex-sm-row justify-content-end gap-4 mb-5">
                         <button *ngIf="libro" class="btn btn-warning" [routerLink]="['/libro/form', libro.id]">
                             <i class="bi bi-pencil"></i> Editar
                         </button>
@@ -124,22 +127,23 @@
                                     <i class="bi bi-quote"></i>
                                 </p>
 
-                            <small class="text-muted">
-                                {{ valoracion.fecha | date:'dd/MM/yyyy' }}
-                            </small>
-                        </a>
-                        <div *ngIf="authService.esAdmin" class="d-flex justify-content-end gap-2 mt-3">
-                            <button type="button" name="editar" [routerLink]="['/valoracion/form', valoracion.id]" class="btn btn-secondary text-nowrap">
-                                <i class="bi bi-pencil me-2"></i>Editar
-                            </button>
-                            <button type="button" name="eliminar" (click)="deleteValoracion(valoracion)" class="btn btn-danger text-nowrap">
-                                <i class="bi bi-person-x me-2"></i>Eliminar
-                            </button>
+                                <small class="text-muted">
+                                    {{ valoracion.fecha | date:'dd/MM/yyyy' }}
+                                </small>
+                            </a>
+                            <div *ngIf="authService.esAdmin" class="d-flex justify-content-end gap-2 mt-3">
+                                <button type="button" name="editar" [routerLink]="['/valoracion/form', valoracion.id]"
+                                    class="btn btn-secondary text-nowrap">
+                                    <i class="bi bi-pencil me-2"></i>Editar
+                                </button>
+                                <button type="button" name="eliminar" (click)="deleteValoracion(valoracion)"
+                                    class="btn btn-danger text-nowrap">
+                                    <i class="bi bi-person-x me-2"></i>Eliminar
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
