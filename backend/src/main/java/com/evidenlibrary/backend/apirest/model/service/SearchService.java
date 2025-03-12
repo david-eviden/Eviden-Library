@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.evidenlibrary.backend.apirest.model.dao.AutorDao;
 import com.evidenlibrary.backend.apirest.model.dao.GeneroDao;
@@ -26,7 +27,7 @@ public class SearchService{
     @Autowired
     private GeneroDao generoDao;
     
-  //Metodo dividir las consultas
+    //Metodo dividir las consultas
     private List<String> parseQuery(String query) {
         if (query == null || query.trim().isEmpty()) {
             return List.of();
@@ -49,8 +50,10 @@ public class SearchService{
         Set<Libro> allResults = new HashSet<>();
         
         // Buscar libros por cada término
-        for (String term : terms) {
-            allResults.addAll(libroDao.findByTerm(term));
+        for (String term : terms) {        	
+        	allResults.addAll(libroDao.findByTituloContainingIgnoreCase(term));
+        	allResults.addAll(libroDao.findByAnioContaining(term));
+            //allResults.addAll(libroDao.findByTerm(term));
         }
         
         return new ArrayList<>(allResults);
@@ -68,7 +71,8 @@ public class SearchService{
         
         // Buscar autores por cada término
         for (String term : terms) {
-            allResults.addAll(autorDao.findByTerm(term));
+        	allResults.addAll(autorDao.findByNombreContainingIgnoreCase(term));
+            //allResults.addAll(autorDao.findByTerm(term));
         }
         
         return new ArrayList<>(allResults);
@@ -86,11 +90,33 @@ public class SearchService{
         
         // Buscar géneros por cada término
         for (String term : terms) {
-            allResults.addAll(generoDao.findByTerm(term));
+        	allResults.addAll(generoDao.findByNombreContainingIgnoreCase(term));           
+        	//allResults.addAll(generoDao.findByTerm(term));
         }
         
         return new ArrayList<>(allResults);
     }
     
     
+    //Todos los libros asociados  a un autor
+    @Transactional(readOnly = true)
+    public List<Libro> findLibrosByAutorId(Long autorId) {
+        // Verificamos que el autor exista
+        Autor autor = autorDao.findById(autorId)
+            .orElseThrow(() -> new RuntimeException("Autor no encontrado con ID: " + autorId));
+        
+        // Obtenemos los libros asociados a este autor
+        return libroDao.findByAutoresContaining(autor);
+    }
+    
+    //Todos los libros asociados a un género 
+    @Transactional(readOnly = true)
+    public List<Libro> findLibrosByGeneroId(Long generoId) {
+        // Verificamos que el género exista
+        Genero genero = generoDao.findById(generoId)
+            .orElseThrow(() -> new RuntimeException("Género no encontrado con ID: " + generoId));
+        
+        // Obtenemos los libros asociados a este género
+        return libroDao.findByGenerosContaining(genero);
+    }
 }

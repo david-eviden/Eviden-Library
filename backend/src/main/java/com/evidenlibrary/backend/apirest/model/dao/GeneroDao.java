@@ -11,6 +11,8 @@ import com.evidenlibrary.backend.apirest.model.entity.Genero;
 public interface GeneroDao extends JpaRepository<Genero, Long> {
 	
 	//Busqueda
+	
+	List<Genero> findByNombreContainingIgnoreCase(String nombre);
     
     @Query("SELECT DISTINCT g FROM Genero g " +
             "WHERE " +

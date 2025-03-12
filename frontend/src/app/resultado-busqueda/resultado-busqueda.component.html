@@ -112,7 +112,7 @@
                         <div class="card-body">
                             <h5 class="card-title">{{autor.nombre}} {{autor.apellido}}</h5>
                             <p class="card-text">{{autor.biografia | slice:0:150}}...</p>
-                            <button class="btn btn-outline-primary" [routerLink]="['/autores', autor.id]">
+                            <button class="btn btn-outline-primary" [routerLink]="['/autores']">
                                 Ver más
                             </button>
                         </div>
@@ -130,7 +130,7 @@
                         <div class="card-body">
                             <h5 class="card-title">{{genero.nombre}}</h5>
                             <p class="card-text">{{genero.descripcion | slice:0:150}}...</p>
-                            <button class="btn btn-outline-primary" [routerLink]="['/generos', genero.id]">
+                            <button class="btn btn-outline-primary" [routerLink]="['/generos']">
                                 Ver más
                             </button>
                         </div>

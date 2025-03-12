@@ -11,11 +11,12 @@ import com.evidenlibrary.backend.apirest.model.entity.Autor;
 public interface AutorDao extends JpaRepository<Autor, Long> {
 	
     //Busqueda
+	List<Autor> findByNombreContainingIgnoreCase(String nombre);
     
     @Query("SELECT DISTINCT a FROM Autor a " +
             "WHERE " +
             "(:term IS NULL OR :term = '') OR " +
             "LOWER(a.nombre) LIKE LOWER(CONCAT('%', :term, '%')) OR " +
-            "LOWER(a.apellido) LIKE LOWER(CONCAT('%', :term, '%'))")
+            "LOWER(a.biografia) LIKE LOWER(CONCAT('%', :term, '%'))")
      List<Autor> findByTerm(@Param("term") String term);
 }

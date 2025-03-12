@@ -128,13 +128,13 @@ export class SearchComponent implements OnInit {
     });
   }
 
-  private isEmptyResults(results: any): boolean {
+  isEmptyResults(results: any): boolean {
     return (!results.libros || results.libros.length === 0) &&
            (!results.autores || results.autores.length === 0) &&
            (!results.generos || results.generos.length === 0);
   }
   
-  private hasResults(results: any): boolean {
+  hasResults(results: any): boolean {
     return (results.libros && results.libros.length > 0) ||
            (results.autores && results.autores.length > 0) ||
            (results.generos && results.generos.length > 0);

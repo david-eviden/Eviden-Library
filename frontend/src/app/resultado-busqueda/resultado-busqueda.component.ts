@@ -96,9 +96,16 @@ export class ResultadoBusquedaComponent implements OnInit {
   }
 
   private loadLibrosByAutor(autorId: number): void {
-    this.searchService.getLibrosByAutor(autorId).subscribe(
-      libros => this.librosRelacionados = libros
-    );
+    this.searchService.getLibrosByAutor(autorId).subscribe({
+      next: (libros) => {
+        this.librosRelacionados = libros;
+        console.log('Libros cargados:', libros); // Verifica si llegan datos
+      },
+      error: (error) => {
+        console.error('Error al cargar libros del autor:', error);
+        this.librosRelacionados = [];
+      }
+    });
   }
 
   private loadLibrosByGenero(generoId: number): void {

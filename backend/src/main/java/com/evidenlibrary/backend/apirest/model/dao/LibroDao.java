@@ -9,6 +9,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.evidenlibrary.backend.apirest.model.entity.Autor;
+import com.evidenlibrary.backend.apirest.model.entity.Genero;
 import com.evidenlibrary.backend.apirest.model.entity.Libro;
 
 public interface LibroDao extends JpaRepository<Libro, Long> {
@@ -22,15 +24,19 @@ public interface LibroDao extends JpaRepository<Libro, Long> {
 	//Filtrar por autor
 	Page<Libro> findByAutoresId(Long autorId, Pageable pageable);
 	
-	//Busqueda	  
+	//Busqueda	
+	List<Libro> findByTituloContainingIgnoreCase(String titulo);
+	List<Libro> findByAnioContaining(String anio);
+	List<Libro> findByAutoresContaining(Autor autorId);    
+    List<Libro> findByGenerosContaining(Genero generoId);
+	
     @Query("SELECT DISTINCT l FROM Libro l " +
     	       "WHERE " +
     	       "(:term IS NULL OR :term = '') OR " +
     	       "LOWER(l.titulo) LIKE LOWER(CONCAT('%', :term, '%')) OR " +
-    	       "LOWER(l.isbn) LIKE LOWER(CONCAT('%', :term, '%')) OR " +
-    	       "LOWER(l.anio_publicacion) LIKE LOWER(CONCAT('%', :term, '%')) OR " +
+    	       //"LOWER(l.anio_publicacion) LIKE LOWER(CONCAT('%', :term, '%')) OR " +
     	       "LOWER(l.descripcion) LIKE LOWER(CONCAT('%', :term, '%'))")
-    	List<Libro> findByTerm(@Param("term") String term);
+    List<Libro> findByTerm(@Param("term") String term);
 
 	
 

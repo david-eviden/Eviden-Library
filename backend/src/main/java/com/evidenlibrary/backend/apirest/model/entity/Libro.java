@@ -57,7 +57,7 @@ public class Libro implements Serializable {
     private String imagen;
     
     @Column(nullable = true)
-    private Date anio_publicacion;
+    private String anio;
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -147,12 +147,12 @@ public class Libro implements Serializable {
 		return id;
 	}	
 	
-	public Date getAnio_publicacion() {
-		return anio_publicacion;
+	public String getAnio() {
+		return anio;
 	}
 
-	public void setAnio_publicacion(Date anio_publicacion) {
-		this.anio_publicacion = anio_publicacion;
+	public void setAnio(String anio) {
+		this.anio = anio;
 	}
 
 	//Valoracion media

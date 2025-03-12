@@ -3,9 +3,6 @@
         <input class="form-control" type="search" placeholder="Buscar por título, autor o género..."
             [(ngModel)]="searchTerm" (input)="onSearchInput($event)" (keyup.enter)="performFullSearch()"
             name="searchTerm" aria-label="Search">
-        <button class="btn btn-outline-secondary" *ngIf="searchTerm" (click)="clearSearch()" type="button">
-            <i class="bi bi-x-lg"></i>
-        </button>
         <button class="btn btn-primary" (click)="performFullSearch()">
             <i class="bi bi-search"></i>
         </button>
