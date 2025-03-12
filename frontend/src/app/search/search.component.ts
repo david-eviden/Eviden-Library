@@ -145,8 +145,9 @@ export class SearchComponent implements OnInit {
     const target = event.target as HTMLElement;
     this.clearSearch();
 
-    if (target && target.closest && !target.closest('.search-container')) {
+    if (target && target.closest && !target.closest('.search-container')) {//fuera de contenedor de busqueda
       this.showDropdown = false;
     }
+    //limpia busqueda y oculta el dropdown
   }
 }
