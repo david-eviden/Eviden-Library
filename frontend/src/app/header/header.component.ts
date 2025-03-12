@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../login/auth.service';
 import { DetallesUsuarioService } from '../detalles-usuario/detalles-usuario.service';
 import { Usuario } from '../usuario/usuario';
+import { DetallesCarritoService } from '../detalles-carrito/detalles-carrito.service';
 
 @Component({
   selector: 'app-header',
@@ -14,12 +15,14 @@ import { Usuario } from '../usuario/usuario';
 export class HeaderComponent implements OnInit{
 
   userId: number = 0;
+  itemCount: number = 0;
 
   constructor(
     public authService: AuthService,
     private http: HttpClient,
     private router: Router,
-    private usuarioService: DetallesUsuarioService
+    private usuarioService: DetallesUsuarioService,
+    private carritoService: DetallesCarritoService
   ) {}
 
   ngOnInit(): void {
@@ -56,6 +59,11 @@ export class HeaderComponent implements OnInit{
           }
         }
       }
+    });
+
+    // Nos suscribimos al contador del carrito para que se actualice automáticamente
+    this.carritoService.getCartItemCount().subscribe((count: number) => {
+      this.itemCount = count;
     });
   }
   

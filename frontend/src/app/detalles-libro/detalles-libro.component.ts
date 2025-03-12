@@ -395,6 +395,8 @@ export class DetallesLibroComponent implements OnInit {
     this.agregandoAlCarrito = true;
     this.carritoService.addToCart(this.libro).subscribe({
       next: (response) => {
+        // Ya no es necesario llamar a updateCartItemCount aquí porque se hace dentro de addToCart
+
         this.agregandoAlCarrito = false;
         swal({
           title: '¡Añadido al carrito!',
@@ -420,4 +422,5 @@ export class DetallesLibroComponent implements OnInit {
       }
     });
   }
+
 }

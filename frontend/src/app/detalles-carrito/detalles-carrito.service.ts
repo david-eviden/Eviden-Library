@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { detallesCarrito } from './detalles-carrito';
 import { AuthService } from '../login/auth.service';
@@ -10,6 +10,9 @@ import { Libro } from '../libro/libro';
   providedIn: 'root'
 })
 export class DetallesCarritoService {
+
+  private contadorItemsCarrito = new BehaviorSubject<number>(0);
+
   private urlEndPoint: string = 'http://localhost:8080/api/detalles-carrito';
 
   constructor(
@@ -103,5 +106,15 @@ export class DetallesCarritoService {
         return throwError(() => error);
       })
     );
+  }
+
+  // Método para obtener el número de artículos en el carrito
+  getCartItemCount() {
+    return this.contadorItemsCarrito.asObservable();
+  }
+
+  // Método para actualizar el número de artículos
+  updateCartItemCount(count: number) {
+    this.contadorItemsCarrito.next(count);
   }
 }

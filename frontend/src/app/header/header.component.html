@@ -85,16 +85,12 @@
                     <a *ngIf="authService.esUsuario" [routerLink]="['/mis-favoritos']" class="btn btn-link text-decoration-none text-dark">
                         <i class="bi bi-heart-fill mx-2"></i> <span class="d-none d-md-inline">Favoritos</span>
                     </a>
-                    <a *ngIf="authService.esAdmin" [routerLink]="['/favoritos']" class="btn btn-link text-decoration-none text-dark">
-                        <i class="bi bi-heart-fill mx-2"></i> <span class="d-none d-md-inline">Favoritos</span>
+                    <a *ngIf="authService.esAdmin" (click)="logout()" class="btn btn-link text-decoration-none text-dark">
+                        <i class="bi bi-door-open-fill"></i> Cerrrar sesión
                     </a>
                     <a *ngIf="authService.esUsuario" [routerLink]="['/mi-carrito']" class="btn btn-link text-dark">
                         <i class="bi bi-cart4 mx-2"></i>
-                        <span class="badge bg-danger">0</span>
-                    </a>
-                    <a *ngIf="authService.esAdmin" [routerLink]="['/carrito']" class="btn btn-link text-dark">
-                        <i class="bi bi-cart4 mx-2"></i>
-                        <span class="badge bg-danger">0</span>
+                        <span class="badge bg-danger">{{ itemCount }}</span>
                     </a>
                 </div>
 
@@ -116,12 +112,12 @@
                 <a *ngIf="authService.esUsuario" [routerLink]="['/mis-favoritos']" class="btn btn-link text-decoration-none text-dark">
                     <i class="bi bi-heart-fill"></i> Favoritos
                 </a>
-                <a *ngIf="authService.esAdmin" [routerLink]="['/favoritos']" class="btn btn-link text-decoration-none text-dark">
-                    <i class="bi bi-heart-fill"></i> Favoritos
+                <a *ngIf="authService.esAdmin" (click)="logout()" class="btn btn-link text-decoration-none text-dark">
+                    <i class="bi bi-door-open-fill"></i> Cerrrar sesión
                 </a>
                 <a *ngIf="authService.esUsuario" [routerLink]="['/mi-carrito']" class="btn btn-link text-dark">
-                    <i class="bi bi-cart4 m-1"></i>
-                    <span class="badge bg-danger">0</span>
+                    <i class="bi bi-cart4 mx-2"></i>
+                    <span class="badge bg-danger">{{ itemCount }}</span>
                 </a>
             </div>
 
