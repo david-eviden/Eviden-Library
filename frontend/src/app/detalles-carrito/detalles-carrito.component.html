@@ -29,13 +29,13 @@
                     <div *ngFor="let item of detallesCarrito" class="card mb-3">
                         <div class="card-body">
                             <div class="d-flex align-items-center mb-3">
-                                <img [src]="item.libro?.imagen ||'/img/libroEjemplo.jpg'" 
+                                <img [src]="item.libro.imagen ||'/img/libroEjemplo.jpg'" 
                                      alt="Portada del libro"
                                      class="img-thumbnail me-3"
                                      style="width: 50px; height: 75px; object-fit: cover;">
                                 <div>
-                                    <h6 class="mb-0">{{item.libro?.titulo}}</h6>
-                                    <small class="text-muted">{{item.libro?.autores?.[0]?.nombre}}</small>
+                                    <h6 class="mb-0">{{item.libro.titulo}}</h6>
+                                    <small class="text-muted">{{item.libro.autores[0].nombre}}</small>
                                 </div>
                             </div>
                             <div class="row g-2 align-items-center">
@@ -49,17 +49,17 @@
                                 </div>
                                 <div class="col-6">
                                     <label class="form-label mb-1">Precio:</label>
-                                    <p class="mb-0">${{item.libro?.precio || 0}}</p>
+                                    <p class="mb-0">${{item.libro.precio || 0}}</p>
                                 </div>
                                 <div class="col-6">
                                     <label class="form-label mb-1">Total:</label>
-                                    <p class="mb-0">${{(item.libro?.precio || 0) * item.cantidad}}</p>
+                                    <p class="mb-0">${{(item.libro.precio || 0) * item.cantidad}}</p>
                                 </div>
                                 <div class="col-6 text-end">
                                     <button class="btn btn-link text-danger btn-sm" title="Eliminar" (click)="eliminarDelCarrito(item)">
                                         <i class="bi bi-trash"></i>
                                     </button>
-                                    <button class="btn btn-link btn-sm" (click)="verDetallesLibro(item.libro?.id)" title="Ver detalles">
+                                    <button class="btn btn-link btn-sm" (click)="verDetallesLibro(item.libro.id)" title="Ver detalles">
                                         <i class="bi bi-eye"></i>
                                     </button>
                                 </div>
@@ -92,13 +92,13 @@
                             <tr *ngFor="let item of detallesCarrito">
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <img [src]="item.libro?.imagen ||'/img/libroEjemplo.jpg'" 
+                                        <img [src]="item.libro.imagen ||'/img/libroEjemplo.jpg'" 
                                              alt="Portada del libro"
                                              class="img-thumbnail me-3"
                                              style="width: 50px; height: 75px; object-fit: cover;">
                                         <div>
-                                            <h6 class="mb-0">{{item.libro?.titulo}}</h6>
-                                            <small class="text-muted">{{item.libro?.autores?.[0]?.nombre}}</small>
+                                            <h6 class="mb-0">{{item.libro.titulo}}</h6>
+                                            <small class="text-muted">{{item.libro.autores[0].nombre}}</small>
                                         </div>
                                     </div>
                                 </td>
@@ -109,13 +109,13 @@
                                         <button class="btn btn-outline-secondary btn-sm" (click)="actualizarCantidad(item, 1)">+</button>
                                     </div>
                                 </td>
-                                <td>${{item.libro?.precio || 0}}</td>
-                                <td>${{(item.libro?.precio || 0) * item.cantidad}}</td>
+                                <td>${{item.libro.precio || 0}}</td>
+                                <td>${{(item.libro.precio || 0) * item.cantidad}}</td>
                                 <td>
                                     <button class="btn btn-link text-danger" title="Eliminar" (click)="eliminarDelCarrito(item)">
                                         <i class="bi bi-trash"></i>
                                     </button>
-                                    <button class="btn btn-link" (click)="verDetallesLibro(item.libro?.id)" title="Ver detalles">
+                                    <button class="btn btn-link" (click)="verDetallesLibro(item.libro.id)" title="Ver detalles">
                                         <i class="bi bi-eye"></i>
                                     </button>
                                 </td>
@@ -132,13 +132,25 @@
                     </table>
                 </div>
                 
-                <div class="d-flex flex-column flex-md-row justify-content-end gap-2 mt-4">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-4 gap-3">
                     <button class="btn btn-secondary" (click)="seguirComprando()">
                         <i class="bi bi-arrow-left me-2"></i>Seguir comprando
                     </button>
                     <button class="btn btn-primary" (click)="procederAlPago()">
                         <i class="bi bi-credit-card me-2"></i>Proceder al pago
                     </button>
+                </div>
+                
+                <!-- Contenedor para el pago de PayPal con un estilo atractivo -->
+                <div *ngIf="mostrarPaypal" class="mt-4 paypal-container">
+                    <div class="card shadow-lg">
+                        <div class="card-header">
+                            <h5 class="mb-0 text-center">¿Cómo desea pagar?</h5>
+                        </div>
+                        <div class="card-body">
+                            <ngx-paypal [config]="payPalConfig"></ngx-paypal>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

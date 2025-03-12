@@ -4,6 +4,7 @@ import { DetallesCarritoService } from './detalles-carrito.service';
 import { AuthService } from '../login/auth.service';
 import { Router } from '@angular/router';
 import swal from 'sweetalert2';
+import { ICreateOrderRequest, IPayPalConfig } from 'ngx-paypal';
 
 @Component({
   selector: 'app-detalles-carrito',
@@ -14,6 +15,8 @@ import swal from 'sweetalert2';
 export class DetallesCarritoComponent implements OnInit {
   detallesCarrito: detallesCarrito[] = [];
   cargando: boolean = true;
+  public payPalConfig?: IPayPalConfig;
+  mostrarPaypal: boolean = false;
 
   constructor(
     private detallesCarritoService: DetallesCarritoService,
@@ -54,11 +57,6 @@ export class DetallesCarritoComponent implements OnInit {
 
   seguirComprando(): void {
     this.router.navigate(['/libros']);
-  }
-
-  procederAlPago(): void {
-    // TODO: Implementar la lógica de pago
-    console.log('Procediendo al pago...');
   }
 
   actualizarCantidad(item: detallesCarrito, incremento: number): void {
@@ -132,6 +130,94 @@ export class DetallesCarritoComponent implements OnInit {
           }
         });
       }
+    });
+  }
+
+  procederAlPago(): void {
+    if (this.detallesCarrito.length === 0) {
+      swal('Aviso', 'No hay productos en el carrito para proceder al pago', 'warning');
+      return;
+    }
+    this.mostrarPaypal = true;
+    this.initConfig();
+  }
+
+  private initConfig(): void {
+    const total = this.calcularTotal().toFixed(2);
+    
+    this.payPalConfig = {
+      currency: 'EUR',
+      clientId: 'AZ4VTAcwLv65C04xUkcAGD40fx1ffeNsQtjt5_nb8h_ghpcHckhOd8kcVlvirW8dEkFTloz4GEheKcko',
+      createOrderOnClient: (data) => <ICreateOrderRequest>{
+        intent: 'CAPTURE',
+        purchase_units: [{
+          amount: {
+            currency_code: 'EUR',
+            value: total,
+            breakdown: {
+              item_total: {
+                currency_code: 'EUR',
+                value: total
+              }
+            }
+          },
+          items: this.detallesCarrito.map(item => ({
+            name: item.libro?.titulo || 'Libro',
+            quantity: item.cantidad.toString(),
+            category: 'DIGITAL_GOODS',
+            unit_amount: {
+              currency_code: 'EUR',
+              value: (item.libro?.precio || 0).toFixed(2)
+            }
+          }))
+        }]
+      },
+      advanced: {
+        commit: 'true'
+      },
+      style: {
+        label: 'paypal',
+        layout: 'vertical'
+      },
+      onApprove: (data, actions) => {
+        console.log('onApprove - compra aprobada pero no autorizada', data, actions);
+        actions.order.get().then((details: any) => {
+          console.log('onApprove - detalles de la orden:', details);
+        });
+      },
+      onClientAuthorization: (data) => {
+        console.log('onClientAuthorization - pago completado:', data);
+        this.procesarCompraExitosa(data);
+      },
+      onCancel: (data, actions) => {
+        console.log('OnCancel - compra cancelada:', data, actions);
+        swal('Cancelado', 'Has cancelado el proceso de pago', 'info');
+        this.mostrarPaypal = false;
+      },
+      onError: err => {
+        console.log('OnError - error en el proceso:', err);
+        swal('Error', 'Ha ocurrido un error durante el proceso de pago', 'error');
+      },
+      onClick: (data, actions) => {
+        console.log('onClick - botón clickado:', data, actions);
+      }
+    };
+  }
+
+  procesarCompraExitosa(data: any): void {
+    swal({
+      title: '¡Pago completado!',
+      text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente.`,
+      type: 'success',
+      confirmButtonText: 'Continuar'
+    }).then(() => {
+      // Redireccionar a página de confirmación o limpiar carrito
+      // Por ejemplo:
+      // this.router.navigate(['/confirmacion-pedido', data.id]);
+      
+      // O simplemente limpiar el carrito y redireccionar a la página principal
+      this.detallesCarrito = [];
+      this.router.navigate(['/libros']);
     });
   }
 }
