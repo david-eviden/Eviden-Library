@@ -220,4 +220,37 @@ export class DetallesCarritoComponent implements OnInit {
       this.router.navigate(['/libros']);
     });
   }
+
+  eliminarTodosDelCarrito(): void {
+    // Confirmación antes de eliminar todos los elementos
+    swal({
+      title: '¿Estás seguro?',
+      text: '¿Deseas eliminar todos los libros del carrito?',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar todos',
+      cancelButtonText: 'Cancelar',
+      buttonsStyling: true,
+      reverseButtons: true
+    }).then((result: any) => {
+      if (result.value) {
+        // Eliminar todos los libros del carrito
+        this.detallesCarrito.forEach(item => {
+          this.detallesCarritoService.delete(item.id!).subscribe({
+            next: () => {
+              // Filtrar los items eliminados
+              this.detallesCarrito = this.detallesCarrito.filter(i => i.id !== item.id);
+            },
+            error: (error) => {
+              console.error('Error al eliminar del carrito:', error);
+              swal('Error', 'No se pudo eliminar algunos libros del carrito', 'error');
+            }
+          });
+        });
+        swal('Eliminados', 'Todos los libros han sido eliminados del carrito', 'success');
+      }
+    });
+  }
 }
