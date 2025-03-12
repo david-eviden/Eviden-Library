@@ -76,7 +76,12 @@ INSERT INTO libro_autor (libro_id, autor_id) VALUES
 (12, 3), -- Allende - Paula
 (13, 4), -- Cortázar - 62/Modelo para armar
 (14, 5), -- Vargas Llosa - Conversación en la catedral
-(15, 6); -- Martin - Choque de reyes
+(15, 6), -- Martin - Choque de reyes
+(16, 3), -- Allende - Daughter of Fortune
+(17, 3), -- Allende - Portrait in Sepia
+(18, 3), -- Allende - La isla bajo el mar
+(19, 3), -- Allende - El cuaderno de Maya
+(20, 3); -- Allende - El amante japonés
 
 -- Relaciones Libro-Género
 INSERT INTO libro_genero (libro_id, genero_id) VALUES
@@ -94,7 +99,12 @@ INSERT INTO libro_genero (libro_id, genero_id) VALUES
 (12, 8), -- Paula: Biografía
 (13, 1), -- 62/Modelo para armar: Ficción
 (14, 1), (14, 7), -- Conversación en la catedral: Ficción, Historia
-(15, 3); -- Choque de reyes: Fantasía
+(15, 3), -- Choque de reyes: Fantasía
+(16, 1), (16, 8), -- Daughter of Fortune: Ficción, Historia
+(17, 1), (17, 8), -- Portrait in Sepia: Ficción, Historia
+(18, 1), (18, 7), -- La isla bajo el mar: Ficción, Historia
+(19, 1), (19, 8), -- El cuaderno de Maya: Ficción, Biografía
+(20, 1), (20, 4); -- El amante japonés: Ficción, Romance
 
 -- Carritos activos
 INSERT INTO carritos (usuario_id, fecha_creacion, estado) VALUES

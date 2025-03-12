@@ -17,4 +17,4 @@ export class ClickOutsideDirective {
       this.clickOutside.emit(event);
     }
   }
-} 
+}

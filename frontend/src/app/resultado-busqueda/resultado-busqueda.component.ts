@@ -50,6 +50,8 @@ export class ResultadoBusquedaComponent implements OnInit {
             this.loadLibrosByAutor(this.results.autores[0].id);
           } else if (this.searchType === 'genero' && this.results.generos.length > 0) {
             this.loadLibrosByGenero(this.results.generos[0].id);
+          } else if (this.searchType === 'anio' && this.results.anios.length > 0) {
+            this.loadLibrosByAnio(this.results.anios[0]);
           }
 
           this.noResults = this.isEmptyResults();
@@ -64,6 +66,14 @@ export class ResultadoBusquedaComponent implements OnInit {
   }
 
   private detectSearchTypeFromResults(results: any): string {
+    // Si solo hay años y no hay libros, autores ni géneros
+    if (results.anios?.length > 0 && 
+      (!results.libros?.length || results.libros.length === 0) && 
+      (!results.autores?.length || results.autores.length === 0) &&
+      (!results.generos?.length || results.generos.length === 0)) {
+      return 'anio';
+    }
+
     // Si solo hay autores y no hay libros ni géneros
     if (results.autores?.length > 0 && 
         (!results.libros?.length || results.libros.length === 0) && 
@@ -80,8 +90,7 @@ export class ResultadoBusquedaComponent implements OnInit {
 
     // Si hay coincidencia exacta con un autor
     if (results.autores?.length === 1 && 
-        results.autores[0].nombre.toLowerCase() === this.searchTerm.toLowerCase() || 
-        results.autores[0].apellido.toLowerCase() === this.searchTerm.toLowerCase()) {
+        results.autores[0].nombre.toLowerCase() === this.searchTerm.toLowerCase()) {
       return 'autor';
     }
 
@@ -89,6 +98,14 @@ export class ResultadoBusquedaComponent implements OnInit {
     if (results.generos?.length === 1 && 
         results.generos[0].nombre.toLowerCase() === this.searchTerm.toLowerCase()) {
       return 'genero';
+    }
+
+    // Si hay coincidencia exacta con un año 
+    if (results.anios?.length === 1) {
+      const anio = results.anios[0];
+      if (anio && anio.toString() === this.searchTerm.trim()) {
+        return 'anio';
+      }
     }
 
     // Por defecto, mostrar todos los resultados
@@ -99,7 +116,7 @@ export class ResultadoBusquedaComponent implements OnInit {
     this.searchService.getLibrosByAutor(autorId).subscribe({
       next: (libros) => {
         this.librosRelacionados = libros;
-        console.log('Libros cargados:', libros); // Verifica si llegan datos
+        console.log('Libros cargados:', libros);
       },
       error: (error) => {
         console.error('Error al cargar libros del autor:', error);
@@ -114,6 +131,19 @@ export class ResultadoBusquedaComponent implements OnInit {
     );
   }
 
+  private loadLibrosByAnio(anio: string): void {
+    this.searchService.getLibrosByAnio(anio).subscribe({
+      next: (libros) => {
+        this.librosRelacionados = libros;
+        console.log('Libros cargados por año:', libros);
+      },
+      error: (error) => {
+        console.error('Error al cargar libros del año:', error);
+        this.librosRelacionados = [];
+      }
+    });
+  }
+
   private isEmptyResults(): boolean {
     if (this.searchType === 'autor') {
       return this.results.autores.length === 0;
@@ -121,9 +151,13 @@ export class ResultadoBusquedaComponent implements OnInit {
     if (this.searchType === 'genero') {
       return this.results.generos.length === 0;
     }
+    if (this.searchType === 'anio') {
+      return this.results.anios.length === 0;
+    }
     return (!this.results.libros || this.results.libros.length === 0) &&
            (!this.results.autores || this.results.autores.length === 0) &&
-           (!this.results.generos || this.results.generos.length === 0);
+           (!this.results.generos || this.results.generos.length === 0) &&
+           (!this.results.anios || this.results.anios.length === 0);
   }
 
   getDetallesLibro(libroId: number): void {

@@ -143,7 +143,8 @@ export class SearchComponent implements OnInit {
   @HostListener('document:click', ['$event'])
   onClickOutside(event: Event): void {
     const target = event.target as HTMLElement;
-  
+    this.clearSearch();
+
     if (target && target.closest && !target.closest('.search-container')) {
       this.showDropdown = false;
     }
