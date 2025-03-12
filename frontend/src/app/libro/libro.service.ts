@@ -127,8 +127,8 @@ export class LibroService {
   }
 
   // Update
-  updateLibro(libro: Libro): Observable<any> {
-    return this.http.put<any>(`${this.urlEndPoint1}/${libro.id}`, libro, {headers: this.httpHeaders}).pipe(
+  updateLibro(formData: FormData): Observable<any> {
+    return this.http.put<any>(`${this.urlEndPoint1}/libors/${formData.get('id')}`, {headers: this.httpHeaders}).pipe(
       catchError(e => {
         // Validamos
         if(e.status==400) {

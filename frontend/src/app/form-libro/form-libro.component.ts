@@ -201,21 +201,23 @@ export class FormLibroComponent implements OnInit {
         // Si OK
         json => {
           this.router.navigate(['/libros']);
-          // Mensaje SweetAlert
           swal('Nuevo libro', `Libro ${this.libro.titulo} creado con éxito`, 'success');
         },
 
         // Si error
         err => {
+          // Verifica si err.error está presente antes de intentar acceder a propiedades
           if (err.error && err.error.errores) {
             this.errors = err.error.errores as string[];
             console.error('Código del error (backend): ' + err.error.status);
             console.error(err.error.errores);
           } else {
-            this.errors = ['Error de comunicación con el servidor'];
+            // Si err.error es null o undefined, muestra un mensaje genérico
+            this.errors = ['Error de comunicación con el servidor. Verifica tu conexión o intenta más tarde.'];
             console.error('Error general:', err);
           }
         }
+        
       );
     } else {
       // Marcar todos los campos como touched para mostrar los errores
