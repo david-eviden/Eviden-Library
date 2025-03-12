@@ -26,7 +26,7 @@
             <div *ngIf="!cargando && detallesCarrito.length > 0">
                 <!-- Vista móvil -->
                 <div class="d-block d-md-none">
-                    <div *ngIf="detallesCarrito.length > 0">
+                    <div *ngIf="detallesCarrito.length > 0" class="d-flex justify-content-center mb-2">
                         <button class="btn btn-danger" (click)="eliminarTodosDelCarrito()">
                             Eliminar todos
                         </button>
