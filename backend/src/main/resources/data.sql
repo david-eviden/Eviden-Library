@@ -51,7 +51,13 @@ INSERT INTO libros (titulo, precio, stock, descripcion, anio) VALUES
 ('Paula', 23.99, 25, 'La novela de Isabel Allende sobre la vida de su hija Paula, quien sufrió una enfermedad terminal. Una obra profundamente personal que mezcla la narración de su vida con la reflexión sobre la maternidad y la muerte.', '1994'),
 ('Modelo para armar', 18.99, 20, 'Una novela de Juan José Saer que explora la vida cotidiana de un grupo de personas en un pequeño pueblo argentino, atrapados en sus recuerdos y en sus deseos frustrados.', '1983'),
 ('Conversación en la catedral', 26.99, 30, 'Mario Vargas Llosa presenta una compleja narrativa sobre el Perú de mediados del siglo XX, donde se mezclan la política, la corrupción y la vida personal de un periodista y un amigo que intentan desentrañar la realidad de su país.', '1969'),
-('Choque de reyes', 34.99, 45, 'El segundo libro de la serie "Canción de Hielo y Fuego", donde los reinos de Westeros continúan en guerra. La lucha por el Trono de Hierro intensifica las traiciones, alianzas y secretos en un mundo lleno de magia y violencia.', '1998');
+('Choque de reyes', 34.99, 45, 'El segundo libro de la serie "Canción de Hielo y Fuego", donde los reinos de Westeros continúan en guerra. La lucha por el Trono de Hierro intensifica las traiciones, alianzas y secretos en un mundo lleno de magia y violencia.', '1998'),
+('Daughter of Fortune', 27.99, 12, 'Una novela que narra la vida de Eliza Sommers, una joven chilena que emigra a California en busca de su amor. Una historia de aventuras, pasión y descubrimientos personales.', '1999'),
+('Portrait in Sepia', 25.99, 18, 'Una novela histórica de Isabel Allende que relata la vida de la joven Aurora del Valle, quien, a través de una serie de secretos familiares y revelaciones, trata de comprender su identidad y su pasado.', '2000'),
+('La isla bajo el mar', 22.99, 20, 'Una obra que se sitúa en la época de la esclavitud en Haití y relata la vida de Zarité, una esclava que lucha por su libertad en un mundo lleno de opresión y lucha social.', '2009'),
+('El cuaderno de Maya', 21.99, 15, 'Maya, una joven que huye de la vida en California y se encuentra con un nuevo destino en una isla chilena. Una novela sobre autodescubrimiento, redención y la conexión con el pasado.', '2011'),
+('El amante japonés', 23.99, 25, 'Una historia de amor, secretos y lealtades en la que los protagonistas, Alma Belasco y Ichimei, navegan entre la tragedia personal, los vínculos familiares y la relación con el mundo durante la Segunda Guerra Mundial.', '2015');
+
 
 
 -- Relaciones Libro-Autor
