@@ -33,7 +33,12 @@ INSERT INTO autores (nombre, biografia) VALUES
 ('J.K. Rowling', 'Autora británica de la serie Harry Potter'),
 ('Stephen King', 'Prolífico autor estadounidense de terror y suspense'),
 ('Jane Austen', 'Novelista británica del siglo XIX'),
-('Ernest Hemingway', 'Escritor estadounidense, premio Nobel de Literatura');
+('Ernest Hemingway', 'Escritor estadounidense, premio Nobel de Literatura'),
+('Nicholas Sparks', 'Escritor estadounidense conocido por sus novelas románticas, a menudo enfocadas en relaciones complicadas y conmovedoras.'),
+('E.L. James', 'Autora británica, conocida por la exitosa saga erótica de "Cincuenta sombras de Grey".'),
+('Agatha Christie', 'Escritora británica famosa por sus novelas de misterio y detectives, especialmente aquellas protagonizadas por Hercule Poirot y Miss Marple.'),
+('Arthur Conan Doyle', 'Escritor británico, conocido por ser el creador del detective Sherlock Holmes, uno de los personajes más icónicos de la literatura de misterio.');
+
 
 -- Libros
 INSERT INTO libros (titulo, precio, stock, descripcion, anio) VALUES
@@ -56,7 +61,12 @@ INSERT INTO libros (titulo, precio, stock, descripcion, anio) VALUES
 ('Portrait in Sepia', 25.99, 18, 'Una novela histórica de Isabel Allende que relata la vida de la joven Aurora del Valle, quien, a través de una serie de secretos familiares y revelaciones, trata de comprender su identidad y su pasado.', '2000'),
 ('La isla bajo el mar', 22.99, 20, 'Una obra que se sitúa en la época de la esclavitud en Haití y relata la vida de Zarité, una esclava que lucha por su libertad en un mundo lleno de opresión y lucha social.', '2009'),
 ('El cuaderno de Maya', 21.99, 15, 'Maya, una joven que huye de la vida en California y se encuentra con un nuevo destino en una isla chilena. Una novela sobre autodescubrimiento, redención y la conexión con el pasado.', '2011'),
-('El amante japonés', 23.99, 25, 'Una historia de amor, secretos y lealtades en la que los protagonistas, Alma Belasco y Ichimei, navegan entre la tragedia personal, los vínculos familiares y la relación con el mundo durante la Segunda Guerra Mundial.', '2015');
+('El amante japonés', 23.99, 25, 'Una historia de amor, secretos y lealtades en la que los protagonistas, Alma Belasco y Ichimei, navegan entre la tragedia personal, los vínculos familiares y la relación con el mundo durante la Segunda Guerra Mundial.', '2015'),
+('El cuaderno de Noah', 18.99, 30, 'Una conmovedora historia de amor entre Noah y Allie, dos jóvenes que se enamoran en la época de la Segunda Guerra Mundial, con una narrativa entre el pasado y el presente.', '1996'),
+('Cincuenta sombras de Grey', 22.99, 40, 'Una historia de amor apasionada y controversial entre la joven Anastasia Steele y el multimillonario Christian Grey. Explora la compleja relación entre ambos.', '2011'),
+('Asesinato en el Orient Express', 19.99, 25, 'Un intrigante misterio en el famoso tren Orient Express, donde el detective Hercule Poirot investiga el asesinato de un millonario, descubriendo secretos oscuros entre los pasajeros.', '1934'),
+('Estudio en escarlata', 21.99, 30, 'La primera novela que presenta a Sherlock Holmes, donde el detective resuelve un misterio relacionado con un asesinato en Londres, mientras construye su famosa relación con el Dr. Watson.', '1887');
+
 
 
 
@@ -81,7 +91,11 @@ INSERT INTO libro_autor (libro_id, autor_id) VALUES
 (17, 3), -- Allende - Portrait in Sepia
 (18, 3), -- Allende - La isla bajo el mar
 (19, 3), -- Allende - El cuaderno de Maya
-(20, 3); -- Allende - El amante japonés
+(20, 3), -- Allende - El amante japonés
+(21, 11), -- Nicholas Sparks - El cuaderno de Noah
+(22, 12), -- E.L. James - Cincuenta sombras de Grey
+(23, 13), -- Agatha Christie - Asesinato en el Orient Express
+(24, 14); -- Arthur Conan Doyle - Estudio en escarlata
 
 -- Relaciones Libro-Género
 INSERT INTO libro_genero (libro_id, genero_id) VALUES
@@ -104,7 +118,11 @@ INSERT INTO libro_genero (libro_id, genero_id) VALUES
 (17, 1), (17, 8), -- Portrait in Sepia: Ficción, Historia
 (18, 1), (18, 7), -- La isla bajo el mar: Ficción, Historia
 (19, 1), (19, 8), -- El cuaderno de Maya: Ficción, Biografía
-(20, 1), (20, 4); -- El amante japonés: Ficción, Romance
+(20, 1), (20, 4), -- El amante japonés: Ficción, Romance
+(21, 4), -- El cuaderno de Noah: Romance
+(22, 4), -- Cincuenta sombras de Grey: Romance
+(23, 5), -- Asesinato en el Orient Express: Misterio
+(24, 5); -- Estudio en escarlata: Misterio
 
 -- Carritos activos
 INSERT INTO carritos (usuario_id, fecha_creacion, estado) VALUES
