@@ -49,10 +49,14 @@ public class SearchService{
        
         Set<Libro> allResults = new HashSet<>();
         
-        // Buscar libros por cada término
-        for (String term : terms) {        	
+        for (String term : terms) { 
+        	
+        	//Busqueda por titulo
         	allResults.addAll(libroDao.findByTituloContainingIgnoreCase(term));
+        	
+        	//Busqueda por año
         	allResults.addAll(libroDao.findByAnio(term));
+        	
             //allResults.addAll(libroDao.findByTerm(term));
         }
         

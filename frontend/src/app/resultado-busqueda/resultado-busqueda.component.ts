@@ -53,7 +53,7 @@ export class ResultadoBusquedaComponent implements OnInit {
           } else if (this.searchType === 'anio' && this.results.anios.length > 0) {
             this.loadLibrosByAnio(this.results.anios[0]);
           }
-
+          
           this.noResults = this.isEmptyResults();
         },
         error: (error) => {
@@ -145,6 +145,7 @@ export class ResultadoBusquedaComponent implements OnInit {
   }
 
   private isEmptyResults(): boolean {
+    
     if (this.searchType === 'autor') {
       return this.results.autores.length === 0;
     }
@@ -156,26 +157,13 @@ export class ResultadoBusquedaComponent implements OnInit {
     }
     return (!this.results.libros || this.results.libros.length === 0) &&
            (!this.results.autores || this.results.autores.length === 0) &&
-           (!this.results.generos || this.results.generos.length === 0) &&
-           (!this.results.anios || this.results.anios.length === 0);
+           (!this.results.generos || this.results.generos.length === 0)/* &&
+           (!this.results.anios || this.results.anios.length === 0)*/;
   }
 
   getDetallesLibro(libroId: number): void {
     this.router.navigate(['/libro', libroId]);
   }
 
-  addToCarrito(libro: Libro) {
-    this.carritoService.getCarritos().subscribe((carritos: Carrito[]) => {
-      const isBookInCart = carritos.some(carrito => 
-        carrito.detalles.some(detalle => detalle.libro.id === libro.id)
-      );
 
-      if (isBookInCart) {
-        console.log('Libro ya está en el carrito');
-      } else {
-        this.carritoService.addToCarrito(libro);
-        console.log('Libro añadido al carrito');
-      }
-    });
-  }
 }
