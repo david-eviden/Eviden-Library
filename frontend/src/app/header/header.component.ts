@@ -5,6 +5,8 @@ import { AuthService } from '../login/auth.service';
 import { DetallesUsuarioService } from '../detalles-usuario/detalles-usuario.service';
 import { Usuario } from '../usuario/usuario';
 import { DetallesCarritoService } from '../detalles-carrito/detalles-carrito.service';
+import { detallesCarrito } from '../detalles-carrito/detalles-carrito';
+import swal from 'sweetalert2';
 
 @Component({
   selector: 'app-header',
@@ -15,7 +17,6 @@ import { DetallesCarritoService } from '../detalles-carrito/detalles-carrito.ser
 export class HeaderComponent implements OnInit{
 
   userId: number = 0;
-  itemCount: number = 0;
 
   constructor(
     public authService: AuthService,
@@ -59,11 +60,6 @@ export class HeaderComponent implements OnInit{
           }
         }
       }
-    });
-
-    // Nos suscribimos al contador del carrito para que se actualice automáticamente
-    this.carritoService.getCartItemCount().subscribe((count: number) => {
-      this.itemCount = count;
     });
   }
   

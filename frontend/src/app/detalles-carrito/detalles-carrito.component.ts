@@ -211,12 +211,21 @@ export class DetallesCarritoComponent implements OnInit {
       type: 'success',
       confirmButtonText: 'Continuar'
     }).then(() => {
-      // Redireccionar a página de confirmación o limpiar carrito
-      // Por ejemplo:
-      // this.router.navigate(['/confirmacion-pedido', data.id]);
-      
-      // O simplemente limpiar el carrito y redireccionar a la página principal
-      this.detallesCarrito = [];
+      // O simplemente limpiar el carrito
+      this.detallesCarrito.forEach(item => {
+        this.detallesCarritoService.delete(item.id!).subscribe({
+          next: () => {
+            // Filtrar los items eliminados
+            this.detallesCarrito = this.detallesCarrito.filter(i => i.id !== item.id);
+          },
+          error: (error) => {
+            console.error('Error al eliminar del carrito:', error);
+            swal('Error', 'No se pudo eliminar algunos libros del carrito', 'error');
+          }
+        });
+      });
+
+      // Y redireccionar a la página principal
       this.router.navigate(['/libros']);
     });
   }
