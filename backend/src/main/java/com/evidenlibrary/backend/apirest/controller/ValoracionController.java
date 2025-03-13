@@ -86,11 +86,29 @@ public class ValoracionController {
 
         return new ResponseEntity<>(valoraciones, HttpStatus.OK);
     }
+    
+    //metodo para comprobar que el usuario no haya valorado antes el libro
+    private boolean existeValoracionPreviaUsuarioLibro(Long usuarioId, Long libroId) {
+        List<Valoracion> valoracionesUsuario = valoracionService.findByUsuarioId(usuarioId);
+        for (Valoracion v : valoracionesUsuario) {
+            if (v.getLibro().getId().equals(libroId)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     @PostMapping("/valoracion")
     public ResponseEntity<?> create(@RequestBody Valoracion valoracion) {
         Valoracion nuevaValoracion;
         Map<String, Object> response = new HashMap<>();
+        
+        // Verificar si el usuario ya ha valorado este libro
+        if (existeValoracionPreviaUsuarioLibro(valoracion.getUsuario().getId(), valoracion.getLibro().getId())) {
+            response.put("mensaje", "Error: El usuario ya ha valorado este libro anteriormente");
+            response.put("error", "Un usuario solo puede valorar un libro una vez");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }        
 
         try {
             nuevaValoracion = valoracionService.save(valoracion);
