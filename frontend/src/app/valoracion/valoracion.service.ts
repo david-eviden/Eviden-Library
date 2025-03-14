@@ -46,9 +46,13 @@ export class ValoracionService implements OnInit {
     return headers;
   }
 
+  // Obtener valoraciones por ID de usuario
   getValoracionesPorUsuarioId(usuarioId: number): Observable<Valoracion[]> {
-    return this.http.get<Valoracion[]>(`${this.urlEndPoint}/usuario/${usuarioId}`, 
-      { headers: this.createHeaders() }
+    return this.http.get<Valoracion[]>(`${this.urlEndPoint}/usuario/${usuarioId}`).pipe(
+      catchError(e => {
+        console.error(e.error.mensaje);
+        return throwError(() => e);
+      })
     );
   }
 
