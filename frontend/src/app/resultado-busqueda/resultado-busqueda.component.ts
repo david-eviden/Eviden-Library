@@ -36,6 +36,7 @@ export class ResultadoBusquedaComponent implements OnInit {
       }
 
       this.loading = true;
+      this.librosRelacionados = []; // Resetear libros relacionados en cada búsqueda
       
       this.searchService.search(this.searchTerm.trim()).subscribe({
         next: (data) => {
@@ -45,14 +46,8 @@ export class ResultadoBusquedaComponent implements OnInit {
           // Determinar el tipo de búsqueda basado en los resultados
           this.searchType = this.detectSearchTypeFromResults(this.results);
           
-          // Cargar libros relacionados si es necesario
-          if (this.searchType === 'autor' && this.results.autores.length > 0) {
-            this.loadLibrosByAutor(this.results.autores[0].id);
-          } else if (this.searchType === 'genero' && this.results.generos.length > 0) {
-            this.loadLibrosByGenero(this.results.generos[0].id);
-          } else if (this.searchType === 'anio' && this.results.anios.length > 0) {
-            this.loadLibrosByAnio(this.results.anios[0]);
-          }
+          // Cargar libros relacionados según el tipo de búsqueda
+          this.loadRelatedBooks();
           
           this.noResults = this.isEmptyResults();
         },
@@ -112,11 +107,22 @@ export class ResultadoBusquedaComponent implements OnInit {
     return 'all';
   }
 
+  // Método para cargar libros relacionados según el tipo de búsqueda
+  private loadRelatedBooks(): void {
+    if (this.searchType === 'autor' && this.results.autores?.length > 0) {
+      this.loadLibrosByAutor(this.results.autores[0].id);
+    } else if (this.searchType === 'genero' && this.results.generos?.length > 0) {
+      this.loadLibrosByGenero(this.results.generos[0].id);
+    } else if (this.searchType === 'anio' && this.results.anios?.length > 0) {
+      this.loadLibrosByAnio(this.results.anios[0]);
+    }
+  }
+
   private loadLibrosByAutor(autorId: number): void {
     this.searchService.getLibrosByAutor(autorId).subscribe({
       next: (libros) => {
         this.librosRelacionados = libros;
-        console.log('Libros cargados:', libros);
+        console.log('Libros del autor cargados:', libros);
       },
       error: (error) => {
         console.error('Error al cargar libros del autor:', error);
@@ -126,9 +132,16 @@ export class ResultadoBusquedaComponent implements OnInit {
   }
 
   private loadLibrosByGenero(generoId: number): void {
-    this.searchService.getLibrosByGenero(generoId).subscribe(
-      libros => this.librosRelacionados = libros
-    );
+    this.searchService.getLibrosByGenero(generoId).subscribe({
+      next: (libros) => {
+        this.librosRelacionados = libros;
+        console.log('Libros del género cargados:', libros);
+      },
+      error: (error) => {
+        console.error('Error al cargar libros del género:', error);
+        this.librosRelacionados = [];
+      }
+    });
   }
 
   private loadLibrosByAnio(anio: string): void {
@@ -145,25 +158,24 @@ export class ResultadoBusquedaComponent implements OnInit {
   }
 
   private isEmptyResults(): boolean {
-    
+    // Si estamos en una búsqueda específica, consideramos si hay libros relacionados
     if (this.searchType === 'autor') {
-      return this.results.autores.length === 0;
+      return this.results.autores.length === 0 && this.librosRelacionados.length === 0;
     }
     if (this.searchType === 'genero') {
-      return this.results.generos.length === 0;
+      return this.results.generos.length === 0 && this.librosRelacionados.length === 0;
     }
     if (this.searchType === 'anio') {
-      return this.results.anios.length === 0;
+      return this.results.anios.length === 0 && this.librosRelacionados.length === 0;
     }
+    
+    // Para búsqueda general
     return (!this.results.libros || this.results.libros.length === 0) &&
            (!this.results.autores || this.results.autores.length === 0) &&
-           (!this.results.generos || this.results.generos.length === 0)/* &&
-           (!this.results.anios || this.results.anios.length === 0)*/;
+           (!this.results.generos || this.results.generos.length === 0);
   }
 
   getDetallesLibro(libroId: number): void {
     this.router.navigate(['/libro', libroId]);
   }
-
-
 }
