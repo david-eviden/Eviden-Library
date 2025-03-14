@@ -48,21 +48,42 @@
                                [(ngModel)]="libro.descripcion" 
                                name="descripcion" 
                                #descripcion="ngModel" 
-                               rows="3" 
                                placeholder="Descripción del libro..."
-                               minlength="10" 
                                maxlength="250" 
+                               minlength="10" 
                                required></textarea>
                         <div class="alert alert-danger mt-2" *ngIf="descripcion.invalid && (descripcion.dirty || descripcion.touched)">
                             <div *ngIf="descripcion.errors?.['required']">
                                 La descripción es requerida
                             </div>
                             <div *ngIf="descripcion.errors?.['maxlength']">
-                                La descripcion debe estar entre 25 y 250 caracteres
+                                La descripción debe estar entre 10 y 250 caracteres
                             </div>
                             <div *ngIf="descripcion.errors?.['minlength']">
-                                La descripcion debe estar entre 25 y 250 caracteres
+                                La descripción debe estar entre 10 y 250 caracteres
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campo Portada -->
+                <div class="form-group row mb-4">
+                    <label for="portada" class="col-sm-3 col-form-label">Portada:</label>
+                    <div class="col-sm-9">
+                        <div class="custom-file">
+                            <input type="file" 
+                                   class="form-control" 
+                                   id="portada" 
+                                   (change)="onFileSelected($event)"
+                                   accept="image/*">
+                        </div>
+                        <div class="mt-3" *ngIf="imagenPreview">
+                            <h6>Vista previa:</h6>
+                            <img [src]="imagenPreview" class="img-thumbnail" style="max-height: 200px;">
+                        </div>
+                        <div class="mt-3" *ngIf="libro.imagen && !imagenPreview">
+                            <h6>Portada actual:</h6>
+                            <img [src]="libro.imagen" class="img-thumbnail" style="max-height: 200px;">
                         </div>
                     </div>
                 </div>
@@ -96,24 +117,6 @@
                         <div class="alert alert-danger mt-2" *ngIf="stock.invalid && (stock.dirty || stock.touched)">
                             <div *ngIf="stock.errors?.['required']">
                                 El stock es requerido
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Campo Imagen -->
-                <div class="form-group row mb-4">
-                    <label for="imagen" class="col-sm-3 col-form-label">Imagen:</label>
-                    <div class="col-sm-9">
-                        <input type="text" 
-                               class="form-control form-control-lg" 
-                               [(ngModel)]="libro.imagen" 
-                               name="imagen" 
-                               #imagen="ngModel"
-                               placeholder="Imagen del libro...">
-                        <div class="alert alert-danger mt-2" *ngIf="imagen.invalid && (imagen.dirty || imagen.touched)">
-                            <div *ngIf="imagen.errors?.['required']">
-                                La imagen es requerida
                             </div>
                         </div>
                     </div>

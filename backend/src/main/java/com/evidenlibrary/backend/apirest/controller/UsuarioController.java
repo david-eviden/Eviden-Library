@@ -127,6 +127,10 @@ public class UsuarioController {
             if (usuario.getPassword() != null && !usuario.getPassword().isEmpty()) {
                 currentUsuario.setPassword(usuario.getPassword());
             }
+            // Actualizar la foto de perfil si se proporciona una nueva
+            if (usuario.getFoto() != null) {
+                currentUsuario.setFoto(usuario.getFoto());
+            }
             currentUsuario.setRol(usuario.getRol());
 
             nuevoUsuario = usuarioService.save(currentUsuario);

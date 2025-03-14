@@ -35,7 +35,7 @@
                     <div class="card h-100 book-card">
                         <div class="card-body">
                             <div class="d-flex align-items-center mb-3">
-                                <img [src]="'/img/libroEjemplo.jpg'" 
+                                <img [src]="favorito.libro && favorito.libro.imagen ? favorito.libro.imagen : '/img/libroEjemplo.jpg'" 
                                      class="img-fluid book-thumbnail me-3" 
                                      alt="Imagen de {{ favorito.libro?.titulo }}"
                                      style="width: 80px; height: 120px; object-fit: cover;">

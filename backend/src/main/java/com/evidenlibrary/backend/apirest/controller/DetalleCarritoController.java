@@ -1,5 +1,7 @@
 package com.evidenlibrary.backend.apirest.controller;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,8 +20,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.evidenlibrary.backend.apirest.model.entity.Carrito;
 import com.evidenlibrary.backend.apirest.model.entity.DetalleCarrito;
+import com.evidenlibrary.backend.apirest.model.entity.Usuario;
+import com.evidenlibrary.backend.apirest.model.service.CarritoService;
 import com.evidenlibrary.backend.apirest.model.service.DetalleCarritoService;
+import com.evidenlibrary.backend.apirest.model.service.UsuarioService;
 
 @CrossOrigin(origins = { "http://localhost:4200" })
 @RestController
@@ -28,6 +34,12 @@ public class DetalleCarritoController {
 
     @Autowired
     private DetalleCarritoService detalleCarritoService;
+
+    @Autowired
+    private CarritoService carritoService;
+
+    @Autowired
+    private UsuarioService usuarioService;
 
     @GetMapping("/detalles-carrito")
     public List<DetalleCarrito> index() {
@@ -139,5 +151,92 @@ public class DetalleCarritoController {
 
         response.put("mensaje", "El detalle de carrito ha sido eliminado con éxito!");
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/detalles-carrito/add/{usuarioId}")
+    public ResponseEntity<?> addToCart(@PathVariable Long usuarioId, @RequestBody DetalleCarrito detalleCarrito) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            // Obtener el usuario
+            Usuario usuario = usuarioService.findById(usuarioId);
+            if (usuario == null) {
+                response.put("mensaje", "Error: el usuario no existe");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+
+            // Buscar o crear el carrito del usuario
+            List<Carrito> carritos = carritoService.findByUsuarioId(usuarioId);
+            Carrito carrito;
+            
+            if (carritos.isEmpty() || carritos.stream().noneMatch(c -> "activo".equals(c.getEstado()))) {
+                // Crear nuevo carrito si no existe uno activo
+                carrito = new Carrito();
+                carrito.setUsuario(usuario);
+                carrito.setFechaCreacion(new Date());
+                carrito.setEstado("activo");
+                carrito = carritoService.save(carrito);
+            } else {
+                // Usar el carrito activo existente
+                carrito = carritos.stream()
+                    .filter(c -> "activo".equals(c.getEstado()))
+                    .findFirst()
+                    .get();
+            }
+
+            // Buscar si el libro ya existe en el carrito
+            List<DetalleCarrito> detallesExistentes = detalleCarritoService.findByCarritoId(carrito.getId());
+            DetalleCarrito detalleExistente = detallesExistentes.stream()
+                .filter(d -> d.getLibro().getId().equals(detalleCarrito.getLibro().getId()))
+                .findFirst()
+                .orElse(null);
+
+            DetalleCarrito nuevoDetalle;
+            if (detalleExistente != null) {
+                // Actualizar la cantidad del detalle existente
+                detalleExistente.setCantidad(detalleExistente.getCantidad() + detalleCarrito.getCantidad());
+                nuevoDetalle = detalleCarritoService.save(detalleExistente);
+                response.put("mensaje", "Se ha actualizado la cantidad del libro en el carrito");
+            } else {
+                // Crear nuevo detalle
+                detalleCarrito.setCarrito(carrito);
+                nuevoDetalle = detalleCarritoService.save(detalleCarrito);
+                response.put("mensaje", "El libro ha sido añadido al carrito con éxito!");
+            }
+
+            response.put("detalleCarrito", nuevoDetalle);
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+
+        } catch (DataAccessException e) {
+            response.put("mensaje", "Error al añadir el libro al carrito");
+            response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/detalles-carrito/usuario/{usuarioId}")
+    public ResponseEntity<?> findByUsuarioIdAndCarritoActivo(@PathVariable Long usuarioId) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            // Buscar el carrito activo del usuario
+            List<Carrito> carritos = carritoService.findByUsuarioId(usuarioId);
+            Carrito carritoActivo = carritos.stream()
+                .filter(c -> "activo".equals(c.getEstado()))
+                .findFirst()
+                .orElse(null);
+
+            if (carritoActivo == null) {
+                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+            }
+
+            List<DetalleCarrito> detalles = detalleCarritoService.findByCarritoId(carritoActivo.getId());
+            return new ResponseEntity<>(detalles, HttpStatus.OK);
+
+        } catch (DataAccessException e) {
+            response.put("mensaje", "Error al realizar la consulta en la base de datos");
+            response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 } 

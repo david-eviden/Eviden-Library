@@ -17,6 +17,10 @@
     position: relative;
 }
 
+.container2 .category:first-child {
+    border-left: none;
+}
+
 .category h2 {
     font-size: 1.8rem;
     margin-bottom: 20px;

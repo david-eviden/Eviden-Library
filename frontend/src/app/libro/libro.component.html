@@ -1,4 +1,4 @@
-<div class="container my-3">
+<div class="container2 my-3">
     <h2 class="text-center mb-4">Catálogo de Libros</h2>
     <div class="alert alert-info" *ngIf="libros.length === 0">
         No hay libros disponibles en el catálogo.
@@ -44,7 +44,7 @@
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         <div class="col" *ngFor="let libro of libros">
             <div class="card h-100 shadow-sm" (click)="getDetallesLibro(libro.id)">
-                <img [src]="'/img/libroEjemplo.jpg'" class="card-img-top" [id]="'imagen-libro-' + libro.id"
+                <img [src]="libro.imagen ? libro.imagen : '/img/libroEjemplo.jpg'" class="card-img-top" [id]="'imagen-libro-' + libro.id"
                     [alt]="'Imagen de ' + libro.titulo" [style.view-transition-name]="'imagen-libro-' + libro.id">
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title" [style.view-transition-name]="'titulo-libro-' + libro.id">{{ libro.titulo }}
@@ -61,7 +61,7 @@
                     <p class="card-text fw-bold mt-auto" [style.view-transition-name]="'precio-libro-' + libro.id">
                         {{ libro.precio | currency:'EUR':'symbol':'1.2-2' }}
                     </p>
-                    <button *ngIf="authService.esUsuario" class="btn btn-primary mt-2">Añadir al carrito</button>
+                    <button *ngIf="authService.esUsuario" class="btn btn-primary mt-2" (click)="addToCart(libro); $event.stopPropagation()">Añadir al carrito</button>
                 </div>
             </div>
         </div>

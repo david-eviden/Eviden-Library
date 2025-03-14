@@ -100,7 +100,7 @@ export const routes: Routes = [
     data: { roles: ['ADMIN'] } 
   },
   { 
-    path: 'carrito', 
+    path: 'carritos', 
     component: CarritoComponent,
     canActivate: [AuthGuard],
     data: { roles: ['ADMIN'] } 
@@ -128,6 +128,12 @@ export const routes: Routes = [
   { 
     path: 'mis-favoritos', 
     component: DetallesFavoritoComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['USER'] } 
+  },
+  { 
+    path: 'mi-carrito', 
+    component: DetallesCarritoComponent,
     canActivate: [AuthGuard],
     data: { roles: ['USER'] } 
   },

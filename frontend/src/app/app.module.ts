@@ -38,6 +38,8 @@ import { LoginComponent } from './login/login.component';
 import { ErrorComponent } from './error/error.component';
 import { RegistroComponent } from './registro/registro.component';
 import { SeccionCategoriaComponent } from './seccion-categoria/seccion-categoria.component';
+import { NgxPayPalModule } from 'ngx-paypal';
+import { PaypalComponent } from './paypal/paypal.component';
 
 
 @NgModule({
@@ -72,14 +74,16 @@ import { SeccionCategoriaComponent } from './seccion-categoria/seccion-categoria
     ErrorComponent,
     RegistroComponent,
     SeccionCategoriaComponent,
-    FormUsuarioComponent
+    FormUsuarioComponent,
+    PaypalComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     RouterModule,
-    FormsModule
+    FormsModule,
+    NgxPayPalModule
 ],
   providers: [...appConfig.providers, LibroService],
   bootstrap: [AppComponent]

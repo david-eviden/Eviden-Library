@@ -27,10 +27,10 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authz -> authz
             		 // Permitir acceso público a endpoints específicos
-                    .requestMatchers("/api/login", "/api/registro", "/api/principal", "/api/generos", "/api/valoraciones", "/api/valoracion", "/api/favorito", "/api/libros", "/api/libros/page", "/api/libros/mejor-valorados", "/api/libro", "/api/autores", "/usuario").permitAll()
+                    .requestMatchers("/api/login", "/api/registro", "/api/principal", "/api/generos", "/api/valoraciones", "/api/valoracion", "/api/favorito", "/api/libros", "/api/libros/page", "/api/libros/mejor-valorados", "/api/libro", "/api/autores", "/usuario", "/api/detalles-carrito", "/api/pedido").permitAll()
 
                     // Requerir autenticación para ciertos endpoints, tanto para USER como para ADMIN
-                    .requestMatchers("/api/valoraciones").hasRole("USER")
+                    .requestMatchers("/api/valoraciones", "/api/detalles-carrito").hasRole("USER")
 
                     // Requerir ADMIN para endpoints específicos
                     .requestMatchers("/api/autor", "/api/carritos", "/api/carrito", "/api/pedidos", "/api/pedido", 
@@ -46,7 +46,8 @@ public class SecurityConfig {
             	        if (!requestPath.startsWith("/api/login") && 
             	            !requestPath.startsWith("/api/registro") &&
             	            !requestPath.startsWith("/api/principal") && 
-            	            !requestPath.startsWith("/api/libros")) {
+            	            !requestPath.startsWith("/api/libros") && 
+                            !requestPath.startsWith("/api/pedido")) {
             	            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             	        } else {
             	            // Para rutas públicas, permitir acceso incluso sin token

@@ -44,7 +44,7 @@
                         <a class="dropdown-item" routerLink="/favoritos" routerLinkActive="active">Favoritos</a>
                     </li>
                     <li>
-                        <a class="dropdown-item" routerLink="/carrito" routerLinkActive="active">Carrito</a>
+                        <a class="dropdown-item" routerLink="/carritos" routerLinkActive="active">Carrito</a>
                     </li>
                     <li>
                         <a class="dropdown-item" routerLink="/pedidos" routerLinkActive="active">Pedidos</a>
@@ -85,12 +85,12 @@
                     <a *ngIf="authService.esUsuario" [routerLink]="['/mis-favoritos']" class="btn btn-link text-decoration-none text-dark">
                         <i class="bi bi-heart-fill mx-2"></i> <span class="d-none d-md-inline">Favoritos</span>
                     </a>
-                    <a *ngIf="authService.esAdmin" [routerLink]="['/favoritos']" class="btn btn-link text-decoration-none text-dark">
-                        <i class="bi bi-heart-fill mx-2"></i> <span class="d-none d-md-inline">Favoritos</span>
+                    <a *ngIf="authService.esAdmin" (click)="logout()" class="btn btn-link text-decoration-none text-dark">
+                        <i class="bi bi-door-open-fill"></i> Cerrrar sesión
                     </a>
-                    <a href="#" class="btn btn-link text-dark">
+                    <a *ngIf="authService.esUsuario" [routerLink]="['/mi-carrito']" class="btn btn-link text-dark">
                         <i class="bi bi-cart4 mx-2"></i>
-                        <span class="badge bg-danger">3</span>
+                        <span class="badge bg-danger">{{ cartItemCount }}</span>
                     </a>
                 </div>
 
@@ -112,12 +112,12 @@
                 <a *ngIf="authService.esUsuario" [routerLink]="['/mis-favoritos']" class="btn btn-link text-decoration-none text-dark">
                     <i class="bi bi-heart-fill"></i> Favoritos
                 </a>
-                <a *ngIf="authService.esAdmin" [routerLink]="['/favoritos']" class="btn btn-link text-decoration-none text-dark">
-                    <i class="bi bi-heart-fill"></i> Favoritos
+                <a *ngIf="authService.esAdmin" (click)="logout()" class="btn btn-link text-decoration-none text-dark">
+                    <i class="bi bi-door-open-fill"></i> Cerrrar sesión
                 </a>
-                <a href="#" class="btn btn-link text-dark">
-                    <i class="bi bi-cart4 m-1"></i>
-                    <span class="badge bg-danger">3</span>
+                <a *ngIf="authService.esUsuario" [routerLink]="['/mi-carrito']" class="btn btn-link text-dark">
+                    <i class="bi bi-cart4 mx-2"></i>
+                    <span class="badge bg-danger">{{ cartItemCount }}</span>
                 </a>
             </div>
 

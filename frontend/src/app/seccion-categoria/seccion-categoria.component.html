@@ -1,4 +1,4 @@
-<div class="container2">
+<div class="container2 my-3">
     <!-- Mensaje de carga -->
       <div class="loading-container" *ngIf="loading">
         <p>Cargando libros...</p>
@@ -22,6 +22,7 @@
             </div>
             <div class="info">
               <h3>{{ libro.titulo }}</h3>
+              <!-- <p>{{ libro.descripcion }}</p> -->
               <p>{{ libro.autores[0].nombre || 'Autor desconocido' }}</p>
             </div>
           </div>

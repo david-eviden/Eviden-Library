@@ -17,6 +17,8 @@ export class FormUsuarioComponent implements OnInit {
   public errors: string[] = [];
   public confirmPassword: string = '';
   public tienePermiso: boolean = false;
+  imagenPreview: string | null = null;
+  selectedFile: File | null = null;
 
   constructor(
     private usuarioService: UsuarioService,
@@ -59,49 +61,62 @@ export class FormUsuarioComponent implements OnInit {
   }
 
   public update(): void {
-    // Limpiar errores previos
-    this.errors = [];
-
-    // Validaciones básicas
-    if (!this.usuario.nombre || !this.usuario.apellido || !this.usuario.email) {
-      this.errors.push('Todos los campos marcados son obligatorios');
-      return;
-    }
-
-    // Validar formato de email
-    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    if (!emailRegex.test(this.usuario.email)) {
-      this.errors.push('El formato del email no es válido');
-      return;
-    }
-
-    // Crear una copia del usuario para la actualización
-    const usuarioToUpdate = { ...this.usuario };
-
-    // Si no se está cambiando la contraseña, eliminarla del objeto a actualizar
-    if (!this.usuario.password) {
-      delete usuarioToUpdate.password;
+    // Si hay un archivo seleccionado, convertirlo a base64 antes de enviar
+    if (this.selectedFile) {
+      this.convertFileToBase64(this.selectedFile).then(base64 => {
+        this.usuario.foto = base64;
+        this.updateUsuario();
+      }).catch(error => {
+        console.error('Error al convertir la imagen:', error);
+        this.errors.push('Error al procesar la imagen');
+      });
     } else {
-      // Validar la contraseña solo si se está cambiando
-      if (this.usuario.password.length < 6) {
-        this.errors.push('La contraseña debe tener al menos 6 caracteres');
-        return;
-      }
-      if (this.usuario.password !== this.confirmPassword) {
-        this.errors.push('Las contraseñas no coinciden');
-        return;
-      }
+      this.updateUsuario();
     }
+  }
 
-    this.usuarioService.update(usuarioToUpdate).subscribe(
-      response => {
+  private updateUsuario(): void {
+    this.usuarioService.update(this.usuario).subscribe({
+      next: (json) => {
+        swal(
+          'Usuario Actualizado',
+          `${json.mensaje}: ${json.usuario.nombre}`,
+          'success'
+        );
         this.router.navigate(['/usuario', this.usuario.id]);
-        swal('Usuario Actualizado', `Usuario ${this.usuario.nombre} actualizado con éxito`, 'success');
       },
-      error => {
-        this.errors = error.error.errores || ['Error al actualizar el usuario'];
-        console.error('Error al actualizar el usuario:', error);
+      error: (err) => {
+        this.errors = err.error.errors as string[];
+        console.error('Código de error desde el backend: ' + err.status);
+        console.error(err.error.errors);
       }
-    );
+    });
+  }
+
+  // Método para manejar la selección de archivos
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+      
+      // Crear una vista previa de la imagen
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagenPreview = reader.result as string;
+      };
+      reader.readAsDataURL(this.selectedFile);
+    }
+  }
+
+  // Método para convertir un archivo a base64
+  private convertFileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve(reader.result as string);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
   }
 }
