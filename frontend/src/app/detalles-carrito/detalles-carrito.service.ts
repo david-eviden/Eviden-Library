@@ -11,9 +11,8 @@ import { Libro } from '../libro/libro';
 })
 export class DetallesCarritoService {
 
-  private contadorItemsCarrito = new BehaviorSubject<number>(0);
-
-  private urlEndPoint: string = 'http://localhost:8080/api/detalles-carrito';
+  private urlEndPoint: string = 'http://localhost:8081/api/detallesCarrito'; 
+  private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
 
   constructor(
     private http: HttpClient,

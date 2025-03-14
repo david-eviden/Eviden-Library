@@ -9,6 +9,7 @@ export class Libro {
     titulo: string = "";
     imagen: string = "";
     descripcion: String = "";
+    anio: String = "";
     valoraciones: Valoracion[] = [];
     valoracionMedia: number = 0;
     autores: Autor[] = [];

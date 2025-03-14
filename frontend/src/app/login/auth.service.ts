@@ -293,7 +293,7 @@ export class AuthService {
     const headers = this.createHeaders();
     
     // URL para obtener usuario por email (ajusta según tu API)
-    const url = 'http://localhost:8080/api/usuario/email/' + email;
+    const url = 'http://localhost:8081/api/usuario/email/' + email;
     
     return this.http.get<any>(url, { headers }).pipe(
       catchError(error => {

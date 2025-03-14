@@ -10,8 +10,8 @@ import swal from 'sweetalert2';
 })
 export class ValoracionService implements OnInit {
 
-  private urlEndPoint: string = 'http://localhost:8080/api/valoraciones';
-  private urlEndPoint1: string = 'http://localhost:8080/api/valoracion'; 
+  private urlEndPoint: string = 'http://localhost:8081/api/valoraciones';
+  private urlEndPoint1: string = 'http://localhost:8081/api/valoracion'; 
   private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
 
   // Creamos un BehaviorSubject para la lista de valoraciones
@@ -46,9 +46,13 @@ export class ValoracionService implements OnInit {
     return headers;
   }
 
+  // Obtener valoraciones por ID de usuario
   getValoracionesPorUsuarioId(usuarioId: number): Observable<Valoracion[]> {
-    return this.http.get<Valoracion[]>(`${this.urlEndPoint}/usuario/${usuarioId}`, 
-      { headers: this.createHeaders() }
+    return this.http.get<Valoracion[]>(`${this.urlEndPoint}/usuario/${usuarioId}`).pipe(
+      catchError(e => {
+        console.error(e.error.mensaje);
+        return throwError(() => e);
+      })
     );
   }
 

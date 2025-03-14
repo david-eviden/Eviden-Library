@@ -33,25 +33,41 @@ INSERT INTO autores (nombre, biografia) VALUES
 ('J.K. Rowling', 'Autora británica de la serie Harry Potter'),
 ('Stephen King', 'Prolífico autor estadounidense de terror y suspense'),
 ('Jane Austen', 'Novelista británica del siglo XIX'),
-('Ernest Hemingway', 'Escritor estadounidense, premio Nobel de Literatura');
+('Ernest Hemingway', 'Escritor estadounidense, premio Nobel de Literatura'),
+('Nicholas Sparks', 'Escritor estadounidense conocido por sus novelas románticas, a menudo enfocadas en relaciones complicadas y conmovedoras.'),
+('E.L. James', 'Autora británica, conocida por la exitosa saga erótica de "Cincuenta sombras de Grey".'),
+('Agatha Christie', 'Escritora británica famosa por sus novelas de misterio y detectives, especialmente aquellas protagonizadas por Hercule Poirot y Miss Marple.'),
+('Arthur Conan Doyle', 'Escritor británico, conocido por ser el creador del detective Sherlock Holmes, uno de los personajes más icónicos de la literatura de misterio.');
+
 
 -- Libros
-INSERT INTO libros (titulo, precio, stock, descripcion) VALUES
-('Cien años de soledad', 29.99, 2, 'Una novela épica de Gabriel García Márquez que narra la historia de la familia Buendía en el mítico pueblo de Macondo. Un clásico de la literatura latinoamericana que explora el amor, la soledad y el destino, todo en un marco de realismo mágico.'),
-('El Aleph', 19.99, 4, 'Una colección de relatos de Jorge Luis Borges que aborda temas como el infinito, los laberintos, el tiempo y la literatura misma, con la típica maestría filosófica y literaria del autor.'),
-('La casa de los espíritus', 24.99, 15, 'Isabel Allende presenta una saga familiar en la que lo sobrenatural se entrelaza con los eventos políticos y sociales de Chile. Un relato de amores, tragedias y esperanzas en el contexto histórico de América Latina.'),
-('Rayuela', 22.99, 25, 'Julio Cortázar crea una obra revolucionaria, experimentando con la estructura narrativa. El protagonista, Horacio Oliveira, vive un romance intelectual con La Maga mientras navega por la incomodidad de su existencia.'),
-('La ciudad y los perros', 21.99, 35, 'Mario Vargas Llosa presenta una crítica profunda de la vida en un internado militar en Lima, explorando temas de violencia, lealtad y la lucha de poder entre jóvenes estudiantes en un contexto de dictadura.'),
-('Juego de tronos', 34.99, 8, 'El primer libro de la famosa saga "Canción de Hielo y Fuego" de George R.R. Martin, donde intrigas políticas, traiciones y luchas por el poder definen un mundo medieval de fantasía.'),
-('Harry Potter y la piedra filosofal', 24.99, 35, 'La historia que introduce al joven mago Harry Potter en su mundo de magia, amistad y aventura, cuando descubre que es un "niño elegido" para enfrentar las fuerzas oscuras del mal.'),
-('El resplandor', 19.99, 3, 'Una novela de terror psicológico escrita por Stephen King, que relata la historia de una familia que se ve atrapada en un hotel aislado por el invierno, donde las fuerzas oscuras que acechan comienzan a manifestarse.'),
-('Orgullo y prejuicio', 14.99, 55, 'La famosa novela de Jane Austen, que relata la historia de Elizabeth Bennet y su relación con el orgulloso pero intrigante Sr. Darcy. Una historia sobre el amor, los prejuicios y la lucha por la autonomía femenina.'),
-('El viejo y el mar', 16.99, 40, 'Una novela breve pero profunda de Ernest Hemingway sobre un viejo pescador cubano y su lucha solitaria contra un enorme marlín, que simboliza su enfrentamiento con la naturaleza y la vida misma.'),
-('Ficciones', 20.99, 30, 'Una serie de relatos breves de Jorge Luis Borges que exploran mundos paralelos, laberintos y la incertidumbre de la realidad, creando una obra maestra literaria de la literatura contemporánea.'),
-('Paula', 23.99, 25, 'La novela de Isabel Allende sobre la vida de su hija Paula, quien sufrió una enfermedad terminal. Una obra profundamente personal que mezcla la narración de su vida con la reflexión sobre la maternidad y la muerte.'),
-('Modelo para armar', 18.99, 20, 'Una novela de Juan José Saer que explora la vida cotidiana de un grupo de personas en un pequeño pueblo argentino, atrapados en sus recuerdos y en sus deseos frustrados.'),
-('Conversación en la catedral', 26.99, 30, 'Mario Vargas Llosa presenta una compleja narrativa sobre el Perú de mediados del siglo XX, donde se mezclan la política, la corrupción y la vida personal de un periodista y un amigo que intentan desentrañar la realidad de su país.'),
-('Choque de reyes', 34.99, 45, 'El segundo libro de la serie "Canción de Hielo y Fuego", donde los reinos de Westeros continúan en guerra. La lucha por el Trono de Hierro intensifica las traiciones, alianzas y secretos en un mundo lleno de magia y violencia.');
+INSERT INTO libros (titulo, precio, stock, descripcion, anio) VALUES
+('Cien años de soledad', 29.99, 2, 'Una novela épica de Gabriel García Márquez que narra la historia de la familia Buendía en el mítico pueblo de Macondo. Un clásico de la literatura latinoamericana que explora el amor, la soledad y el destino, todo en un marco de realismo mágico.', '1967'),
+('El Aleph', 19.99, 4, 'Una colección de relatos de Jorge Luis Borges que aborda temas como el infinito, los laberintos, el tiempo y la literatura misma, con la típica maestría filosófica y literaria del autor.', '1945'),
+('La casa de los espíritus', 24.99, 15, 'Isabel Allende presenta una saga familiar en la que lo sobrenatural se entrelaza con los eventos políticos y sociales de Chile. Un relato de amores, tragedias y esperanzas en el contexto histórico de América Latina.', '1982'),
+('Rayuela', 22.99, 25, 'Julio Cortázar crea una obra revolucionaria, experimentando con la estructura narrativa. El protagonista, Horacio Oliveira, vive un romance intelectual con La Maga mientras navega por la incomodidad de su existencia.', '1963'),
+('La ciudad y los perros', 21.99, 35, 'Mario Vargas Llosa presenta una crítica profunda de la vida en un internado militar en Lima, explorando temas de violencia, lealtad y la lucha de poder entre jóvenes estudiantes en un contexto de dictadura.', '1963'),
+('Juego de tronos', 34.99, 8, 'El primer libro de la famosa saga "Canción de Hielo y Fuego" de George R.R. Martin, donde intrigas políticas, traiciones y luchas por el poder definen un mundo medieval de fantasía.', '1996'),
+('Harry Potter y la piedra filosofal', 24.99, 35, 'La historia que introduce al joven mago Harry Potter en su mundo de magia, amistad y aventura, cuando descubre que es un "niño elegido" para enfrentar las fuerzas oscuras del mal.', '1997'),
+('El resplandor', 19.99, 3, 'Una novela de terror psicológico escrita por Stephen King, que relata la historia de una familia que se ve atrapada en un hotel aislado por el invierno, donde las fuerzas oscuras que acechan comienzan a manifestarse.', '1977'),
+('Orgullo y prejuicio', 14.99, 55, 'La famosa novela de Jane Austen, que relata la historia de Elizabeth Bennet y su relación con el orgulloso pero intrigante Sr. Darcy. Una historia sobre el amor, los prejuicios y la lucha por la autonomía femenina.', '1813'),
+('El viejo y el mar', 16.99, 40, 'Una novela breve pero profunda de Ernest Hemingway sobre un viejo pescador cubano y su lucha solitaria contra un enorme marlín, que simboliza su enfrentamiento con la naturaleza y la vida misma.', '1952'),
+('Ficciones', 20.99, 30, 'Una serie de relatos breves de Jorge Luis Borges que exploran mundos paralelos, laberintos y la incertidumbre de la realidad, creando una obra maestra literaria de la literatura contemporánea.', '1944'),
+('Paula', 23.99, 25, 'La novela de Isabel Allende sobre la vida de su hija Paula, quien sufrió una enfermedad terminal. Una obra profundamente personal que mezcla la narración de su vida con la reflexión sobre la maternidad y la muerte.', '1994'),
+('Modelo para armar', 18.99, 20, 'Una novela de Juan José Saer que explora la vida cotidiana de un grupo de personas en un pequeño pueblo argentino, atrapados en sus recuerdos y en sus deseos frustrados.', '1983'),
+('Conversación en la catedral', 26.99, 30, 'Mario Vargas Llosa presenta una compleja narrativa sobre el Perú de mediados del siglo XX, donde se mezclan la política, la corrupción y la vida personal de un periodista y un amigo que intentan desentrañar la realidad de su país.', '1969'),
+('Choque de reyes', 34.99, 45, 'El segundo libro de la serie "Canción de Hielo y Fuego", donde los reinos de Westeros continúan en guerra. La lucha por el Trono de Hierro intensifica las traiciones, alianzas y secretos en un mundo lleno de magia y violencia.', '1998'),
+('Daughter of Fortune', 27.99, 12, 'Una novela que narra la vida de Eliza Sommers, una joven chilena que emigra a California en busca de su amor. Una historia de aventuras, pasión y descubrimientos personales.', '1999'),
+('Portrait in Sepia', 25.99, 18, 'Una novela histórica de Isabel Allende que relata la vida de la joven Aurora del Valle, quien, a través de una serie de secretos familiares y revelaciones, trata de comprender su identidad y su pasado.', '2000'),
+('La isla bajo el mar', 22.99, 20, 'Una obra que se sitúa en la época de la esclavitud en Haití y relata la vida de Zarité, una esclava que lucha por su libertad en un mundo lleno de opresión y lucha social.', '2009'),
+('El cuaderno de Maya', 21.99, 15, 'Maya, una joven que huye de la vida en California y se encuentra con un nuevo destino en una isla chilena. Una novela sobre autodescubrimiento, redención y la conexión con el pasado.', '2011'),
+('El amante japonés', 23.99, 25, 'Una historia de amor, secretos y lealtades en la que los protagonistas, Alma Belasco y Ichimei, navegan entre la tragedia personal, los vínculos familiares y la relación con el mundo durante la Segunda Guerra Mundial.', '2015'),
+('El cuaderno de Noah', 18.99, 30, 'Una conmovedora historia de amor entre Noah y Allie, dos jóvenes que se enamoran en la época de la Segunda Guerra Mundial, con una narrativa entre el pasado y el presente.', '1996'),
+('Cincuenta sombras de Grey', 22.99, 40, 'Una historia de amor apasionada y controversial entre la joven Anastasia Steele y el multimillonario Christian Grey. Explora la compleja relación entre ambos.', '2011'),
+('Asesinato en el Orient Express', 19.99, 25, 'Un intrigante misterio en el famoso tren Orient Express, donde el detective Hercule Poirot investiga el asesinato de un millonario, descubriendo secretos oscuros entre los pasajeros.', '1934'),
+('Estudio en escarlata', 21.99, 30, 'La primera novela que presenta a Sherlock Holmes, donde el detective resuelve un misterio relacionado con un asesinato en Londres, mientras construye su famosa relación con el Dr. Watson.', '1887');
+
+
 
 
 -- Relaciones Libro-Autor
@@ -70,7 +86,16 @@ INSERT INTO libro_autor (libro_id, autor_id) VALUES
 (12, 3), -- Allende - Paula
 (13, 4), -- Cortázar - 62/Modelo para armar
 (14, 5), -- Vargas Llosa - Conversación en la catedral
-(15, 6); -- Martin - Choque de reyes
+(15, 6), -- Martin - Choque de reyes
+(16, 3), -- Allende - Daughter of Fortune
+(17, 3), -- Allende - Portrait in Sepia
+(18, 3), -- Allende - La isla bajo el mar
+(19, 3), -- Allende - El cuaderno de Maya
+(20, 3), -- Allende - El amante japonés
+(21, 11), -- Nicholas Sparks - El cuaderno de Noah
+(22, 12), -- E.L. James - Cincuenta sombras de Grey
+(23, 13), -- Agatha Christie - Asesinato en el Orient Express
+(24, 14); -- Arthur Conan Doyle - Estudio en escarlata
 
 -- Relaciones Libro-Género
 INSERT INTO libro_genero (libro_id, genero_id) VALUES
@@ -88,7 +113,16 @@ INSERT INTO libro_genero (libro_id, genero_id) VALUES
 (12, 8), -- Paula: Biografía
 (13, 1), -- 62/Modelo para armar: Ficción
 (14, 1), (14, 7), -- Conversación en la catedral: Ficción, Historia
-(15, 3); -- Choque de reyes: Fantasía
+(15, 3), -- Choque de reyes: Fantasía
+(16, 1), (16, 8), -- Daughter of Fortune: Ficción, Historia
+(17, 1), (17, 8), -- Portrait in Sepia: Ficción, Historia
+(18, 1), (18, 7), -- La isla bajo el mar: Ficción, Historia
+(19, 1), (19, 8), -- El cuaderno de Maya: Ficción, Biografía
+(20, 1), (20, 4), -- El amante japonés: Ficción, Romance
+(21, 4), -- El cuaderno de Noah: Romance
+(22, 4), -- Cincuenta sombras de Grey: Romance
+(23, 5), -- Asesinato en el Orient Express: Misterio
+(24, 5); -- Estudio en escarlata: Misterio
 
 -- Carritos activos
 INSERT INTO carritos (usuario_id, fecha_creacion, estado) VALUES
