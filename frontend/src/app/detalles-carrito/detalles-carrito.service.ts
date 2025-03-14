@@ -11,8 +11,9 @@ import { Libro } from '../libro/libro';
 })
 export class DetallesCarritoService {
 
-  private urlEndPoint: string = 'http://localhost:8081/api/detallesCarrito'; 
-  private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
+  private contadorItemsCarrito = new BehaviorSubject<number>(0);
+
+  private urlEndPoint: string = 'http://localhost:8081/api/detalles-carrito';
 
   constructor(
     private http: HttpClient,
@@ -67,7 +68,7 @@ export class DetallesCarritoService {
 
   update(detalleCarrito: detallesCarrito): Observable<detallesCarrito> {
     const headers = this.createHeaders();
-    return this.http.put<any>(`http://localhost:8080/api/detalle-carrito/${detalleCarrito.id}`, detalleCarrito, { headers }).pipe(
+    return this.http.put<any>(`http://localhost:8081/api/detalle-carrito/${detalleCarrito.id}`, detalleCarrito, { headers }).pipe(
       map(response => response.detalleCarrito as detallesCarrito),
       catchError(error => {
         console.error('Error al actualizar detalle del carrito:', error);
@@ -78,7 +79,7 @@ export class DetallesCarritoService {
 
   delete(id: number): Observable<void> {
     const headers = this.createHeaders();
-    return this.http.delete<void>(`http://localhost:8080/api/detalle-carrito/${id}`, { headers }).pipe(
+    return this.http.delete<void>(`http://localhost:8081/api/detalle-carrito/${id}`, { headers }).pipe(
       catchError(error => {
         console.error('Error al eliminar detalle del carrito:', error);
         return throwError(() => error);
