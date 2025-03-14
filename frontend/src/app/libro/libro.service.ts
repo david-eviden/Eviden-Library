@@ -19,13 +19,13 @@ export class LibroService {
   constructor(private http: HttpClient, private router: Router) {}
 
   // Método para obtener el token del localStorage
-  private getToken(): string | null {
+  /*private getToken(): string | null {
     const token = localStorage.getItem('access_token');
     if (!token) {
       this.router.navigate(['/login']);  // Redirigir al login si el token no está presente
     }
     return token;
-  }
+  }*/
 
   // Método para crear cabeceras con el token
   private createHeaders(): HttpHeaders {
