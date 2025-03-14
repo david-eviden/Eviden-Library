@@ -24,6 +24,11 @@ export class DetallesCarritoComponent implements OnInit {
     private router: Router
   ) {}
 
+  private actualizarContadorCarrito(): void {
+    const totalItems = this.detallesCarrito.reduce((total, item) => total + item.cantidad, 0);
+    this.detallesCarritoService.updateCartItemCount(totalItems);
+  }
+
   ngOnInit(): void {
     if (!this.authService.estaLogueado()) {
       this.router.navigate(['/login']);
@@ -33,6 +38,7 @@ export class DetallesCarritoComponent implements OnInit {
     this.detallesCarritoService.getdetallesCarrito().subscribe({
       next: (detallesCarritos) => {
         this.detallesCarrito = detallesCarritos;
+        this.actualizarContadorCarrito();
         this.cargando = false;
       },
       error: (error) => {
@@ -80,6 +86,7 @@ export class DetallesCarritoComponent implements OnInit {
         const index = this.detallesCarrito.findIndex(i => i.id === item.id);
         if (index !== -1) {
           this.detallesCarrito[index] = resultado;
+          this.actualizarContadorCarrito();
           swal('Éxito', 'Cantidad actualizada correctamente', 'success');
         }
       },
@@ -118,6 +125,7 @@ export class DetallesCarritoComponent implements OnInit {
         this.detallesCarritoService.delete(item.id!).subscribe({
           next: () => {
             this.detallesCarrito = this.detallesCarrito.filter(i => i.id !== item.id);
+            this.actualizarContadorCarrito();
             swal('Eliminado', 'El libro ha sido eliminado del carrito', 'success');
           },
           error: (error) => {
@@ -225,6 +233,9 @@ export class DetallesCarritoComponent implements OnInit {
         });
       });
 
+      // Actualizar el contador a 0 después de eliminar todos los items
+      this.detallesCarritoService.updateCartItemCount(0);
+
       // Y redireccionar a la página principal
       this.router.navigate(['/libros']);
     });
@@ -258,6 +269,10 @@ export class DetallesCarritoComponent implements OnInit {
             }
           });
         });
+
+        // Actualizar el contador a 0 después de eliminar todos los items
+        this.detallesCarritoService.updateCartItemCount(0);
+        
         swal('Eliminados', 'Todos los libros han sido eliminados del carrito', 'success');
       }
     });

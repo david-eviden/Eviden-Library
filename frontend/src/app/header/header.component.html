@@ -90,7 +90,7 @@
                     </a>
                     <a *ngIf="authService.esUsuario" [routerLink]="['/mi-carrito']" class="btn btn-link text-dark">
                         <i class="bi bi-cart4 mx-2"></i>
-                        <span class="badge bg-danger"><!-- {{ detallesCarrito.lenght }} -->0</span>
+                        <span class="badge bg-danger">{{ cartItemCount }}</span>
                     </a>
                 </div>
 
@@ -117,7 +117,7 @@
                 </a>
                 <a *ngIf="authService.esUsuario" [routerLink]="['/mi-carrito']" class="btn btn-link text-dark">
                     <i class="bi bi-cart4 mx-2"></i>
-                    <span class="badge bg-danger"><!-- {{ detallesCarrito.lenght }} -->0</span>
+                    <span class="badge bg-danger">{{ cartItemCount }}</span>
                 </a>
             </div>
 

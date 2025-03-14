@@ -36,6 +36,9 @@
 .card-img-top {
     height: 200px;
     object-fit: cover;
+    object-position: center;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
 }
 
 .col-lg-2-4 {

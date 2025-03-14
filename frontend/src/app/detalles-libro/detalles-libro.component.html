@@ -10,7 +10,7 @@
         <div class="card-body">
             <div class="row m-1">
                 <div class="col-md-4 text-center mb-4 mb-md-0">
-                    <img [src]="'/img/libroEjemplo.jpg'" [id]="'imagen-libro-' + libro.id" class="img-fluid book-cover"
+                    <img [src]="libro.imagen ? libro.imagen : '/img/libroEjemplo.jpg'" [id]="'imagen-libro-' + libro.id" class="img-fluid book-cover"
                         alt="Imagen de {{ libro.titulo }}" [style.view-transition-name]="'imagen-libro-' + libro.id">
                 </div>
 

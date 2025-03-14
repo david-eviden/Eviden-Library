@@ -66,6 +66,7 @@ public class RegistroController {
             nuevoUsuario.setEmail(email);
             nuevoUsuario.setPassword(""); // No almacenamos la contraseña en la BD local
             nuevoUsuario.setRol("USER"); // Rol por defecto
+            nuevoUsuario.setFoto(null); // Foto de perfil por defecto
             
             // Guardar usuario en la base de datos local
             Usuario usuarioGuardado = usuarioService.save(nuevoUsuario);

@@ -101,6 +101,14 @@ export class DetallesCarritoService {
     };
 
     return this.http.post<detallesCarrito>(`${this.urlEndPoint}/add/${userId}`, detalleCarrito, { headers }).pipe(
+      map(response => {
+        // Después de añadir el item, obtenemos el total actualizado
+        this.getdetallesCarrito().subscribe(items => {
+          const totalItems = items.reduce((total, item) => total + item.cantidad, 0);
+          this.updateCartItemCount(totalItems);
+        });
+        return response;
+      }),
       catchError(error => {
         console.error('Error al añadir al carrito:', error);
         return throwError(() => error);

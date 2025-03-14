@@ -17,6 +17,7 @@ import swal from 'sweetalert2';
 export class HeaderComponent implements OnInit{
 
   userId: number = 0;
+  cartItemCount: number = 0;
 
   constructor(
     public authService: AuthService,
@@ -27,6 +28,11 @@ export class HeaderComponent implements OnInit{
   ) {}
 
   ngOnInit(): void {
+    // Suscribirse a los cambios en el contador del carrito
+    this.carritoService.getCartItemCount().subscribe(count => {
+      this.cartItemCount = count;
+    });
+
     // Obtener el ID del usuario actual al iniciar
     this.userId = this.authService.getCurrentUserId();
     console.log('ID de usuario en header:', this.userId);

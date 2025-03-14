@@ -16,18 +16,19 @@ h2 {
     text-decoration: underline;
 }
 
+/* Estilos para la imagen de perfil */
 .user-avatar {
-    max-height: 300px;
-    width: auto;
+    max-width: 200px;
     border-radius: 50%;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     object-fit: cover;
+    aspect-ratio: 1/1;
 }
 
 .user-avatar:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .user-info {
