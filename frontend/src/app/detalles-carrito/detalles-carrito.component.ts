@@ -5,6 +5,12 @@ import { AuthService } from '../login/auth.service';
 import { Router } from '@angular/router';
 import swal from 'sweetalert2';
 import { ICreateOrderRequest, IPayPalConfig } from 'ngx-paypal';
+import { Pedido } from '../pedido/pedido';
+import { PedidoService } from '../pedido/pedido.service';
+import { detallesPedido } from '../detalles-pedido/detalles-pedido';
+import { Usuario } from '../usuario/usuario';
+import { forkJoin } from 'rxjs';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-detalles-carrito',
@@ -21,7 +27,8 @@ export class DetallesCarritoComponent implements OnInit {
   constructor(
     private detallesCarritoService: DetallesCarritoService,
     public authService: AuthService,
-    private router: Router
+    private router: Router,
+    private pedidoService: PedidoService
   ) {}
 
   private actualizarContadorCarrito(): void {
@@ -56,9 +63,11 @@ export class DetallesCarritoComponent implements OnInit {
   }
 
   calcularTotal(): number {
-    return this.detallesCarrito.reduce((total, item) => {
+    const total = this.detallesCarrito.reduce((total, item) => {
       return total + ((item.libro?.precio || 0) * item.cantidad);
     }, 0);
+    
+    return Number(total.toFixed(2));
   }
 
   seguirComprando(): void {
@@ -213,31 +222,255 @@ export class DetallesCarritoComponent implements OnInit {
   }
 
   procesarCompraExitosa(data: any): void {
-    swal({
-      title: '¡Pago completado!',
-      text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente.`,
-      type: 'success',
-      confirmButtonText: 'Continuar'
-    }).then(() => {
-      // O simplemente limpiar el carrito
-      this.detallesCarrito.forEach(item => {
-        this.detallesCarritoService.delete(item.id!).subscribe({
-          next: () => {
-            // Filtrar los items eliminados
-            this.detallesCarrito = this.detallesCarrito.filter(i => i.id !== item.id);
-          },
-          error: (error) => {
-            console.error('Error al eliminar del carrito:', error);
-            swal('Error', 'No se pudo eliminar algunos libros del carrito', 'error');
+    try {
+      // Crear un nuevo pedido con los libros comprados
+      const nuevoPedido = new Pedido();
+      
+      // Obtener el usuario actual
+      const usuarioActual = this.authService.getCurrentUser();
+      if (!usuarioActual || !usuarioActual.id) {
+        swal('Error', 'No se pudo identificar al usuario actual', 'error');
+        return;
+      }
+      
+      // Configurar el pedido
+      const usuario = new Usuario();
+      usuario.id = usuarioActual.id;
+      nuevoPedido.usuario = usuario;
+      
+      // Formatear la fecha como dd/MM/yyyy
+      const hoy = new Date();
+      const dia = String(hoy.getDate()).padStart(2, '0');
+      const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+      const anio = hoy.getFullYear();
+      const fechaFormateada = `${dia}/${mes}/${anio}`;
+      
+      console.log('Fecha formateada para el backend:', fechaFormateada);
+      
+      nuevoPedido.fechaPedido = fechaFormateada; // Formato dd/MM/yyyy que espera el backend
+      
+      nuevoPedido.estado = "COMPLETADO";
+      nuevoPedido.total = this.calcularTotal();
+      nuevoPedido.precioTotal = this.calcularTotal();
+      nuevoPedido.direccionEnvio = usuarioActual.direccion || "Sin dirección especificada";
+      
+      // Para evitar problemas con la relación bidireccional, enviamos solo los datos necesarios
+      // sin incluir la referencia circular a pedido
+      const pedidoParaEnviar = {
+        usuario: { id: usuarioActual.id },
+        fechaPedido: fechaFormateada, // Formato dd/MM/yyyy que espera el backend
+        estado: nuevoPedido.estado,
+        total: nuevoPedido.total,
+        direccionEnvio: nuevoPedido.direccionEnvio,
+        // No enviamos detalles aquí, los crearemos después de crear el pedido
+        detalles: []
+      };
+      
+      console.log('Enviando pedido al servidor:', JSON.stringify(pedidoParaEnviar));
+      
+      // Guardar el pedido en la base de datos
+      this.pedidoService.createPedido(pedidoParaEnviar as any).subscribe({
+        next: (pedidoCreado) => {
+          console.log('Pedido creado correctamente:', pedidoCreado);
+          
+          // Ahora que tenemos el pedido creado, podemos crear los detalles
+          const detallesObservables = this.detallesCarrito.map(item => {
+            if (!item.libro || !item.libro.id) {
+              console.error('Error: El item del carrito no tiene un libro asociado', item);
+              return of({
+                error: true,
+                mensaje: 'El item del carrito no tiene un libro asociado'
+              });
+            }
+            
+            const detallePedido = {
+              pedido: { id: pedidoCreado.id },
+              libro: { id: item.libro.id },
+              cantidad: item.cantidad,
+              precioUnitario: item.libro.precio || 0
+            };
+            
+            console.log('Creando detalle de pedido:', detallePedido);
+            return this.pedidoService.createDetallePedido(detallePedido);
+          });
+          
+          // Si no hay detalles que crear, mostrar mensaje de éxito directamente
+          if (detallesObservables.length === 0) {
+            swal({
+              title: '¡Pago completado!',
+              text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente. Se ha creado el pedido #${pedidoCreado.id}.`,
+              type: 'success',
+              confirmButtonText: 'Continuar'
+            }).then(() => {
+              this.eliminarItemsDelCarrito();
+            });
+            return;
           }
-        });
+          
+          // Usar forkJoin para esperar a que todos los observables se completen
+          forkJoin(detallesObservables).subscribe({
+            next: (detalles) => {
+              console.log('Todos los detalles creados correctamente:', detalles);
+              
+              // Verificar si algún detalle tuvo error
+              const detallesConError = detalles.filter(detalle => detalle && detalle.error === true);
+              
+              if (detallesConError.length > 0) {
+                console.warn('Algunos detalles tuvieron errores:', detallesConError);
+                // Mostrar mensaje de éxito parcial
+                swal({
+                  title: '¡Pago completado!',
+                  text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente. Se ha creado el pedido #${pedidoCreado.id}, pero hubo un problema al registrar algunos detalles. Serás redirigido a tu perfil para ver tu historial de pedidos.`,
+                  type: 'warning',
+                  confirmButtonText: 'Continuar'
+                }).then(() => {
+                  // Eliminar los items del carrito a pesar del error
+                  this.eliminarItemsDelCarrito();
+                });
+              } else {
+                // Mostrar mensaje de éxito
+                swal({
+                  title: '¡Pago completado!',
+                  text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente. Se ha creado el pedido #${pedidoCreado.id}. Serás redirigido a tu perfil para ver tu historial de pedidos.`,
+                  type: 'success',
+                  confirmButtonText: 'Continuar'
+                }).then(() => {
+                  // Eliminar los items del carrito después de crear el pedido
+                  this.eliminarItemsDelCarrito();
+                });
+              }
+            },
+            error: (error) => {
+              console.error('Error al crear los detalles del pedido:', error);
+              // Mostrar mensaje de éxito parcial
+              swal({
+                title: '¡Pago completado!',
+                text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente, pero hubo un problema al registrar tu pedido. Por favor, contacta con soporte. Serás redirigido a tu perfil para ver tu historial de pedidos.`,
+                type: 'warning',
+                confirmButtonText: 'Continuar'
+              }).then(() => {
+                // Eliminar los items del carrito a pesar del error
+                this.eliminarItemsDelCarrito();
+              });
+            }
+          });
+        },
+        error: (error) => {
+          console.error('Error al crear el pedido:', error);
+          
+          // Mostrar mensaje de error pero aún así eliminar los items del carrito
+          swal({
+            title: '¡Pago completado!',
+            text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente, pero hubo un problema al registrar tu pedido. Por favor, contacta con soporte. Serás redirigido a tu perfil para ver tu historial de pedidos.`,
+            type: 'warning',
+            confirmButtonText: 'Continuar'
+          }).then(() => {
+            // Eliminar los items del carrito a pesar del error
+            this.eliminarItemsDelCarrito();
+          });
+        }
       });
-
-      // Actualizar el contador a 0 después de eliminar todos los items
+    } catch (error) {
+      console.error('Error inesperado al procesar la compra:', error);
+      swal({
+        title: '¡Pago completado!',
+        text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente, pero hubo un problema al registrar tu pedido. Por favor, contacta con soporte. Serás redirigido a tu perfil para ver tu historial de pedidos.`,
+        type: 'warning',
+        confirmButtonText: 'Continuar'
+      }).then(() => {
+        // Eliminar los items del carrito a pesar del error
+        this.eliminarItemsDelCarrito();
+      });
+    }
+  }
+  
+  // Método para eliminar los items del carrito después de crear el pedido
+  private eliminarItemsDelCarrito(): void {
+    // Get the current user ID
+    const usuarioActual = this.authService.getCurrentUser();
+    const usuarioId = usuarioActual?.id;
+    
+    // If no user ID is available, navigate to the books page as fallback
+    if (!usuarioId) {
+      console.warn('No se pudo obtener el ID del usuario actual, redirigiendo a libros');
       this.detallesCarritoService.updateCartItemCount(0);
-
-      // Y redireccionar a la página principal
+      this.detallesCarrito = [];
       this.router.navigate(['/libros']);
+      return;
+    }
+    
+    // Add a delay before navigating to the user profile page
+    console.log('Esperando 1 segundo antes de cargar los pedidos...');
+    setTimeout(() => {
+      // Force a refresh of the user's orders before navigating
+      this.pedidoService.getPedidosPorUsuarioId(usuarioId).subscribe({
+        next: (pedidos) => {
+          console.log('Pedidos actualizados antes de navegar al perfil:', pedidos);
+        },
+        error: (error) => {
+          console.error('Error al actualizar los pedidos antes de navegar:', error);
+        },
+        complete: () => {
+          // Continue with cart cleanup regardless of whether the orders were refreshed
+          this.limpiarCarritoYNavegar(usuarioId);
+        }
+      });
+    }, 1000); // Wait 1 second before loading orders
+  }
+  
+  private limpiarCarritoYNavegar(usuarioId: number): void {
+    if (this.detallesCarrito.length === 0) {
+      // Si no hay items, simplemente redirigir a la página de detalles del usuario
+      this.router.navigate(['/usuario', usuarioId], { queryParams: { refresh: 'true' } });
+      return;
+    }
+
+    // Crear una copia de los IDs para evitar problemas al modificar el array durante la iteración
+    const itemIds = this.detallesCarrito
+      .filter(item => item.id !== undefined)
+      .map(item => item.id!);
+    
+    console.log(`Eliminando ${itemIds.length} items del carrito...`);
+    
+    // Si no hay items con ID, simplemente redirigir
+    if (itemIds.length === 0) {
+      console.log('No hay items con ID para eliminar');
+      this.detallesCarritoService.updateCartItemCount(0);
+      this.detallesCarrito = [];
+      this.router.navigate(['/usuario', usuarioId], { queryParams: { refresh: 'true' } });
+      return;
+    }
+    
+    let itemsEliminados = 0;
+    const totalItems = itemIds.length;
+
+    // Función para verificar si todos los items han sido eliminados
+    const verificarFinalizacion = () => {
+      itemsEliminados++;
+      console.log(`Progreso de eliminación: ${itemsEliminados}/${totalItems}`);
+      if (itemsEliminados >= totalItems) {
+        // Todos los items han sido procesados
+        console.log('Todos los items del carrito han sido procesados');
+        this.detallesCarritoService.updateCartItemCount(0);
+        this.detallesCarrito = [];
+        // Redirigir a la página de detalles del usuario para ver el pedido recién creado
+        this.router.navigate(['/usuario', usuarioId], { queryParams: { refresh: 'true' } });
+      }
+    };
+
+    // Eliminar cada item uno por uno
+    itemIds.forEach(id => {
+      console.log(`Eliminando item ${id} del carrito...`);
+      this.detallesCarritoService.delete(id).subscribe({
+        next: () => {
+          console.log(`Item ${id} eliminado correctamente`);
+          verificarFinalizacion();
+        },
+        error: (error) => {
+          console.error(`Error al eliminar item ${id} del carrito:`, error);
+          verificarFinalizacion(); // Continuar con el siguiente aunque haya error
+        }
+      });
     });
   }
 

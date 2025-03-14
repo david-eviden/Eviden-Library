@@ -97,31 +97,84 @@
                             <thead class="table-primary">
                                 <tr>
                                     <th>ID</th>
+                                    <th>Fecha</th>
                                     <th>Total</th>
                                     <th>Estado</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let pedido of usuario.pedidos">
-                                    <td>{{ pedido.id }}</td>
-                                    <td>{{ pedido.total | currency:'EUR':'symbol':'1.2-2' }}</td>
-                                    <td>
-                                        <span [ngClass]="{
-                                            'badge bg-warning': pedido.estado === 'PENDIENTE',
-                                            'badge bg-info': pedido.estado === 'ENVIADO',
-                                            'badge bg-success': pedido.estado === 'ENTREGADO',
-                                            'badge bg-danger': pedido.estado === 'CANCELADO'
-                                        }">
-                                            {{ pedido.estado }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <a [routerLink]="['/pedidos', pedido.id]" class="btn btn-sm btn-primary me-1">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                                <ng-container *ngFor="let pedido of usuario.pedidos; let i = index">
+                                    <tr>
+                                        <td>{{ pedido.id }}</td>
+                                        <td>{{ pedido.fechaPedido }}</td>
+                                        <td>{{ pedido.total | currency:'EUR':'symbol':'1.2-2' }}</td>
+                                        <td>
+                                            <span [ngClass]="{
+                                                'badge pendiente': pedido.estado === 'PENDIENTE',
+                                                'badge enviado': pedido.estado === 'ENVIADO',
+                                                'badge completado': pedido.estado === 'COMPLETADO' || pedido.estado === 'ENTREGADO',
+                                                'badge cancelado': pedido.estado === 'CANCELADO'
+                                            }">
+                                                {{ pedido.estado }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button (click)="toggleDetallesPedido(i)" class="btn btn-sm btn-primary me-1 text-white">
+                                                <i class="bi" [ngClass]="{'bi-chevron-down': !pedidoExpandido[i], 'bi-chevron-up': pedidoExpandido[i]}"></i>
+                                                {{ pedidoExpandido[i] ? 'Ocultar detalles' : 'Ver detalles' }}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- Fila de detalles del pedido (expandible) -->
+                                    <tr *ngIf="pedidoExpandido[i]">
+                                        <td colspan="5" class="p-0">
+                                            <div class="p-3 bg-light">
+                                                <h6 class="mb-2">Detalles del pedido #{{ pedido.id }}</h6>
+                                                <p><strong>Dirección de envío:</strong> 
+                                                    <span *ngIf="pedido.direccionEnvio && pedido.direccionEnvio !== 'Sin dirección especificada'">
+                                                        {{ pedido.direccionEnvio }}
+                                                    </span>
+                                                    <span *ngIf="!pedido.direccionEnvio || pedido.direccionEnvio === 'Sin dirección especificada'">
+                                                        {{ usuario.direccion || 'Sin dirección disponible' }}
+                                                        <small class="text-muted ms-1">(dirección del usuario)</small>
+                                                    </span>
+                                                </p>
+                                                
+                                                <!-- Tabla de detalles del pedido -->
+                                                <div class="table-responsive mt-3" *ngIf="pedido.detalles && pedido.detalles.length > 0">
+                                                    <table class="table table-sm table-bordered">
+                                                        <thead class="table-secondary">
+                                                            <tr>
+                                                                <th>Libro</th>
+                                                                <th>Cantidad</th>
+                                                                <th>Precio unitario</th>
+                                                                <th>Subtotal</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr *ngFor="let detalle of pedido.detalles">
+                                                                <td>{{ detalle.libro.titulo || 'Libro no disponible' }}</td>
+                                                                <td class="text-center">{{ detalle.cantidad }}</td>
+                                                                <td class="text-end">{{ detalle.precioUnitario | currency:'EUR':'symbol':'1.2-2' }}</td>
+                                                                <td class="text-end">{{ detalle.cantidad * detalle.precioUnitario | currency:'EUR':'symbol':'1.2-2' }}</td>
+                                                            </tr>
+                                                            <tr class="table-info">
+                                                                <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                                                                <td class="text-end"><strong>{{ pedido.total | currency:'EUR':'symbol':'1.2-2' }}</strong></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                
+                                                <!-- Mensaje si no hay detalles -->
+                                                <div *ngIf="!pedido.detalles || pedido.detalles.length === 0" class="alert alert-warning mt-3">
+                                                    No hay detalles disponibles para este pedido.
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </ng-container>
                             </tbody>
                         </table>
                     </div>

@@ -108,6 +108,12 @@ export const routes: Routes = [
 
   // Rutas protegidas para USUARIO
   { 
+    path: 'usuario', 
+    component: DetallesUsuarioComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['USER', 'ADMIN'] } 
+  },
+  { 
     path: 'usuario/:id', 
     component: DetallesUsuarioComponent,
     canActivate: [AuthGuard],

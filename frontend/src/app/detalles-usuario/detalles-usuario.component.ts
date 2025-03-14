@@ -23,6 +23,8 @@ export class DetallesUsuarioComponent implements OnInit {
   esPerfilPropio: boolean = false;
   cargando: boolean = true;
   error: string = '';
+  forceRefresh: boolean = false;
+  pedidoExpandido: boolean[] = []; // Array para controlar qué pedidos están expandidos
 
   constructor(
     private route: ActivatedRoute,
@@ -37,13 +39,23 @@ export class DetallesUsuarioComponent implements OnInit {
     this.cargando = true;
     this.error = '';
     
+    // Check if we need to refresh the orders
+    this.route.queryParams.subscribe(params => {
+      const refresh = params['refresh'];
+      if (refresh === 'true') {
+        console.log('Forzando actualización de pedidos...');
+        // We'll set a flag to force a refresh of the orders
+        this.forceRefresh = true;
+      }
+    });
+    
     // Obtener el id del usuario desde la ruta
     this.route.paramMap.subscribe(params => {
       const idParam = params.get('id');
       
       // Verificar si el parámetro id es válido
       if (!idParam || isNaN(Number(idParam))) {
-        console.error('ID de usuario no válido en la URL:', idParam);
+        console.log('ID de usuario no válido en la URL o no proporcionado, intentando usar el usuario actual');
         
         // Intentar usar el ID del usuario logueado
         const usuarioLogueadoId = this.authService.getCurrentUserId();
@@ -112,7 +124,17 @@ export class DetallesUsuarioComponent implements OnInit {
         if (!this.usuario.valoraciones) this.usuario.valoraciones = [];
         
         // Cargar los pedidos del usuario específico
-        this.cargarPedidos(usuarioId);
+        // If forceRefresh is true, we'll add a delay before loading the orders
+        if (this.forceRefresh) {
+          console.log('Esperando 1 segundo antes de cargar los pedidos (forzado)...');
+          setTimeout(() => {
+            this.cargarPedidos(usuarioId);
+            // Reset the flag
+            this.forceRefresh = false;
+          }, 1000);
+        } else {
+          this.cargarPedidos(usuarioId);
+        }
         
         // Cargar las valoraciones del usuario específico
         this.cargarValoraciones(usuarioId);
@@ -133,15 +155,84 @@ export class DetallesUsuarioComponent implements OnInit {
     );
   }
 
-  cargarPedidos(usuarioId: number): void {
-    this.pedidoService.getPedidosPorUsuarioId(usuarioId).subscribe(
-      (pedidos) => {
-        this.usuario.pedidos = pedidos;
+  cargarPedidos(usuarioId: number, intentos: number = 0): void {
+    console.log(`Cargando pedidos para el usuario ID: ${usuarioId} (intento ${intentos + 1})`);
+    
+    // Ensure pedidos array is initialized
+    if (!this.usuario.pedidos) {
+      this.usuario.pedidos = [];
+    }
+    
+    this.pedidoService.getPedidosPorUsuarioId(usuarioId).subscribe({
+      next: (pedidos) => {
+        console.log('Pedidos recibidos:', pedidos);
+        // Check if pedidos is null or undefined
+        if (pedidos) {
+          // Si el usuario tiene dirección, actualizar las direcciones de envío vacías o "Sin dirección especificada"
+          if (this.usuario.direccion) {
+            pedidos.forEach(pedido => {
+              if (!pedido.direccionEnvio || pedido.direccionEnvio === 'Sin dirección especificada') {
+                console.log(`Actualizando dirección de envío del pedido ID: ${pedido.id} con la dirección del usuario`);
+                pedido.direccionEnvio = this.usuario.direccion;
+              }
+            });
+          }
+          
+          this.usuario.pedidos = pedidos;
+          // Inicializar el array de pedidos expandidos
+          this.pedidoExpandido = new Array(pedidos.length).fill(false);
+          
+          if (pedidos.length === 0) {
+            console.log('El usuario no tiene pedidos');
+            
+            // If this is the first attempt and no orders were found, retry after a delay
+            if (intentos === 0) {
+              console.log('Intentando cargar pedidos nuevamente en 2 segundos...');
+              setTimeout(() => {
+                this.cargarPedidos(usuarioId, intentos + 1);
+              }, 2000);
+            }
+          } else {
+            console.log(`Se encontraron ${pedidos.length} pedidos para el usuario`);
+          }
+        } else {
+          console.warn('Los pedidos recibidos son nulos o indefinidos');
+          this.usuario.pedidos = [];
+          this.pedidoExpandido = [];
+          
+          // If this is the first attempt and no orders were found, retry after a delay
+          if (intentos === 0) {
+            console.log('Intentando cargar pedidos nuevamente en 2 segundos...');
+            setTimeout(() => {
+              this.cargarPedidos(usuarioId, intentos + 1);
+            }, 2000);
+          }
+        }
       },
-      (error) => {
+      error: (error) => {
         console.error('Error al obtener los pedidos del usuario:', error);
+        // Ensure we have an empty array in case of error
+        this.usuario.pedidos = [];
+        this.pedidoExpandido = [];
+        
+        // Show a non-intrusive message to the user
+        if (error.status === 404) {
+          console.warn('El endpoint para obtener pedidos no existe o no está disponible');
+        } else if (error.status === 403) {
+          console.warn('No tienes permisos para ver los pedidos de este usuario');
+        } else {
+          console.warn('Error desconocido al cargar los pedidos');
+        }
+        
+        // If this is the first attempt, retry after a delay
+        if (intentos === 0) {
+          console.log('Intentando cargar pedidos nuevamente en 2 segundos...');
+          setTimeout(() => {
+            this.cargarPedidos(usuarioId, intentos + 1);
+          }, 2000);
+        }
       }
-    );
+    });
   }
 
   cargarValoraciones(usuarioId: number): void {
@@ -330,5 +421,97 @@ export class DetallesUsuarioComponent implements OnInit {
     usuario.pedidos = [];
     usuario.valoraciones = [];
     return usuario;
+  }
+
+  // Método para alternar la visibilidad de los detalles de un pedido
+  toggleDetallesPedido(index: number): void {
+    if (index >= 0 && index < this.pedidoExpandido.length) {
+      this.pedidoExpandido[index] = !this.pedidoExpandido[index];
+      
+      // Si estamos expandiendo el pedido
+      if (this.pedidoExpandido[index] && this.usuario.pedidos[index]) {
+        // Verificar si la dirección de envío está vacía o es "Sin dirección especificada"
+        if (!this.usuario.pedidos[index].direccionEnvio || 
+            this.usuario.pedidos[index].direccionEnvio === 'Sin dirección especificada') {
+          // Si el usuario tiene dirección, usarla como dirección de envío
+          if (this.usuario.direccion) {
+            console.log(`Actualizando dirección de envío del pedido ID: ${this.usuario.pedidos[index].id} con la dirección del usuario`);
+            this.usuario.pedidos[index].direccionEnvio = this.usuario.direccion;
+          }
+        }
+        
+        // Si no tiene detalles cargados, intentamos cargarlos
+        if (!this.usuario.pedidos[index].detalles || this.usuario.pedidos[index].detalles.length === 0) {
+          const pedidoId = this.usuario.pedidos[index].id;
+          if (pedidoId) {
+            console.log(`Cargando detalles para el pedido ID: ${pedidoId}`);
+            
+            // Verificar si ya tenemos los detalles en el pedido
+            if (this.usuario.pedidos[index].detalles && this.usuario.pedidos[index].detalles.length > 0) {
+              console.log(`El pedido ya tiene ${this.usuario.pedidos[index].detalles.length} detalles cargados`);
+              return;
+            }
+            
+            // Usar el nuevo método para obtener un pedido específico por ID
+            this.pedidoService.getPedidoPorId(pedidoId).subscribe({
+              next: (pedidoActualizado) => {
+                if (pedidoActualizado && pedidoActualizado.detalles && pedidoActualizado.detalles.length > 0) {
+                  console.log(`Se encontraron ${pedidoActualizado.detalles.length} detalles para el pedido ID: ${pedidoId}`);
+                  // Actualizar solo los detalles del pedido específico
+                  this.usuario.pedidos[index].detalles = pedidoActualizado.detalles;
+                  
+                  // Si la dirección de envío del pedido actualizado está vacía o es "Sin dirección especificada"
+                  // y el usuario tiene dirección, actualizarla
+                  if ((!pedidoActualizado.direccionEnvio || 
+                      pedidoActualizado.direccionEnvio === 'Sin dirección especificada') && 
+                      this.usuario.direccion) {
+                    this.usuario.pedidos[index].direccionEnvio = this.usuario.direccion;
+                  } else {
+                    // Mantener la dirección de envío del pedido actualizado
+                    this.usuario.pedidos[index].direccionEnvio = pedidoActualizado.direccionEnvio;
+                  }
+                } else {
+                  console.warn(`No se encontraron detalles para el pedido ID: ${pedidoId}`);
+                }
+              },
+              error: (error) => {
+                console.error(`Error al cargar los detalles del pedido ID: ${pedidoId}`, error);
+                // Si hay un error al obtener el pedido específico, intentamos con el método anterior
+                console.log('Intentando obtener detalles a través de todos los pedidos del usuario...');
+                this.pedidoService.getPedidosPorUsuarioId(this.usuario.id!).subscribe({
+                  next: (pedidos) => {
+                    if (pedidos && pedidos.length > 0) {
+                      // Buscar el pedido específico por ID
+                      const pedidoEncontrado = pedidos.find(p => p.id === pedidoId);
+                      if (pedidoEncontrado && pedidoEncontrado.detalles && pedidoEncontrado.detalles.length > 0) {
+                        console.log(`Se encontraron ${pedidoEncontrado.detalles.length} detalles para el pedido ID: ${pedidoId}`);
+                        // Actualizar solo los detalles del pedido específico
+                        this.usuario.pedidos[index].detalles = pedidoEncontrado.detalles;
+                        
+                        // Si la dirección de envío del pedido encontrado está vacía o es "Sin dirección especificada"
+                        // y el usuario tiene dirección, actualizarla
+                        if ((!pedidoEncontrado.direccionEnvio || 
+                            pedidoEncontrado.direccionEnvio === 'Sin dirección especificada') && 
+                            this.usuario.direccion) {
+                          this.usuario.pedidos[index].direccionEnvio = this.usuario.direccion;
+                        } else {
+                          // Mantener la dirección de envío del pedido encontrado
+                          this.usuario.pedidos[index].direccionEnvio = pedidoEncontrado.direccionEnvio;
+                        }
+                      } else {
+                        console.warn(`No se encontraron detalles para el pedido ID: ${pedidoId}`);
+                      }
+                    }
+                  },
+                  error: (error) => {
+                    console.error(`Error al cargar los detalles del pedido ID: ${pedidoId}`, error);
+                  }
+                });
+              }
+            });
+          }
+        }
+      }
+    }
   }
 }
