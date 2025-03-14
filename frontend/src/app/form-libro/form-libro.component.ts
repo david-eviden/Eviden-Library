@@ -23,6 +23,8 @@ export class FormLibroComponent implements OnInit {
   generos: Genero[] = [];
   autorSeleccionado: Autor = new Autor();
   generoSeleccionado: Genero = new Genero();
+  imagenPreview: string | null = null;
+  selectedFile: File | null = null;
 
   constructor(
     private libroService: LibroService, 
@@ -54,53 +56,36 @@ export class FormLibroComponent implements OnInit {
 
   // Crear libro
   public create(): void {
-    // Verificar si se seleccionaron las opciones predeterminadas
-    if (this.autorSeleccionado.id === 0 || this.generoSeleccionado.id === 0) {
-      if (this.autorSeleccionado.id === 0) {
-        this.errors.push("Debe seleccionar un autor válido");
-      }
-      if (this.generoSeleccionado.id === 0) {
-        this.errors.push("Debe seleccionar un género válido");
-      }
-      return; // No continuar con la creación
+    // Si hay un archivo seleccionado, convertirlo a base64 antes de enviar
+    if (this.selectedFile) {
+      this.convertFileToBase64(this.selectedFile).then(base64 => {
+        this.libro.imagen = base64;
+        this.saveLibro();
+      }).catch(error => {
+        console.error('Error al convertir la imagen:', error);
+        this.errors.push('Error al procesar la imagen');
+      });
+    } else {
+      this.saveLibro();
     }
+  }
 
-    // Limpiar errores previos
-    this.errors = [];
-
-    // Asegurarse de que el autor seleccionado se añada al libro
-    if (this.autorSeleccionado && this.autorSeleccionado.id && this.autorSeleccionado.id !== 0) {
-      // Verificar si el autor ya está en la lista
-      const autorExistente = this.libro.autores.find(a => a.id === this.autorSeleccionado.id);
-      if (!autorExistente) {
-        this.libro.autores.push(this.autorSeleccionado);
-      }
-    }
-
-    // Asegurarse de que el género seleccionado se añada al libro
-    if (this.generoSeleccionado && this.generoSeleccionado.id && this.generoSeleccionado.id !== 0) {
-      // Verificar si el género ya está en la lista
-      const generoExistente = this.libro.generos.find(g => g.id === this.generoSeleccionado.id);
-      if (!generoExistente) {
-        this.libro.generos.push(this.generoSeleccionado);
-      }
-    }
-
-    this.libroService.create(this.libro).subscribe(
-      // Si OK
-      json => {
+  private saveLibro(): void {
+    this.libroService.create(this.libro).subscribe({
+      next: (response) => {
+        swal(
+          'Nuevo libro',
+          `El libro ${this.libro.titulo} ha sido creado con éxito`,
+          'success'
+        );
         this.router.navigate(['/libros']);
-        // Mensaje SweetAlert
-        swal('Nuevo libro', `Libro ${json.libro.titulo} creado con éxito`, 'success');
       },
-
-      // Si error
-      err => {
-        this.errors = err.error.errores as string[];
-        console.error('Código del error (backend): ' + err.error.status);
-        console.error(err.error.errores);
+      error: (err) => {
+        this.errors = err.error.errors as string[];
+        console.error('Código de error desde el backend: ' + err.status);
+        console.error(err.error.errors);
       }
-    );
+    });
   }
 
   // Obtener libro por ID
@@ -127,53 +112,36 @@ export class FormLibroComponent implements OnInit {
 
   // Update libro por ID
   public update(): void {
-    // Verificar si se seleccionaron las opciones predeterminadas
-    if (this.autorSeleccionado.id === 0 || this.generoSeleccionado.id === 0) {
-      if (this.autorSeleccionado.id === 0) {
-        this.errors.push("Debe seleccionar un autor válido");
-      }
-      if (this.generoSeleccionado.id === 0) {
-        this.errors.push("Debe seleccionar un género válido");
-      }
-      return; // No continuar con la actualización
+    // Si hay un archivo seleccionado, convertirlo a base64 antes de enviar
+    if (this.selectedFile) {
+      this.convertFileToBase64(this.selectedFile).then(base64 => {
+        this.libro.imagen = base64;
+        this.updateLibro();
+      }).catch(error => {
+        console.error('Error al convertir la imagen:', error);
+        this.errors.push('Error al procesar la imagen');
+      });
+    } else {
+      this.updateLibro();
     }
+  }
 
-    // Limpiar errores previos
-    this.errors = [];
-
-    // Asegurarse de que el autor seleccionado se añada al libro
-    if (this.autorSeleccionado && this.autorSeleccionado.id && this.autorSeleccionado.id !== 0) {
-      // Verificar si el autor ya está en la lista
-      const autorExistente = this.libro.autores.find(a => a.id === this.autorSeleccionado.id);
-      if (!autorExistente) {
-        this.libro.autores.push(this.autorSeleccionado);
-      }
-    }
-
-    // Asegurarse de que el género seleccionado se añada al libro
-    if (this.generoSeleccionado && this.generoSeleccionado.id && this.generoSeleccionado.id !== 0) {
-      // Verificar si el género ya está en la lista
-      const generoExistente = this.libro.generos.find(g => g.id === this.generoSeleccionado.id);
-      if (!generoExistente) {
-        this.libro.generos.push(this.generoSeleccionado);
-      }
-    }
-
-    this.libroService.updateLibro(this.libro).subscribe(
-      // Si OK
-      json => {
+  private updateLibro(): void {
+    this.libroService.updateLibro(this.libro).subscribe({
+      next: (json) => {
+        swal(
+          'Libro Actualizado',
+          `${json.mensaje}: ${json.libro.titulo}`,
+          'success'
+        );
         this.router.navigate(['/libros']);
-        //Mensaje
-        swal('Libro Actualizado', `Libro ${json.libro.titulo} actualizado con éxito`, 'success');
       },
-
-      // Si error
-      err => {
-        this.errors = err.error.errores as string[];
-        console.error('Código del error (backend): ' + err.error.status);
-        console.error(err.error.errores);
+      error: (err) => {
+        this.errors = err.error.errors as string[];
+        console.error('Código de error desde el backend: ' + err.status);
+        console.error(err.error.errors);
       }
-    );
+    });
   }
 
   // Obtener autores
@@ -226,5 +194,32 @@ export class FormLibroComponent implements OnInit {
     } else {
       this.generoSeleccionado = this.generos.find(genero => genero.id.toString() === generoId) || new Genero();
     }
+  }
+
+  // Método para manejar la selección de archivos
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+      
+      // Crear una vista previa de la imagen
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagenPreview = reader.result as string;
+      };
+      reader.readAsDataURL(this.selectedFile);
+    }
+  }
+
+  // Método para convertir un archivo a base64
+  private convertFileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve(reader.result as string);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
   }
 }

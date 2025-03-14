@@ -47,7 +47,7 @@
                   <div class="col-6">
                     <a [routerLink]="['/favoritos']" routerLinkActive="active" class="nav-item">
                       <div class="nav-link text-center p-3">
-                        <i class="bi bi-star fs-3 d-block mb-2"></i>
+                        <i class="bi bi-heart fs-3 d-block mb-2"></i>
                         <span class="fw-bold">Favoritos</span>
                       </div>
                     </a>
@@ -55,7 +55,7 @@
                   
                   <!-- Tercera fila: Carrito y Pedidos -->
                   <div class="col-6">
-                    <a [routerLink]="['/carrito']" routerLinkActive="active" class="nav-item">
+                    <a [routerLink]="['/carritos']" routerLinkActive="active" class="nav-item">
                       <div class="nav-link text-center p-3">
                         <i class="bi bi-cart3 fs-3 d-block mb-2"></i>
                         <span class="fw-bold">Carritos</span>
@@ -68,6 +68,16 @@
                       <div class="nav-link text-center p-3">
                         <i class="bi bi-bag-check fs-3 d-block mb-2"></i>
                         <span class="fw-bold">Pedidos</span>
+                      </div>
+                    </a>
+                  </div>
+
+                  <!-- Cuarta fila: Valoraciones -->
+                  <div class="col-12">
+                    <a [routerLink]="['/valoraciones']" routerLinkActive="active" class="nav-item">
+                      <div class="nav-link text-center p-3">
+                        <i class="bi bi-star fs-3 d-block mb-2"></i>
+                        <span class="fw-bold">Valoraciones</span>
                       </div>
                     </a>
                   </div>

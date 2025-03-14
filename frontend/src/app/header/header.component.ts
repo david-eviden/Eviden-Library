@@ -4,6 +4,9 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../login/auth.service';
 import { DetallesUsuarioService } from '../detalles-usuario/detalles-usuario.service';
 import { Usuario } from '../usuario/usuario';
+import { DetallesCarritoService } from '../detalles-carrito/detalles-carrito.service';
+import { detallesCarrito } from '../detalles-carrito/detalles-carrito';
+import swal from 'sweetalert2';
 
 @Component({
   selector: 'app-header',
@@ -14,15 +17,22 @@ import { Usuario } from '../usuario/usuario';
 export class HeaderComponent implements OnInit{
 
   userId: number = 0;
+  cartItemCount: number = 0;
 
   constructor(
     public authService: AuthService,
     private http: HttpClient,
     private router: Router,
-    private usuarioService: DetallesUsuarioService
+    private usuarioService: DetallesUsuarioService,
+    private carritoService: DetallesCarritoService
   ) {}
 
   ngOnInit(): void {
+    // Suscribirse a los cambios en el contador del carrito
+    this.carritoService.getCartItemCount().subscribe(count => {
+      this.cartItemCount = count;
+    });
+
     // Obtener el ID del usuario actual al iniciar
     this.userId = this.authService.getCurrentUserId();
     console.log('ID de usuario en header:', this.userId);

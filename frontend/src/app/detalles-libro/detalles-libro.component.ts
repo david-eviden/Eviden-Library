@@ -8,6 +8,7 @@ import swal from 'sweetalert2';
 import { filter, tap } from 'rxjs';
 import { AuthService } from '../login/auth.service';
 import { FavoritoService } from '../favorito/favorito.service';
+import { DetallesCarritoService } from '../detalles-carrito/detalles-carrito.service';
 
 
 @Component({
@@ -21,6 +22,7 @@ export class DetallesLibroComponent implements OnInit {
   valoraciones: Valoracion[] = [];
   esFavorito: boolean = false;
   verificandoFavorito: boolean = false;
+  agregandoAlCarrito: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -28,6 +30,7 @@ export class DetallesLibroComponent implements OnInit {
     private libroService: DetallesLibroService,
     private valoracionService: ValoracionService,
     private favoritoService: FavoritoService,
+    private carritoService: DetallesCarritoService,
     public authService: AuthService
   ) {
     this.router.events.pipe(
@@ -353,4 +356,71 @@ export class DetallesLibroComponent implements OnInit {
       }
     });
   }
+
+  addToCart(): void {
+    if (!this.authService.estaLogueado()) {
+      swal({
+        title: 'Inicia sesión',
+        text: 'Debes iniciar sesión para añadir libros al carrito',
+        type: 'info',
+        showCancelButton: true,
+        confirmButtonText: 'Ir a login',
+        cancelButtonText: 'Cancelar'
+      }).then((result: any) => {
+        if (result.value) {
+          this.router.navigate(['/login']);
+        }
+      });
+      return;
+    }
+
+    if (!this.authService.esUsuario) {
+      swal({
+        title: 'Acceso denegado',
+        text: 'Solo los usuarios pueden añadir libros al carrito',
+        type: 'warning'
+      });
+      return;
+    }
+
+    if (!this.libro.id) {
+      swal({
+        title: 'Error',
+        text: 'No se pudo identificar el libro',
+        type: 'error'
+      });
+      return;
+    }
+
+    this.agregandoAlCarrito = true;
+    this.carritoService.addToCart(this.libro).subscribe({
+      next: (response) => {
+        // Ya no es necesario llamar a updateCartItemCount aquí porque se hace dentro de addToCart
+
+        this.agregandoAlCarrito = false;
+        swal({
+          title: '¡Añadido al carrito!',
+          text: `${this.libro.titulo} se ha añadido a tu carrito`,
+          type: 'success',
+          showCancelButton: true,
+          confirmButtonText: 'Ver carrito',
+          cancelButtonText: 'Seguir comprando'
+        }).then((result: any) => {
+          if (result.value) {
+            this.router.navigate(['/mi-carrito']);
+          }
+        });
+      },
+      error: (error) => {
+        this.agregandoAlCarrito = false;
+        console.error('Error al añadir al carrito:', error);
+        swal({
+          title: 'Error',
+          text: 'No se pudo añadir el libro al carrito',
+          type: 'error'
+        });
+      }
+    });
+  }
+
 }

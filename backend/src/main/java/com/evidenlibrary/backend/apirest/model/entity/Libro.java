@@ -20,7 +20,6 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -52,7 +51,7 @@ public class Libro implements Serializable {
     @Column(nullable = false)
     private String descripcion;
     
-    @Column(nullable = true)
+    @Column(nullable = true, columnDefinition = "LONGTEXT")
     private String imagen;
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})

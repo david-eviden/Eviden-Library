@@ -6,6 +6,7 @@ import { filter, tap } from 'rxjs';
 import swal from 'sweetalert2';
 import { AuthService } from '../login/auth.service';
 import { Autor } from '../autor/autor';
+import { DetallesCarritoService } from '../detalles-carrito/detalles-carrito.service';
 
 @Component({
   selector: 'app-libro',
@@ -28,7 +29,8 @@ export class LibroComponent implements OnInit{
     private libroService: LibroService, 
     private router: Router, 
     private activatedRoute: ActivatedRoute, 
-    public authService: AuthService
+    public authService: AuthService,
+    private carritoService: DetallesCarritoService
   ) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationStart)
@@ -199,5 +201,22 @@ export class LibroComponent implements OnInit{
           this.paginador = response;
         });
     }
+  }
+
+  addToCart(libro: Libro): void {
+    if (!this.authService.esUsuario) {
+      swal('Error', 'Debes iniciar sesión para añadir libros al carrito', 'error');
+      return;
+    }
+
+    this.carritoService.addToCart(libro).subscribe({
+      next: () => {
+        swal('Éxito', 'Libro añadido al carrito correctamente', 'success');
+      },
+      error: (err) => {
+        console.error('Error al añadir al carrito:', err);
+        swal('Error', 'No se pudo añadir el libro al carrito', 'error');
+      }
+    });
   }
 }
