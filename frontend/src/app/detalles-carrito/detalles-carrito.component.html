@@ -34,10 +34,8 @@
                     <div *ngFor="let item of detallesCarrito" class="card mb-3">
                         <div class="card-body">
                             <div class="d-flex align-items-center mb-3">
-                                <img [src]="item.libro.imagen ||'/img/libroEjemplo.jpg'" 
-                                     alt="Portada del libro"
-                                     class="img-thumbnail me-3"
-                                     style="width: 50px; height: 75px; object-fit: cover;">
+                                <img [src]="item.libro.imagen ||'/img/libroEjemplo.jpg'" alt="Portada del libro"
+                                    class="img-thumbnail me-3" style="width: 50px; height: 75px; object-fit: cover;">
                                 <div>
                                     <h6 class="mb-0">{{item.libro.titulo}}</h6>
                                     <small class="text-muted">{{item.libro.autores[0].nombre}}</small>
@@ -47,24 +45,29 @@
                                 <div class="col-6">
                                     <label class="form-label mb-1">Cantidad:</label>
                                     <div class="input-group input-group-sm">
-                                        <button class="btn btn-outline-secondary btn-sm" (click)="actualizarCantidad(item, -1)">-</button>
-                                        <input type="number" class="form-control form-control-sm text-center" [value]="item.cantidad" readonly style="max-width: 60px;">
-                                        <button class="btn btn-outline-secondary btn-sm" (click)="actualizarCantidad(item, 1)">+</button>
+                                        <button class="btn btn-outline-secondary btn-sm"
+                                            (click)="actualizarCantidad(item, -1)">-</button>
+                                        <input type="number" class="form-control form-control-sm text-center"
+                                            [value]="item.cantidad" readonly style="max-width: 60px;">
+                                        <button class="btn btn-outline-secondary btn-sm"
+                                            (click)="actualizarCantidad(item, 1)">+</button>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <label class="form-label mb-1">Precio:</label>
-                                    <p class="mb-0">${{item.libro.precio || 0}}</p>
+                                    <p class="mb-0">€{{item.libro.precio || 0}}</p>
                                 </div>
                                 <div class="col-6">
                                     <label class="form-label mb-1">Total:</label>
-                                    <p class="mb-0">${{(item.libro.precio || 0) * item.cantidad}}</p>
+                                    <p class="mb-0">€{{(item.libro.precio || 0) * item.cantidad}}</p>
                                 </div>
                                 <div class="col-6 text-end">
-                                    <button class="btn btn-link text-danger btn-sm" title="Eliminar" (click)="eliminarDelCarrito(item)">
+                                    <button class="btn btn-link text-danger btn-sm" title="Eliminar"
+                                        (click)="eliminarDelCarrito(item)">
                                         <i class="bi bi-trash"></i>
                                     </button>
-                                    <button class="btn btn-link btn-sm" (click)="verDetallesLibro(item.libro.id)" title="Ver detalles">
+                                    <button class="btn btn-link btn-sm" (click)="verDetallesLibro(item.libro.id)"
+                                        title="Ver detalles">
                                         <i class="bi bi-eye"></i>
                                     </button>
                                 </div>
@@ -75,7 +78,7 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <strong>Total:</strong>
-                                <strong>${{calcularTotal()}}</strong>
+                                <strong>€{{calcularTotal()}}</strong>
                             </div>
                         </div>
                     </div>
@@ -102,10 +105,9 @@
                             <tr *ngFor="let item of detallesCarrito">
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <img [src]="item.libro.imagen ||'/img/libroEjemplo.jpg'" 
-                                             alt="Portada del libro"
-                                             class="img-thumbnail me-3"
-                                             style="width: 50px; height: 75px; object-fit: cover;">
+                                        <img [src]="item.libro.imagen ||'/img/libroEjemplo.jpg'" alt="Portada del libro"
+                                            class="img-thumbnail me-3"
+                                            style="width: 50px; height: 75px; object-fit: cover;">
                                         <div>
                                             <h6 class="mb-0">{{item.libro.titulo}}</h6>
                                             <small class="text-muted">{{item.libro.autores[0].nombre}}</small>
@@ -114,18 +116,23 @@
                                 </td>
                                 <td>
                                     <div class="input-group input-group-sm" style="width: 120px;">
-                                        <button class="btn btn-outline-secondary btn-sm" (click)="actualizarCantidad(item, -1)">-</button>
-                                        <input type="number" class="form-control form-control-sm text-center" [value]="item.cantidad" readonly>
-                                        <button class="btn btn-outline-secondary btn-sm" (click)="actualizarCantidad(item, 1)">+</button>
+                                        <button class="btn btn-outline-secondary btn-sm"
+                                            (click)="actualizarCantidad(item, -1)">-</button>
+                                        <input type="number" class="form-control form-control-sm text-center"
+                                            [value]="item.cantidad" readonly>
+                                        <button class="btn btn-outline-secondary btn-sm"
+                                            (click)="actualizarCantidad(item, 1)">+</button>
                                     </div>
                                 </td>
-                                <td>${{item.libro.precio || 0}}</td>
-                                <td>${{(item.libro.precio || 0) * item.cantidad}}</td>
+                                <td>€{{item.libro.precio || 0}}</td>
+                                <td>€{{(item.libro.precio || 0) * item.cantidad}}</td>
                                 <td>
-                                    <button class="btn btn-link text-danger" title="Eliminar" (click)="eliminarDelCarrito(item)">
+                                    <button class="btn btn-link text-danger" title="Eliminar"
+                                        (click)="eliminarDelCarrito(item)">
                                         <i class="bi bi-trash"></i>
                                     </button>
-                                    <button class="btn btn-link" (click)="verDetallesLibro(item.libro.id)" title="Ver detalles">
+                                    <button class="btn btn-link" (click)="verDetallesLibro(item.libro.id)"
+                                        title="Ver detalles">
                                         <i class="bi bi-eye"></i>
                                     </button>
                                 </td>
@@ -135,13 +142,13 @@
                             <tr>
                                 <td colspan="3" class="text-end"><strong>Total:</strong></td>
                                 <td colspan="2">
-                                    <strong>${{calcularTotal()}}</strong>
+                                    <strong>€{{calcularTotal()}}</strong>
                                 </td>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
-                
+
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-4 gap-3">
                     <button class="btn btn-secondary" (click)="seguirComprando()">
                         <i class="bi bi-arrow-left me-2"></i>Seguir comprando
@@ -150,7 +157,7 @@
                         <i class="bi bi-credit-card me-2"></i>Proceder al pago
                     </button>
                 </div>
-                
+
                 <!-- Contenedor para el pago de PayPal con un estilo atractivo -->
                 <div *ngIf="mostrarPaypal" class="mt-4 paypal-container">
                     <div class="card shadow-lg">

@@ -27,10 +27,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authz -> authz
             		 // Permitir acceso público a endpoints específicos
-                    .requestMatchers("/api/login", "/api/registro", "/api/principal", "/api/generos", "/api/valoraciones", 
-                                    "/api/valoracion", "/api/favorito", "/api/libros", "/api/libros/page/**", 
-                                    "/api/libros/mejor-valorados", "/api/libro/**", "/api/autores", "/usuario", 
-                                    "/api/detalles-carrito", "/api/pedido", "/api/search/**", "/api/libros/**").permitAll()
+                    .requestMatchers("/api/login", "/api/registro", "/api/principal", "/api/generos", "/api/valoraciones", "/api/valoracion", "/api/favorito", "/api/libros", "/api/libros/**", "/api/libros/mejor-valorados", "/api/libro/**", "/api/autores", "/usuario", "/api/detalles-carrito", "/api/pedido").permitAll()
  
                     // Requerir autenticación para ciertos endpoints, tanto para USER como para ADMIN
                     .requestMatchers("/api/valoraciones", "/api/detalles-carrito").hasRole("USER")

@@ -256,21 +256,19 @@ export class DetallesUsuarioComponent implements OnInit, OnDestroy {
   }
 
   cargarValoraciones(usuarioId: number): void {
-    this.valoracionService.getValoracionesPorUsuarioId(usuarioId).subscribe(
-      (valoraciones) => {
+    this.valoracionService.getValoracionesPorUsuarioId(usuarioId).subscribe({
+      next: (valoraciones) => {
+        console.log('Valoraciones cargadas:', valoraciones);
+        if (!this.usuario.valoraciones) {
+          this.usuario.valoraciones = [];
+        }
         this.usuario.valoraciones = valoraciones;
-        // Suscribirse a los cambios en las valoraciones
-        this.valoracionService.valoraciones$.subscribe(
-          (todasLasValoraciones) => {
-            // Filtrar solo las valoraciones del usuario actual
-            this.usuario.valoraciones = todasLasValoraciones.filter(v => v.usuario?.id === usuarioId);
-          }
-        );
       },
-      (error) => {
+      error: (error) => {
         console.error('Error al obtener las valoraciones del usuario:', error);
+        this.usuario.valoraciones = [];
       }
-    );
+    });
   }
 
   cargarDatosPorEmail(email: string): void {
@@ -541,8 +539,14 @@ export class DetallesUsuarioComponent implements OnInit, OnDestroy {
       }
     }
   }
-  tieneValoracion(libroId: number): number | null {
-    const valoracion = this.usuario.valoraciones?.find( v => v.libro?.id === libroId);
-    return valoracion ? valoracion.id : null;
+  tieneValoracion(libroId: number): boolean {
+    if (!this.usuario?.valoraciones) {
+      return false;
+    }
+   
+    return this.usuario.valoraciones.some(v =>
+    (typeof v.libroDetalles === 'number' && v.libroDetalles === libroId) ||
+    (v.libro && v.libro.id === libroId)
+    )
   }
 }
