@@ -168,19 +168,12 @@
                                                                     detalle.precioUnitario |
                                                                     currency:'EUR':'symbol':'1.2-2' }}</td>
                                                                 <td class="text-center">
-                                                                    <button
-                                                                        [routerLink]="['/valoracion/form', tieneValoracion(detalle.libro.id) || '']"
-                                                                        [queryParams]="!tieneValoracion(detalle.libro.id) ? {libroId: detalle.libro.id} : null"
-                                                                        class="btn text-white" [ngClass]="{
-                                                                            'btn-secondary': tieneValoracion(detalle.libro.id),
-                                                                            'btn-primary': !tieneValoracion(detalle.libro.id)
-                                                                        }">
-                                                                        <i class="bi me-2" [ngClass]="{
-                                                                            'bi-pencil': tieneValoracion(detalle.libro.id),
-                                                                            'bi-star': !tieneValoracion(detalle.libro.id)
-                                                                        }"></i>
-                                                                        {{ tieneValoracion(detalle.libro.id) ? 'Editar'
-                                                                        : 'Valorar' }}
+                                                                    <button *ngIf="!tieneValoracion(detalle.libro.id)"
+                                                                        [routerLink]="['/valoracion/form']"
+                                                                        [queryParams]="{libroId: detalle.libro.id}"
+                                                                        class="btn btn-primary text-white">
+                                                                        <i class="bi bi-star me-2"></i>
+                                                                        Valorar
                                                                     </button>
                                                                 </td>
                                                             </tr>

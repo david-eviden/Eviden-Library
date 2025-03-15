@@ -539,16 +539,14 @@ export class DetallesUsuarioComponent implements OnInit, OnDestroy {
       }
     }
   }
-  tieneValoracion(libroId: number): number | null {
+  tieneValoracion(libroId: number): boolean {
     if (!this.usuario?.valoraciones) {
-      return null;
+      return false;
     }
    
-    const valoracion = this.usuario.valoraciones.find(v => {
-      return v.libro && v.libro.id === libroId;
-    });
-   
-    //console.log(`Buscando valoración para libro ${libroId}:`, valoracion);
-    return valoracion ? valoracion.id : null;
+    return this.usuario.valoraciones.some(v =>
+    (typeof v.libroDetalles === 'number' && v.libroDetalles === libroId) ||
+    (v.libro && v.libro.id === libroId)
+    )
   }
 }
