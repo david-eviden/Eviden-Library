@@ -323,40 +323,33 @@ export class PedidoService {
       const headers = this.createHeaders();
       console.log('Enviando detalle de pedido al servidor:', JSON.stringify(detallePedido));
       
-      // Asegurarnos de que el detalle tiene todos los campos necesarios
-      if (!detallePedido.pedido || !detallePedido.pedido.id) {
-        console.error('Error: El detalle de pedido no tiene un pedido asociado');
-        return throwError(() => new Error('El detalle de pedido no tiene un pedido asociado'));
-      }
-      
-      if (!detallePedido.libro || !detallePedido.libro.id) {
-        console.error('Error: El detalle de pedido no tiene un libro asociado');
-        return throwError(() => new Error('El detalle de pedido no tiene un libro asociado'));
-      }
-      
       return this.http.post<any>(`${this.urlEndPointDetallePedido}`, detallePedido, { headers }).pipe(
         map(response => {
           console.log('Respuesta del servidor al crear detalle de pedido:', response);
           if (response && response.detallePedido) {
             return response.detallePedido;
-          } else if (response) {
-            return response;
           } else {
-            throw new Error('Respuesta vacía del servidor');
+            return response;
           }
         }),
         catchError(error => {
           console.error('Error al crear el detalle de pedido:', error);
-          if (error.error && error.error.mensaje) {
-            console.error('Mensaje de error del servidor:', error.error.mensaje);
-          }
-          // Devolver un objeto vacío para que forkJoin no falle completamente
-          // y se puedan procesar otros detalles
-          return of({
-            error: true,
-            mensaje: 'Error al crear el detalle de pedido',
-            detalleError: error
-          });
+          return throwError(() => error);
+        })
+      );
+    }
+    
+    // Método para enviar el email de confirmación después de crear todos los detalles del pedido
+    enviarEmailConfirmacion(pedidoId: number): Observable<any> {
+      const headers = this.createHeaders();
+      return this.http.post<any>(`${this.urlEndPointPedido}/enviar-email/${pedidoId}`, {}, { headers }).pipe(
+        map(response => {
+          console.log('Respuesta del servidor al enviar email de confirmación:', response);
+          return response;
+        }),
+        catchError(error => {
+          console.error('Error al enviar el email de confirmación:', error);
+          return throwError(() => error);
         })
       );
     }

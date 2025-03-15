@@ -9,6 +9,7 @@ import { filter, tap } from 'rxjs';
 import { AuthService } from '../login/auth.service';
 import { FavoritoService } from '../favorito/favorito.service';
 import { DetallesCarritoService } from '../detalles-carrito/detalles-carrito.service';
+import { LibrosCompradosService } from '../services/libros-comprados.service';
 
 
 @Component({
@@ -31,7 +32,8 @@ export class DetallesLibroComponent implements OnInit {
     private valoracionService: ValoracionService,
     private favoritoService: FavoritoService,
     private carritoService: DetallesCarritoService,
-    public authService: AuthService
+    public authService: AuthService,
+    private librosCompradosService: LibrosCompradosService
   ) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationStart)
@@ -47,33 +49,17 @@ export class DetallesLibroComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      let id = params['id'];
-      if (id) {
-        this.libroService.getLibro(id).subscribe(
-          (libro) => {
-            this.libro = libro;
-            // Verificar si el libro está en favoritos
-            if (this.authService.estaLogueado() && this.authService.esUsuario) {
-              this.verificandoFavorito = true;
-              this.favoritoService.checkFavorito(libro.id).subscribe({
-                next: (esFavorito) => {
-                  console.log(`El libro ${libro.id} ${esFavorito ? 'es' : 'no es'} favorito`);
-                  this.esFavorito = esFavorito;
-                  this.verificandoFavorito = false;
-                },
-                error: (error) => {
-                  console.error('Error al verificar favorito:', error);
-                  this.verificandoFavorito = false;
-                }
-              });
-            }
-          },
-          (error) => {
-            console.error(error);
-            this.router.navigate(['/libros']);
-          }
+    this.route.paramMap.subscribe(params => {
+      const id = +params.get('id')!;
+      
+      // Si el usuario está logueado, cargamos sus libros comprados
+      if (this.authService.estaLogueado()) {
+        const usuarioId = this.authService.getCurrentUserId();
+        this.librosCompradosService.cargarLibrosComprados(usuarioId).subscribe(
+          () => this.cargarLibro(id)
         );
+      } else {
+        this.cargarLibro(id);
       }
     });
 
@@ -83,6 +69,37 @@ export class DetallesLibroComponent implements OnInit {
       },
       (error) => {
         console.error('Error al obtener las valoraciones:', error);
+      }
+    );
+  }
+
+  /**
+   * Carga los detalles de un libro
+   * @param id ID del libro
+   */
+  cargarLibro(id: number): void {
+    this.libroService.getLibro(id).subscribe(
+      (libro) => {
+        this.libro = libro;
+        // Verificar si el libro está en favoritos
+        if (this.authService.estaLogueado() && this.authService.esUsuario) {
+          this.verificandoFavorito = true;
+          this.favoritoService.checkFavorito(libro.id).subscribe({
+            next: (esFavorito) => {
+              console.log(`El libro ${libro.id} ${esFavorito ? 'es' : 'no es'} favorito`);
+              this.esFavorito = esFavorito;
+              this.verificandoFavorito = false;
+            },
+            error: (error) => {
+              console.error('Error al verificar favorito:', error);
+              this.verificandoFavorito = false;
+            }
+          });
+        }
+      },
+      (error) => {
+        console.error(error);
+        this.router.navigate(['/libros']);
       }
     );
   }
@@ -421,6 +438,19 @@ export class DetallesLibroComponent implements OnInit {
         });
       }
     });
+  }
+
+  /**
+   * Verifica si el usuario ha comprado un libro
+   * @param libroId ID del libro
+   * @returns true si el usuario ha comprado el libro, false en caso contrario
+   */
+  haCompradoLibro(libroId: number): boolean {
+    if (!this.authService.estaLogueado()) {
+      return false;
+    }
+    const usuarioId = this.authService.getCurrentUserId();
+    return this.librosCompradosService.haCompradoLibro(usuarioId, libroId);
   }
 
 }

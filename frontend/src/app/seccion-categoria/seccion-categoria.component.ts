@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import swal from 'sweetalert2';
 import { Libro } from '../libro/libro';
 import { Genero } from '../generos/generos';
+import { AuthService } from '../login/auth.service';
+import { LibrosCompradosService } from '../services/libros-comprados.service';
 
 @Component({
   selector: 'app-seccion-categoria',
@@ -27,11 +29,21 @@ export class SeccionCategoriaComponent implements OnInit {
 
   constructor(
     private libroService: LibroService,
-    private router: Router
+    private router: Router,
+    public authService: AuthService,
+    private librosCompradosService: LibrosCompradosService
   ) {}
 
   ngOnInit(): void {
-    this.cargarLibros();
+    // Si el usuario está logueado, cargamos sus libros comprados
+    if (this.authService.estaLogueado()) {
+      const usuarioId = this.authService.getCurrentUserId();
+      this.librosCompradosService.cargarLibrosComprados(usuarioId).subscribe(
+        () => this.cargarLibros()
+      );
+    } else {
+      this.cargarLibros();
+    }
   }
 
   cargarLibros(): void {
@@ -105,5 +117,18 @@ export class SeccionCategoriaComponent implements OnInit {
   // Método útil para el template para obtener los libros de un género específico
   getLibrosPorGenero(genero: string): Libro[] {
     return this.librosPorGenero.get(genero) || [];
+  }
+
+  /**
+   * Verifica si el usuario ha comprado un libro
+   * @param libroId ID del libro
+   * @returns true si el usuario ha comprado el libro, false en caso contrario
+   */
+  haCompradoLibro(libroId: number): boolean {
+    if (!this.authService.estaLogueado()) {
+      return false;
+    }
+    const usuarioId = this.authService.getCurrentUserId();
+    return this.librosCompradosService.haCompradoLibro(usuarioId, libroId);
   }
 }
