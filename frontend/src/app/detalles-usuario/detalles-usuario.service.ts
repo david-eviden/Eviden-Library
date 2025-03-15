@@ -11,8 +11,8 @@ import swal from 'sweetalert2';
 })
 export class DetallesUsuarioService  implements OnInit{
 
-  private urlEndPoint: string = 'http://localhost:8080/api/usuarios'; 
-  private urlEndPoint1: string = 'http://localhost:8080/api/usuario'; 
+  private urlEndPoint: string = 'http://localhost:8081/api/usuarios'; 
+  private urlEndPoint1: string = 'http://localhost:8081/api/usuario'; 
   private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
 
   constructor(private http: HttpClient, private router: Router) {}
