@@ -41,7 +41,7 @@ export class SearchService {
     const cleanQuery = query.replace(/\s+/g, ' ').trim();
     
     let params = new HttpParams()
-      .set('query', cleanQuery) // Ya no necesitamos encodeURIComponent aquí
+      .set('query', cleanQuery) 
       .set('searchLibros', searchLibros.toString())
       .set('searchAutores', searchAutores.toString())
       .set('searchGeneros', searchGeneros.toString());
@@ -55,5 +55,9 @@ export class SearchService {
 
   getLibrosByGenero(generoId: number): Observable<Libro[]> {
     return this.http.get<Libro[]>(`${this.urlEndPoint}/libros/genero/${generoId}`, { headers: this.createHeaders() });
+  }
+
+  getLibrosByAnio(anio: string): Observable<Libro[]> {
+    return this.http.get<Libro[]>(`${this.urlEndPoint}/libros/anio/${anio}`, { headers: this.createHeaders() });
   }
 }

@@ -21,6 +21,8 @@ export class FormValoracionComponent implements OnInit {
   public errors: string[] = [];
   public usuarios: Usuario[] = [];
   public libros: Libro[] = [];
+  // Mapa para almacenar valoraciones por usuario 
+  public valoracionesPorUsuario: Map<number, Valoracion[]> = new Map();
 
   constructor(
     private valoracionService: ValoracionService,
@@ -140,12 +142,30 @@ export class FormValoracionComponent implements OnInit {
   }
 
   // Crear valoración
-  create(): void {
+  public create(): void {
+
+    if (!this.valoracion.usuario) {
+      swal('Error', 'Debe seleccionar un usuario para crear la valoración', 'error');
+      return;
+    }
+    
     if (!this.valoracion.usuario || !this.valoracion.libro) {
       swal('Error', 'Faltan datos requeridos', 'error');
       return;
     }
 
+    if (!this.valoracion.libro) {
+      swal('Error', 'Debe seleccionar un libro para crear la valoración', 'error');
+      return;
+    }
+
+    // Verificar si el usuario ya ha valorado este libro
+    if (this.usuarioYaValoroLibro(this.valoracion.usuario.id, this.valoracion.libro.id)) {
+      swal('Error', `El usuario ${this.valoracion.usuario.nombre} ya ha valorado este libro anteriormente. Solo puede valorar un libro una vez.`, 'error');
+      return;
+    }
+
+    // Actualizar la fecha actual
     this.valoracion.fecha = new Date();
    
     this.valoracionService.create(this.valoracion).subscribe(
@@ -154,8 +174,14 @@ export class FormValoracionComponent implements OnInit {
         swal('Nueva valoración', `Valoración para el libro "${this.valoracion.libro?.titulo}" creada con éxito`, 'success');
       },
       err => {
-        this.errors = err.error.errores as string[];
-        console.error('Error al crear valoración:', err);
+        if (err.error.mensaje && err.error.mensaje.includes("ya ha valorado este libro")) {
+          swal('Error', 'Ya has valorado este libro anteriormente. Solo puedes valorar un libro una vez.', 'error');
+        } else {
+          this.errors = err.error.errores as string[];
+          console.error('Código del error (backend): ' + err.error.status);
+          console.error(err.error.errores);
+          swal('Error', `${err.error.mensaje || 'Error al crear la valoración'}`, 'error');
+        }
       }
     );
   }
@@ -187,7 +213,56 @@ export class FormValoracionComponent implements OnInit {
   // Al cambiar el libro (solo para admin)
   onLibroChange(): void {
     if (this.valoracion.libro) {
+      // Verificar si el usuario ya ha valorado este libro (solo si hay un usuario seleccionado)
+      if (this.valoracion.usuario && this.usuarioYaValoroLibro(this.valoracion.usuario.id, this.valoracion.libro.id)) {
+        swal('Aviso', `El usuario ${this.valoracion.usuario.nombre} ya ha valorado este libro anteriormente. Solo puede valorar un libro una vez.`, 'warning');
+      }
+      
       this.valoracion.libroDetalles = this.valoracion.libro.id;
     }
+  }
+
+  // Al cambiar el usuario
+  onUsuarioChange(): void {
+    if (this.valoracion.usuario) {
+      // Cargar valoraciones del usuario seleccionado
+      this.cargarValoracionesUsuario(this.valoracion.usuario.id);
+      
+      // Verificar si el usuario ya ha valorado este libro (solo si hay un libro seleccionado)
+      if (this.valoracion.libro && this.usuarioYaValoroLibro(this.valoracion.usuario.id, this.valoracion.libro.id)) {
+        swal('Aviso', `El usuario ${this.valoracion.usuario.nombre} ya ha valorado este libro anteriormente. Solo puede valorar un libro una vez.`, 'warning');
+      }
+    }
+  }
+
+  //Cargar valoraciones del usuario actual
+  cargarValoracionesUsuario(usuarioId: number) : void {
+    // Evitar cargar valoraciones de usuario que ya tenemos
+    if (this.valoracionesPorUsuario.has(usuarioId)) {
+      return;
+    }
+    
+    this.valoracionService.getValoracionesPorUsuarioId(usuarioId).subscribe(
+      valoraciones => {
+        this.valoracionesPorUsuario.set(usuarioId, valoraciones);
+      },
+      error => {
+        console.error(`Error al cargar valoraciones del usuario ${usuarioId}`, error);
+      }
+    );
+  }
+
+  // Verificar si el usuario ya ha valorado este libro
+  usuarioYaValoroLibro(usuarioId: number, libroId: number): boolean {
+    if (!this.valoracionesPorUsuario.has(usuarioId)) {
+      return false; // No tenemos datos de este usuario todavía
+    }
+    
+    const valoracionesUsuario = this.valoracionesPorUsuario.get(usuarioId) || [];
+    return valoracionesUsuario.some(v => 
+      // Verificamos si libroDetalles es un número o un objeto
+      (typeof v.libroDetalles === 'number' && v.libroDetalles === libroId) || 
+      (v.libro && v.libro.id === libroId)
+    );
   }
 }

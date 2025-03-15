@@ -5,26 +5,41 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.evidenlibrary.backend.apirest.model.entity.Autor;
+import com.evidenlibrary.backend.apirest.model.entity.Genero;
 import com.evidenlibrary.backend.apirest.model.entity.Libro;
 
 public interface LibroDao extends JpaRepository<Libro, Long> {
-	//Busqueda
-	public List<Libro> findByTituloContainingIgnoreCaseOrAutores_NombreContainingIgnoreCaseOrGeneros_NombreContainingIgnoreCase(
-            String titulo, String autor, String genero);
+	
+	Optional<Libro> findByTitulo(String titulo);
 
 	//Ranking
 	@Query("SELECT l FROM Libro l LEFT JOIN l.valoraciones v GROUP BY l.id ORDER BY AVG(v.puntuacion) DESC LIMIT 10")
     List<Libro> findTop10MejorValorados();
-
-
-	Optional<Libro> findByTitulo(String titulo);
-
-	List<Libro> findByTituloContainingIgnoreCase(String titulo);
 	
 	//Filtrar por autor
 	Page<Libro> findByAutoresId(Long autorId, Pageable pageable);
+	
+	//Busqueda	
+	List<Libro> findByTituloContainingIgnoreCase(String titulo);
+	List<Libro> findByAnio(String anio);
+	List<Libro> findByAutoresContaining(Autor autorId);    
+    List<Libro> findByGenerosContaining(Genero generoId);
+	
+    @Query("SELECT DISTINCT l FROM Libro l " +
+    	       "WHERE " +
+    	       "(:term IS NULL OR :term = '') OR " +
+    	       "LOWER(l.titulo) LIKE LOWER(CONCAT('%', :term, '%')) OR " +
+    	       //"LOWER(l.anio_publicacion) LIKE LOWER(CONCAT('%', :term, '%')) OR " +
+    	       "LOWER(l.descripcion) LIKE LOWER(CONCAT('%', :term, '%'))")
+    List<Libro> findByTerm(@Param("term") String term);
+
+	
+
+
 }
 

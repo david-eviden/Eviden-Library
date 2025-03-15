@@ -17,7 +17,9 @@
                     <label for="usuario" class="col-sm-3 col-form-label">Usuario:</label>
                     <div class="col-sm-9">
                         <select class="form-control form-control-lg" [(ngModel)]="valoracion.usuario" name="usuario"
-                            #usuario="ngModel" required>
+
+                            #usuario="ngModel" (change)="onUsuarioChange()" required>
+
                             <option [ngValue]="undefined">-- Seleccionar Usuario --</option>
                             <option *ngFor="let user of usuarios" [ngValue]="user">
                                 {{ user.nombre }} {{ user.apellido }} ({{ user.email }})

@@ -24,9 +24,9 @@ export class GeneroService implements OnInit{
   // Método para obtener el token del localStorage
   private getToken(): string | null {
     const token = localStorage.getItem('access_token');
-    if (!token) {
+    /* if (!token) {
       this.router.navigate(['/login']);  // Redirigir al login si el token no está presente
-    }
+    } */
     return token;
   }
 
