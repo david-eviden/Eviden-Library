@@ -12,8 +12,8 @@ import { AuthService } from '../login/auth.service';
 })
 export class FavoritoService {
 
-  private urlEndPoint: string = 'http://localhost:8081/api/favoritos'; 
-  private urlFavoritoEndPoint: string = 'http://localhost:8081/api/favorito';
+  private urlEndPoint: string = 'http://localhost:8080/api/favoritos'; 
+  private urlFavoritoEndPoint: string = 'http://localhost:8080/api/favorito';
   
   constructor(
     private http: HttpClient, 

@@ -33,6 +33,7 @@
                     <li>
                         <a class="dropdown-item" routerLink="/valoraciones" routerLinkActive="active">Valoraciones</a>
                     </li>
+                    <div *ngIf="authService.esAdmin">
                     <li><hr class="dropdown-divider"></li>
                     <li>
                         <a class="dropdown-item" routerLink="/admin" routerLinkActive="active">Admin</a>
@@ -61,6 +62,7 @@
                     <li>
                         <a class="dropdown-item" routerLink="/valoracion/form" routerLinkActive="active">Form Valoracion</a>
                     </li>
+                    </div>
                     <li><hr class="dropdown-divider"></li>
                     <li>
                         <a class="dropdown-item" routerLink="/login" routerLinkActive="active">Login</a>
