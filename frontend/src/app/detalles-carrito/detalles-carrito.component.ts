@@ -308,13 +308,9 @@ export class DetallesCarritoComponent implements OnInit {
         detalles: []
       };
       
-      console.log('Enviando pedido al servidor:', JSON.stringify(pedidoParaEnviar));
-      
       // Guardar el pedido en la base de datos
       this.pedidoService.createPedido(pedidoParaEnviar as any).subscribe({
         next: (pedidoCreado) => {
-          console.log('Pedido creado correctamente:', pedidoCreado);
-          
           // Ahora que tenemos el pedido creado, podemos crear los detalles
           const detallesObservables = this.detallesCarrito.map(item => {
             if (!item.libro || !item.libro.id) {
@@ -331,8 +327,7 @@ export class DetallesCarritoComponent implements OnInit {
               cantidad: item.cantidad,
               precioUnitario: item.libro.precio || 0
             };
-            
-            console.log('Creando detalle de pedido:', detallePedido);
+
             return this.pedidoService.createDetallePedido(detallePedido);
           });
           
@@ -352,8 +347,6 @@ export class DetallesCarritoComponent implements OnInit {
           // Usar forkJoin para esperar a que todos los observables se completen
           forkJoin(detallesObservables).subscribe({
             next: (detalles) => {
-              console.log('Todos los detalles creados correctamente:', detalles);
-              
               // Verificar si algún detalle tuvo error
               const detallesConError = detalles.filter(detalle => detalle && detalle.error === true);
               
@@ -473,7 +466,7 @@ export class DetallesCarritoComponent implements OnInit {
     const usuarioActual = this.authService.getCurrentUser();
     const usuarioId = usuarioActual?.id;
     
-    // If no user ID is available, navigate to the books page as fallback
+    // Si no hay id, navegar a libros
     if (!usuarioId) {
       console.warn('No se pudo obtener el ID del usuario actual, redirigiendo a libros');
       this.detallesCarritoService.updateCartItemCount(0);
@@ -482,23 +475,20 @@ export class DetallesCarritoComponent implements OnInit {
       return;
     }
     
-    // Add a delay before navigating to the user profile page
-    console.log('Esperando 1 segundo antes de cargar los pedidos...');
+    // Añadir un delay
     setTimeout(() => {
-      // Force a refresh of the user's orders before navigating
+      // Forzar refresco
       this.pedidoService.getPedidosPorUsuarioId(usuarioId).subscribe({
-        next: (pedidos) => {
-          console.log('Pedidos actualizados antes de navegar al perfil:', pedidos);
-        },
+        next: (pedidos) => {},
         error: (error) => {
           console.error('Error al actualizar los pedidos antes de navegar:', error);
         },
         complete: () => {
-          // Continue with cart cleanup regardless of whether the orders were refreshed
+          // Limpiar carrito
           this.limpiarCarritoYNavegar(usuarioId);
         }
       });
-    }, 1000); // Wait 1 second before loading orders
+    }, 1000); // 1 segundo
   }
   
   private limpiarCarritoYNavegar(usuarioId: number): void {
@@ -513,7 +503,7 @@ export class DetallesCarritoComponent implements OnInit {
       .filter(item => item.id !== undefined)
       .map(item => item.id!);
     
-    console.log(`Eliminando ${itemIds.length} items del carrito...`);
+
     
     // Si no hay items con ID, simplemente redirigir
     if (itemIds.length === 0) {
@@ -530,10 +520,8 @@ export class DetallesCarritoComponent implements OnInit {
     // Función para verificar si todos los items han sido eliminados
     const verificarFinalizacion = () => {
       itemsEliminados++;
-      console.log(`Progreso de eliminación: ${itemsEliminados}/${totalItems}`);
       if (itemsEliminados >= totalItems) {
         // Todos los items han sido procesados
-        console.log('Todos los items del carrito han sido procesados');
         this.detallesCarritoService.updateCartItemCount(0);
         this.detallesCarrito = [];
         // Redirigir a la página de detalles del usuario para ver el pedido recién creado
@@ -543,7 +531,6 @@ export class DetallesCarritoComponent implements OnInit {
 
     // Eliminar cada item uno por uno
     itemIds.forEach(id => {
-      console.log(`Eliminando item ${id} del carrito...`);
       this.detallesCarritoService.delete(id).subscribe({
         next: () => {
           console.log(`Item ${id} eliminado correctamente`);

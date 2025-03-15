@@ -23,7 +23,6 @@ export class PedidoComponent {
     this.pedidoService.getPedidos().subscribe(
       (pedidos: Pedido[]) => {
         this.pedidos = pedidos;
-        console.log('Pedidos recibidos:', pedidos);
       },
       error => {
         console.error('Error al obtener los pedidos', error);

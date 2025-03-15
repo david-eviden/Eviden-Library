@@ -35,7 +35,6 @@ export class HeaderComponent implements OnInit{
 
     // Obtener el ID del usuario actual al iniciar
     this.userId = this.authService.getCurrentUserId();
-    console.log('ID de usuario en header:', this.userId);
     
     // Si no hay ID válido, intentar obtener el usuario por email
     if (!this.userId || this.userId <= 0) {
@@ -49,14 +48,12 @@ export class HeaderComponent implements OnInit{
     this.authService.usuarioActual.subscribe(user => {
       if (user && user.id && !isNaN(Number(user.id))) {
         this.userId = Number(user.id);
-        console.log('ID de usuario actualizado en header:', this.userId);
       } else if (user && user.email) {
         // Si no hay ID pero sí email, intentar obtener el usuario por email
         this.obtenerUsuarioPorEmail(user.email);
       } else {
         // Si no hay usuario o no tiene ID válido, intentar obtenerlo del servicio
         this.userId = this.authService.getCurrentUserId();
-        console.log('ID de usuario obtenido del servicio:', this.userId);
         
         // Si aún no hay ID válido, intentar por email
         if (!this.userId || this.userId <= 0) {
@@ -74,7 +71,6 @@ export class HeaderComponent implements OnInit{
       (usuario: Usuario) => {
         if (usuario && usuario.id) {
           this.userId = usuario.id;
-          console.log('ID de usuario obtenido por email:', this.userId);
           
           // Actualizar el ID en el servicio de autenticación
           const usuarioActual = this.authService.getCurrentUser();

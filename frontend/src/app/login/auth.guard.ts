@@ -37,18 +37,14 @@ export class AuthGuard implements CanActivate {
      
     // Verificar si la ruta actual es pública
     const currentPath = state.url;
-    console.log('Guard evaluando ruta:', currentPath);
    
     const isPublicRoute = publicRoutes.some(route =>
       currentPath === route ||
       currentPath.startsWith(route)
     );
    
-    console.log('¿Es ruta pública?', isPublicRoute);
-   
     // Si es una ruta pública, permitir acceso
     if (isPublicRoute) {
-      console.log('Permitiendo acceso a ruta pública');
       return true;
     }
    
@@ -66,7 +62,6 @@ export class AuthGuard implements CanActivate {
 
     // Verificar roles para rutas protegidas
     const usuarioRol = this.authService.usuarioLogueado?.rol;
-    console.log('Rol del usuario:', usuarioRol);
 
     // Buscar si la ruta actual coincide con alguna ruta protegida
     const matchingProtectedRoute = Object.entries(protectedRoutes).find(([route]) =>
@@ -75,8 +70,6 @@ export class AuthGuard implements CanActivate {
 
     if (matchingProtectedRoute) {
       const [route, allowedRoles] = matchingProtectedRoute;
-      console.log('Ruta protegida encontrada:', route);
-      console.log('Roles permitidos:', allowedRoles);
 
       if (!usuarioRol || !allowedRoles.includes(usuarioRol)) {
         console.log('Usuario no tiene el rol requerido');

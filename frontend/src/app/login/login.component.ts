@@ -25,8 +25,6 @@ export class LoginComponent {
       password: this.password
     }).subscribe({
       next: (usuario) => {
-        console.log('Usuario completo:', usuario);
-        
         swal(
           `¡Bienvenido ${usuario.username}!`,
           '',

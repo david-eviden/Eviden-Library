@@ -23,7 +23,7 @@ export class AuthService {
         const usuario = JSON.parse(usuarioGuardado);
         this.usuarioActualSubject.next(usuario);
       } catch (error) {
-        console.error('Error parsing user from localStorage', error);
+        console.error('Error al recuperar el usuario del localStorage', error);
         this.logout(); // Limpiar datos inválidos
       }
     } else {
@@ -53,8 +53,6 @@ export class AuthService {
           
           // Asignar rol (priorizar ADMIN)
           usuario.rol = roles.includes('ADMIN') ? 'ADMIN' : 'USER';
-          
-          console.log('Rol final:', usuario.rol);
   
           // Añadir información adicional del usuario
           usuario.username = tokenPayload.preferred_username;
@@ -71,8 +69,6 @@ export class AuthService {
           this.obtenerUsuarioPorEmail(usuario.email).subscribe(
             usuarioCompleto => {
               if (usuarioCompleto) {
-                console.log('Usuario completo obtenido:', usuarioCompleto);
-                
                 // Actualizar el ID del usuario con el de la base de datos
                 usuario.id = usuarioCompleto.id;
                 
@@ -123,7 +119,6 @@ export class AuthService {
       )
       .map(role => role.toUpperCase());
   
-    console.log('Roles mapeados:', mappedRoles);
     return mappedRoles;
   }
   
@@ -162,7 +157,6 @@ export class AuthService {
 
     // Si hay un usuario actual, devolver su ID
     if (usuarioActual && usuarioActual.id && !isNaN(Number(usuarioActual.id))) {
-      console.log('ID de usuario obtenido del BehaviorSubject:', usuarioActual.id);
       return Number(usuarioActual.id);
     }
 
@@ -172,7 +166,6 @@ export class AuthService {
       try {
         const usuario = JSON.parse(usuarioGuardado);
         if (usuario.id && !isNaN(Number(usuario.id))) {
-          console.log('ID de usuario obtenido del localStorage:', usuario.id);
           return Number(usuario.id);
         } else {
           console.warn('El usuario en localStorage no tiene un ID válido:', usuario);
@@ -255,7 +248,7 @@ export class AuthService {
           return usuario.email;
         }
       } catch (error) {
-        console.error('Error parsing user from localStorage', error);
+        console.error('Error obteniendo el usuario del localStorage', error);
       }
     }
 
@@ -279,7 +272,7 @@ export class AuthService {
       try {
         return JSON.parse(usuarioGuardado);
       } catch (error) {
-        console.error('Error parsing user from localStorage', error);
+        console.error('Error al obtener el usuario del localStorage', error);
       }
     }
 

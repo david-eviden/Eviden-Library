@@ -34,7 +34,6 @@ export class LibroService {
   
     if (token) {
       headers = headers.append('Authorization', `Bearer ${token}`);
-      console.log('Token añadido en cabecera:', token);  // Log para ver si el token es correcto
     } else {
       console.log('No se encontró token en localStorage');
     }
@@ -228,14 +227,12 @@ export class LibroService {
         catchError(e => {
           console.error('Error al cargar libros por autor:', e);
           // Si hay un error, intentar obtener todos los libros y filtrar por autor en el cliente
-          console.log('Intentando cargar todos los libros y filtrar por autor en el cliente...');
           return this.getLibrosNoPagin().pipe(
             map(libros => {
               // Filtrar libros por autor
               const librosFiltrados = libros.filter(libro => 
                 libro.autores && libro.autores.some(autor => autor.id === autorId)
               );
-              console.log(`Encontrados ${librosFiltrados.length} libros del autor ID ${autorId} en el cliente`);
               
               // Crear un objeto con la misma estructura que la respuesta paginada
               return {

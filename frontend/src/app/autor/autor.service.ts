@@ -37,7 +37,6 @@ export class AutorService implements OnInit{
   
     if (token) {
       headers = headers.append('Authorization', `Bearer ${token}`);
-      console.log('Token añadido en cabecera:', token);  // Log para ver si el token es correcto
     } else {
       console.log('No se encontró token en localStorage');
     }

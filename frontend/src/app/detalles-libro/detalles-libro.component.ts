@@ -113,7 +113,6 @@ export class DetallesLibroComponent implements OnInit {
     }
     
     this.verificandoFavorito = true;
-    console.log(`Verificando si el libro ${libroId} está en favoritos`);
     
     this.favoritoService.checkFavorito(libroId).subscribe(
       (esFavorito) => {
@@ -181,8 +180,6 @@ export class DetallesLibroComponent implements OnInit {
 
     if (this.esFavorito) {
       // Eliminar de favoritos
-      console.log(`Intentando eliminar libro ${this.libro.id} de favoritos para usuario ${usuarioId}`);
-      
       this.favoritoService.deleteFavoritoByLibroAndUsuario(this.libro.id, usuarioId).subscribe({
         next: () => {
           this.esFavorito = false;
@@ -205,11 +202,8 @@ export class DetallesLibroComponent implements OnInit {
       });
     } else {
       // Agregar a favoritos
-      console.log(`Intentando agregar libro ${this.libro.id} a favoritos`);
-      
       this.favoritoService.addFavorito(this.libro).subscribe({
         next: (response) => {
-          console.log('Respuesta al agregar favorito:', response);
           this.esFavorito = true;
           this.verificandoFavorito = false;
           swal('Agregado', 'El libro ha sido agregado a tus favoritos', 'success');

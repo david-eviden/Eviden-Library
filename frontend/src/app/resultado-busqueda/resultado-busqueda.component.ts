@@ -122,7 +122,6 @@ export class ResultadoBusquedaComponent implements OnInit {
     this.searchService.getLibrosByAutor(autorId).subscribe({
       next: (libros) => {
         this.librosRelacionados = libros;
-        console.log('Libros del autor cargados:', libros);
       },
       error: (error) => {
         console.error('Error al cargar libros del autor:', error);
@@ -135,7 +134,6 @@ export class ResultadoBusquedaComponent implements OnInit {
     this.searchService.getLibrosByGenero(generoId).subscribe({
       next: (libros) => {
         this.librosRelacionados = libros;
-        console.log('Libros del género cargados:', libros);
       },
       error: (error) => {
         console.error('Error al cargar libros del género:', error);
@@ -148,7 +146,6 @@ export class ResultadoBusquedaComponent implements OnInit {
     this.searchService.getLibrosByAnio(anio).subscribe({
       next: (libros) => {
         this.librosRelacionados = libros;
-        console.log('Libros cargados por año:', libros);
       },
       error: (error) => {
         console.error('Error al cargar libros del año:', error);

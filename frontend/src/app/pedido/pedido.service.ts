@@ -32,7 +32,6 @@ export class PedidoService {
     
       if (token) {
         headers = headers.append('Authorization', `Bearer ${token}`);
-        console.log('Token añadido en cabecera:', token);  // Log para ver si el token es correcto
       } else {
         console.log('No se encontró token en localStorage');
       }
@@ -43,7 +42,6 @@ export class PedidoService {
     // Método para crear un nuevo pedido
     createPedido(pedido: any): Observable<Pedido> {
       const headers = this.createHeaders();
-      console.log('Enviando pedido al servidor:', JSON.stringify(pedido));
       
       // Asegurarnos de que el pedido tiene todos los campos necesarios
       if (!pedido.usuario || !pedido.usuario.id) {
@@ -75,10 +73,8 @@ export class PedidoService {
         map(response => {
           console.log('Respuesta del servidor al crear pedido:', response);
           if (response && response.pedido) {
-            console.log('Pedido creado con ID:', response.pedido.id);
             return response.pedido;
           } else if (response && response.id) {
-            console.log('Pedido creado con ID:', response.id);
             return response;
           } else if (response) {
             console.log('Respuesta del servidor sin estructura esperada:', response);
@@ -105,7 +101,6 @@ export class PedidoService {
               const partes = fechaPedido.split('-');
               if (partes.length === 3) {
                 pedido.fechaPedido = `${partes[2]}/${partes[1]}/${partes[0]}`;
-                console.log('Reintentando con fecha formateada:', pedido.fechaPedido);
                 return this.createPedido(pedido);
               }
             }
@@ -117,25 +112,21 @@ export class PedidoService {
     }
 
     getPedidosPorUsuarioId(usuarioId: number): Observable<Pedido[]> {
-      // Use the correct endpoint URL format as found in the backend controller
       const url = `${this.urlEndPoint}/usuario/${usuarioId}`;
-      console.log('Llamando a la URL para obtener pedidos del usuario:', url);
       
       return this.http.get<any[]>(url, 
         { headers: this.createHeaders() }
       ).pipe(
         map(response => {
-          console.log('Respuesta del servidor para pedidos del usuario:', response);
-          // Check if response is null or undefined
+          // Comprobar si es null
           if (!response) {
             console.warn('La respuesta del servidor es nula o indefinida');
             return [];
           }
           
-          // Ensure response is an array
+          // Asegurar que es un array
           if (!Array.isArray(response)) {
-            console.warn('La respuesta del servidor no es un array:', response);
-            // If it's a single object, wrap it in an array
+            // Si es un objeto, hazlo array
             if (response && typeof response === 'object') {
               response = [response];
             } else {
@@ -143,10 +134,7 @@ export class PedidoService {
             }
           }
           
-          console.log(`Procesando ${response.length} pedidos recibidos del servidor`);
-          
           return response.map(item => {
-            console.log('Procesando pedido:', item);
             const pedido = new Pedido();
             pedido.id = item.id;
             pedido.fechaPedido = item.fechaPedido;
@@ -156,7 +144,6 @@ export class PedidoService {
             pedido.direccionEnvio = item.direccionEnvio;
             
             if (item.usuario) {
-              console.log('Usuario en pedido:', item.usuario);
               const usuario = new Usuario();
               usuario.id = item.usuario.id;
               usuario.nombre = item.usuario.nombre;
@@ -186,7 +173,7 @@ export class PedidoService {
         }),
         catchError(error => {
           console.error('Error al obtener los pedidos del usuario:', error);
-          return of([]); // Return empty array instead of throwing error
+          return of([]); // Retornar array vacio en vez de error
         })
       );
     }
@@ -194,18 +181,12 @@ export class PedidoService {
     getPedidos(): Observable<Pedido[]> {
       return this.http.get<any[]>(this.urlEndPoint, { headers: this.createHeaders() }).pipe(
         map(response => {
-          console.log('Respuesta del servidor para todos los pedidos:', response);
-          
-          // Check if response is null or undefined
           if (!response) {
             console.warn('La respuesta del servidor es nula o indefinida');
             return [];
           }
           
-          // Ensure response is an array
           if (!Array.isArray(response)) {
-            console.warn('La respuesta del servidor no es un array:', response);
-            // If it's a single object, wrap it in an array
             if (response && typeof response === 'object') {
               response = [response];
             } else {
@@ -222,7 +203,6 @@ export class PedidoService {
             pedido.precioTotal = item.precioTotal;
             pedido.direccionEnvio = item.direccionEnvio;
             if (item.usuario) {
-              console.log('Usuario en pedido:', item.usuario); // Debug
               const usuario = new Usuario();
               usuario.id = item.usuario.id;
               usuario.nombre = item.usuario.nombre;
@@ -233,8 +213,6 @@ export class PedidoService {
               usuario.rol = item.usuario.rol;
               pedido.usuario = usuario;
             }
-
-            console.log(`Pedido ID: ${item.id}, Detalles recibidos:`, item.detalles);
         
             // Verificar explícitamente si hay detalles antes de mapear
             if (item.detalles && Array.isArray(item.detalles) && item.detalles.length > 0) {
@@ -254,7 +232,7 @@ export class PedidoService {
         }),
         catchError(error => {
           console.error('Error al obtener todos los pedidos:', error);
-          return of([]); // Return empty array instead of throwing error
+          return of([]);
         })
       ); 
     }
@@ -262,13 +240,9 @@ export class PedidoService {
     // Método para obtener un pedido por su ID
     getPedidoPorId(pedidoId: number): Observable<Pedido> {
       const url = `${this.urlEndPointPedido}/${pedidoId}`;
-      console.log('Llamando a la URL para obtener pedido por ID:', url);
       
       return this.http.get<any>(url, { headers: this.createHeaders() }).pipe(
         map(response => {
-          console.log('Respuesta del servidor para pedido por ID:', response);
-          
-          // Check if response is null or undefined
           if (!response) {
             console.warn('La respuesta del servidor es nula o indefinida');
             throw new Error('No se encontró el pedido');
@@ -283,7 +257,6 @@ export class PedidoService {
           pedido.direccionEnvio = response.direccionEnvio;
           
           if (response.usuario) {
-            console.log('Usuario en pedido:', response.usuario);
             const usuario = new Usuario();
             usuario.id = response.usuario.id;
             usuario.nombre = response.usuario.nombre;
@@ -303,7 +276,6 @@ export class PedidoService {
               cantidad: detalle.cantidad,
               precioUnitario: detalle.precioUnitario
             }));
-            console.log(`Se encontraron ${pedido.detalles.length} detalles para el pedido ID: ${pedido.id}`);
           } else {
             console.warn(`No se encontraron detalles para el pedido ID: ${pedido.id}`);
             pedido.detalles = [];
@@ -321,11 +293,9 @@ export class PedidoService {
     // Método para crear un detalle de pedido
     createDetallePedido(detallePedido: any): Observable<any> {
       const headers = this.createHeaders();
-      console.log('Enviando detalle de pedido al servidor:', JSON.stringify(detallePedido));
       
       return this.http.post<any>(`${this.urlEndPointDetallePedido}`, detallePedido, { headers }).pipe(
         map(response => {
-          console.log('Respuesta del servidor al crear detalle de pedido:', response);
           if (response && response.detallePedido) {
             return response.detallePedido;
           } else {
@@ -344,7 +314,6 @@ export class PedidoService {
       const headers = this.createHeaders();
       return this.http.post<any>(`${this.urlEndPointPedido}/enviar-email/${pedidoId}`, {}, { headers }).pipe(
         map(response => {
-          console.log('Respuesta del servidor al enviar email de confirmación:', response);
           return response;
         }),
         catchError(error => {

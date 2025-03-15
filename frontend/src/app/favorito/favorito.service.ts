@@ -35,7 +35,6 @@ export class FavoritoService {
     if (token) {
       // Enviar el token tal como está, sin manipularlo
       headers = headers.append('Authorization', `Bearer ${token}`);
-      console.log('Token añadido a cabeceras');
     } else {
       console.log('No se encontró token en localStorage');
     }
@@ -69,10 +68,7 @@ export class FavoritoService {
       return of([]); // Devolver array vacío
     }
     
-    console.log(`Obteniendo favoritos para el usuario con ID: ${usuarioId}`);
-    
     const headers = this.createHeaders();
-    console.log('URL:', `${this.urlFavoritoEndPoint}/usuario/${usuarioId}`);
     
     return this.http.get<any>(`${this.urlFavoritoEndPoint}/usuario/${usuarioId}`, { 
       headers: headers 
@@ -137,21 +133,14 @@ export class FavoritoService {
       favoritoCompleto.libro = libro;
       favoritoCompleto.fechaAgregado = new Date().toISOString();
       
-      console.log('Enviando favorito:', favoritoCompleto);
-      
       // Enviar la solicitud con las cabeceras correctas
       const headers = this.createHeaders();
-      
-      // Imprimir la URL completa y las cabeceras para depuración
-      console.log('URL:', `${this.urlFavoritoEndPoint}`);
-      console.log('Headers:', headers.keys().map(key => `${key}: ${headers.get(key)}`));
       
       return this.http.post(`${this.urlFavoritoEndPoint}`, favoritoCompleto, { 
         headers: headers,
         observe: 'response'  // Para obtener la respuesta completa, incluyendo cabeceras y estado
       }).pipe(
         map(response => {
-          console.log('Respuesta exitosa:', response);
           return response.body;
         }),
         catchError(error => {
@@ -189,19 +178,13 @@ export class FavoritoService {
         return of(false); // Asumir que no es favorito
       }
 
-      console.log(`Verificando si el libro ${libroId} está en favoritos del usuario ${usuarioId}`);
-      
-      // Imprimir la URL completa y las cabeceras para depuración
       const headers = this.createHeaders();
-      console.log('URL:', `${this.urlEndPoint}/check/${usuarioId}/${libroId}`);
-      console.log('Headers:', headers.keys().map(key => `${key}: ${headers.get(key)}`));
       
       // Intentar con el endpoint específico
       return this.http.get<boolean>(`${this.urlEndPoint}/check/${usuarioId}/${libroId}`, { 
         headers: headers 
       }).pipe(
         map(response => {
-          console.log('Respuesta de verificación de favorito:', response);
           return response;
         }),
         catchError(error => {
@@ -245,10 +228,7 @@ export class FavoritoService {
     
     console.log(`Eliminando favorito con ID: ${favorito.id}`);
     
-    // Imprimir la URL completa y las cabeceras para depuración
     const headers = this.createHeaders();
-    console.log('URL:', `${this.urlFavoritoEndPoint}/${favorito.id}`);
-    console.log('Headers:', headers.keys().map(key => `${key}: ${headers.get(key)}`));
     
     // Intentar primero con el endpoint estándar
     return this.http.delete(`${this.urlFavoritoEndPoint}/${favorito.id}`, { 
@@ -256,7 +236,6 @@ export class FavoritoService {
       observe: 'response'
     }).pipe(
       map(response => {
-        console.log('Favorito eliminado con éxito:', response);
         return response.body;
       }),
       catchError(error => {
@@ -270,8 +249,6 @@ export class FavoritoService {
         
         // Si falla con el endpoint estándar, intentar con un endpoint alternativo
         if (error.status === 403 || error.status === 404) {
-          console.log('Intentando con endpoint alternativo...');
-          
           // Intentar con un endpoint alternativo si el usuario y libro están disponibles
           if (favorito.usuario?.id && favorito.libro?.id) {
             return this.http.delete(`${this.urlFavoritoEndPoint}/usuario/${favorito.usuario.id}/libro/${favorito.libro.id}`, {
@@ -279,7 +256,6 @@ export class FavoritoService {
               observe: 'response'
             }).pipe(
               map(response => {
-                console.log('Favorito eliminado con éxito usando endpoint alternativo:', response);
                 return response.body;
               }),
               catchError(secondError => {
@@ -297,20 +273,15 @@ export class FavoritoService {
 
   // Eliminar un favorito por ID de libro y usuario
   deleteFavoritoByLibroAndUsuario(libroId: number, usuarioId: number): Observable<any> {
-    console.log(`Eliminando favorito: libro ${libroId}, usuario ${usuarioId}`);
-    
     // Imprimir la URL completa y las cabeceras para depuración
     const headers = this.createHeaders();
     const url = `${this.urlFavoritoEndPoint}/usuario/${usuarioId}/libro/${libroId}`;
-    console.log('URL:', url);
-    console.log('Headers:', headers.keys().map(key => `${key}: ${headers.get(key)}`));
     
     return this.http.delete(url, { 
       headers: headers,
       observe: 'response'
     }).pipe(
       map(response => {
-        console.log('Favorito eliminado con éxito:', response);
         return response.body;
       }),
       catchError(error => {

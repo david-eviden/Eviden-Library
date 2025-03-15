@@ -158,7 +158,6 @@ export class LibroComponent implements OnInit{
     this.libroService.getAutores().subscribe({
       next: (autores) => {
         this.autores = autores;
-        console.log('Autores cargados:', autores.length);
       },
       error: (error) => {
         console.error('Error al cargar autores:', error);
@@ -178,7 +177,6 @@ export class LibroComponent implements OnInit{
   // Método para filtrar por autor
   filtrarPorAutor(event: any): void {
     this.selectedAutorId = +event.target.value;
-    console.log(`Filtrando por autor ID: ${this.selectedAutorId}`);
     
     // Si no hay autores cargados y se intenta filtrar, cargar autores primero
     if (this.autores.length === 0 && this.selectedAutorId > 0) {
@@ -194,12 +192,10 @@ export class LibroComponent implements OnInit{
   // Método para cargar libros con el tamaño de página actual y filtro de autor
   cargarLibros(): void {
     if (this.selectedAutorId > 0) {
-      console.log("Cargando libros del autor con ID: ", this.selectedAutorId);
       // Si hay un autor seleccionado, cargar libros filtrados
       this.libroService.getLibrosPorAutor(this.currentPage, this.currentPageSize, this.selectedAutorId)
         .subscribe({
           next: (response) => {
-            console.log("Respuesta recibida: ", response);
             this.libros = response.content as Libro[];
             this.paginador = response;
             if (this.libros.length === 0) {
@@ -214,11 +210,9 @@ export class LibroComponent implements OnInit{
         });
     } else {
       // Si no hay autor seleccionado, cargar todos los libros
-      console.log("Cargando todos los libros, página:", this.currentPage, "tamaño:", this.currentPageSize);
       this.libroService.getLibrosConTamanio(this.currentPage, this.currentPageSize)
         .subscribe({
           next: (response) => {
-            console.log("Respuesta recibida:", response);
             this.libros = response.content as Libro[];
             this.paginador = response;
             if (this.libros.length === 0) {

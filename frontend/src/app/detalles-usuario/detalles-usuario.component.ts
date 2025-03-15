@@ -42,12 +42,11 @@ export class DetallesUsuarioComponent implements OnInit, OnDestroy {
     this.cargando = true;
     this.error = '';
    
-    // Check if we need to refresh the orders
+    // Checkear si necesitamos refrescar los pedidos
     this.route.queryParams.subscribe(params => {
       const refresh = params['refresh'];
       if (refresh === 'true') {
-        console.log('Forzando actualización de pedidos...');
-        // We'll set a flag to force a refresh of the orders
+        // Forzamos el resfresco con una flag
         this.forceRefresh = true;
       }
     });
@@ -64,14 +63,12 @@ export class DetallesUsuarioComponent implements OnInit, OnDestroy {
         const usuarioLogueadoId = this.authService.getCurrentUserId();
        
         if (usuarioLogueadoId && !isNaN(Number(usuarioLogueadoId))) {
-          console.log('Usando ID del usuario logueado:', usuarioLogueadoId);
           this.esPerfilPropio = true;
           this.cargarDatosUsuario(usuarioLogueadoId);
         } else {
           // Si no hay ID válido, intentar usar el email del usuario actual
           const email = this.authService.getCurrentUserEmail();
           if (email) {
-            console.log('Intentando obtener usuario por email:', email);
             this.cargarDatosPorEmail(email);
           } else {
             // Si no hay email, mostrar error y redirigir
@@ -117,7 +114,6 @@ export class DetallesUsuarioComponent implements OnInit, OnDestroy {
   }
 
   cargarDatosUsuario(usuarioId: number): void {
-    console.log('Cargando datos del usuario con ID:', usuarioId);
     this.cargando = true;
     this.error = '';
    
@@ -136,7 +132,6 @@ export class DetallesUsuarioComponent implements OnInit, OnDestroy {
    
     this.usuarioService.obtenerUsuarioPorId(usuarioId).subscribe(
       (usuario) => {
-        console.log('Datos de usuario recibidos:', usuario);
         this.usuario = usuario;
        
         // Inicializar las colecciones si no existen
@@ -146,7 +141,6 @@ export class DetallesUsuarioComponent implements OnInit, OnDestroy {
         // Cargar los pedidos del usuario específico
         // If forceRefresh is true, we'll add a delay before loading the orders
         if (this.forceRefresh) {
-          console.log('Esperando 1 segundo antes de cargar los pedidos (forzado)...');
           setTimeout(() => {
             this.cargarPedidos(usuarioId);
             // Reset the flag
@@ -176,17 +170,14 @@ export class DetallesUsuarioComponent implements OnInit, OnDestroy {
   }
 
   cargarPedidos(usuarioId: number, intentos: number = 0): void {
-    console.log(`Cargando pedidos para el usuario ID: ${usuarioId} (intento ${intentos + 1})`);
-   
-    // Ensure pedidos array is initialized
+    // Asegurarse de que los pedidos están inicializados
     if (!this.usuario.pedidos) {
       this.usuario.pedidos = [];
     }
    
     this.pedidoService.getPedidosPorUsuarioId(usuarioId).subscribe({
       next: (pedidos) => {
-        console.log('Pedidos recibidos:', pedidos);
-        // Check if pedidos is null or undefined
+        // Checkear si los pedidos son null
         if (pedidos) {
           // Si el usuario tiene dirección, actualizar las direcciones de envío vacías o "Sin dirección especificada"
           if (this.usuario.direccion) {
@@ -205,7 +196,7 @@ export class DetallesUsuarioComponent implements OnInit, OnDestroy {
           if (pedidos.length === 0) {
             console.log('El usuario no tiene pedidos');
            
-            // If this is the first attempt and no orders were found, retry after a delay
+            // Si el primer intetno no ha ido bien probar despues de un delay
             if (intentos === 0) {
               console.log('Intentando cargar pedidos nuevamente en 2 segundos...');
               setTimeout(() => {
@@ -220,7 +211,6 @@ export class DetallesUsuarioComponent implements OnInit, OnDestroy {
           this.usuario.pedidos = [];
           this.pedidoExpandido = [];
          
-          // If this is the first attempt and no orders were found, retry after a delay
           if (intentos === 0) {
             console.log('Intentando cargar pedidos nuevamente en 2 segundos...');
             setTimeout(() => {
@@ -231,11 +221,11 @@ export class DetallesUsuarioComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Error al obtener los pedidos del usuario:', error);
-        // Ensure we have an empty array in case of error
+        // Array vacío en caso de error
         this.usuario.pedidos = [];
         this.pedidoExpandido = [];
        
-        // Show a non-intrusive message to the user
+        // Mensajes
         if (error.status === 404) {
           console.warn('El endpoint para obtener pedidos no existe o no está disponible');
         } else if (error.status === 403) {
@@ -243,10 +233,8 @@ export class DetallesUsuarioComponent implements OnInit, OnDestroy {
         } else {
           console.warn('Error desconocido al cargar los pedidos');
         }
-       
-        // If this is the first attempt, retry after a delay
+
         if (intentos === 0) {
-          console.log('Intentando cargar pedidos nuevamente en 2 segundos...');
           setTimeout(() => {
             this.cargarPedidos(usuarioId, intentos + 1);
           }, 2000);
@@ -258,27 +246,23 @@ export class DetallesUsuarioComponent implements OnInit, OnDestroy {
   cargarValoraciones(usuarioId: number): void {
     this.valoracionService.getValoracionesPorUsuarioId(usuarioId).subscribe({
       next: (valoraciones) => {
-        console.log('Valoraciones cargadas:', valoraciones);
         if (!this.usuario.valoraciones) {
           this.usuario.valoraciones = [];
         }
         this.usuario.valoraciones = valoraciones;
       },
       error: (error) => {
-        console.error('Error al obtener las valoraciones del usuario:', error);
         this.usuario.valoraciones = [];
       }
     });
   }
 
   cargarDatosPorEmail(email: string): void {
-    console.log('Cargando datos del usuario con email:', email);
     this.cargando = true;
     this.error = '';
    
     this.usuarioService.obtenerUsuarioPorEmail(email).subscribe(
       (usuario) => {
-        console.log('Datos de usuario recibidos por email:', usuario);
         this.usuario = usuario;
        
         // Inicializar las colecciones si no existen
@@ -305,14 +289,12 @@ export class DetallesUsuarioComponent implements OnInit, OnDestroy {
         }
       },
       (error) => {
-        console.error('Error al obtener los datos del usuario por email:', error);
         this.cargando = false;
         this.error = 'No se pudieron cargar los datos del usuario';
        
         // Intentar usar los datos del usuario actual como alternativa
         const usuarioActual = this.authService.getCurrentUser();
         if (usuarioActual) {
-          console.log('Usando datos del usuario actual:', usuarioActual);
           this.esPerfilPropio = true;
           this.usuario = this.convertirUsuarioAuth(usuarioActual);
         } else {
@@ -460,7 +442,6 @@ export class DetallesUsuarioComponent implements OnInit, OnDestroy {
             this.usuario.pedidos[index].direccionEnvio === 'Sin dirección especificada') {
           // Si el usuario tiene dirección, usarla como dirección de envío
           if (this.usuario.direccion) {
-            console.log(`Actualizando dirección de envío del pedido ID: ${this.usuario.pedidos[index].id} con la dirección del usuario`);
             this.usuario.pedidos[index].direccionEnvio = this.usuario.direccion;
           }
         }
@@ -469,11 +450,8 @@ export class DetallesUsuarioComponent implements OnInit, OnDestroy {
         if (!this.usuario.pedidos[index].detalles || this.usuario.pedidos[index].detalles.length === 0) {
           const pedidoId = this.usuario.pedidos[index].id;
           if (pedidoId) {
-            console.log(`Cargando detalles para el pedido ID: ${pedidoId}`);
-           
             // Verificar si ya tenemos los detalles en el pedido
             if (this.usuario.pedidos[index].detalles && this.usuario.pedidos[index].detalles.length > 0) {
-              console.log(`El pedido ya tiene ${this.usuario.pedidos[index].detalles.length} detalles cargados`);
               return;
             }
            
@@ -481,7 +459,6 @@ export class DetallesUsuarioComponent implements OnInit, OnDestroy {
             this.pedidoService.getPedidoPorId(pedidoId).subscribe({
               next: (pedidoActualizado) => {
                 if (pedidoActualizado && pedidoActualizado.detalles && pedidoActualizado.detalles.length > 0) {
-                  console.log(`Se encontraron ${pedidoActualizado.detalles.length} detalles para el pedido ID: ${pedidoId}`);
                   // Actualizar solo los detalles del pedido específico
                   this.usuario.pedidos[index].detalles = pedidoActualizado.detalles;
                  
@@ -502,14 +479,12 @@ export class DetallesUsuarioComponent implements OnInit, OnDestroy {
               error: (error) => {
                 console.error(`Error al cargar los detalles del pedido ID: ${pedidoId}`, error);
                 // Si hay un error al obtener el pedido específico, intentamos con el método anterior
-                console.log('Intentando obtener detalles a través de todos los pedidos del usuario...');
                 this.pedidoService.getPedidosPorUsuarioId(this.usuario.id!).subscribe({
                   next: (pedidos) => {
                     if (pedidos && pedidos.length > 0) {
                       // Buscar el pedido específico por ID
                       const pedidoEncontrado = pedidos.find(p => p.id === pedidoId);
                       if (pedidoEncontrado && pedidoEncontrado.detalles && pedidoEncontrado.detalles.length > 0) {
-                        console.log(`Se encontraron ${pedidoEncontrado.detalles.length} detalles para el pedido ID: ${pedidoId}`);
                         // Actualizar solo los detalles del pedido específico
                         this.usuario.pedidos[index].detalles = pedidoEncontrado.detalles;
                        

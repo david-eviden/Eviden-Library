@@ -51,6 +51,5 @@ export class FavoritoComponent {
     });
     
     this.favoritosAgrupados = Array.from(gruposPorUsuario.values());
-    console.log('Favoritos agrupados:', this.favoritosAgrupados); 
   }
 }

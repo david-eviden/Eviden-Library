@@ -36,11 +36,8 @@ export class DetallesFavoritoComponent implements OnInit {
       return;
     }
     
-    console.log('Cargando favoritos para usuario:', usuarioId);
-    
     this.favoritoService.getFavoritosByUsuarioId(usuarioId).subscribe({
       next: (favoritos) => {
-        console.log('Favoritos cargados:', favoritos);
         this.favoritos = favoritos || [];
         this.cargando = false;
       },
