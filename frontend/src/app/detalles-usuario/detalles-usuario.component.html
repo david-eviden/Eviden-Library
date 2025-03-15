@@ -168,20 +168,20 @@
                                                                     detalle.precioUnitario |
                                                                     currency:'EUR':'symbol':'1.2-2' }}</td>
                                                                 <td class="text-center">
-                                                                    <ng-container
-                                                                        *ngIf="tieneValoracion(detalle.libro.id) as valoracionId; else valorarTemplate">
-                                                                        <a [routerLink]="['/valoracion/form', valoracionId]"
-                                                                            class="btn btn-secondary text-white text-nowrap">
-                                                                            <i class="bi bi-pencil me-2"></i>Editar
-                                                                        </a>
-                                                                    </ng-container>
-                                                                    <ng-template #valorarTemplate>
-                                                                        <a [routerLink]="['/valoracion/form']"
-                                                                            [queryParams]="{libroId: detalle.libro.id}"
-                                                                            class="btn btn-primary text-white text-nowrap">
-                                                                            <i class="bi bi-star me-2"></i>Valorar
-                                                                        </a>
-                                                                    </ng-template>
+                                                                    <button
+                                                                        [routerLink]="['/valoracion/form', tieneValoracion(detalle.libro.id) || '']"
+                                                                        [queryParams]="!tieneValoracion(detalle.libro.id) ? {libroId: detalle.libro.id} : null"
+                                                                        class="btn text-white" [ngClass]="{
+                                                                            'btn-secondary': tieneValoracion(detalle.libro.id),
+                                                                            'btn-primary': !tieneValoracion(detalle.libro.id)
+                                                                        }">
+                                                                        <i class="bi me-2" [ngClass]="{
+                                                                            'bi-pencil': tieneValoracion(detalle.libro.id),
+                                                                            'bi-star': !tieneValoracion(detalle.libro.id)
+                                                                        }"></i>
+                                                                        {{ tieneValoracion(detalle.libro.id) ? 'Editar'
+                                                                        : 'Valorar' }}
+                                                                    </button>
                                                                 </td>
                                                             </tr>
                                                             <tr class="table-info">
