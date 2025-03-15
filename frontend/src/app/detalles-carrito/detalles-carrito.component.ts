@@ -11,6 +11,7 @@ import { detallesPedido } from '../detalles-pedido/detalles-pedido';
 import { Usuario } from '../usuario/usuario';
 import { forkJoin } from 'rxjs';
 import { of } from 'rxjs';
+import { UsuarioService } from '../usuario/usuario.service';
 
 @Component({
   selector: 'app-detalles-carrito',
@@ -28,7 +29,8 @@ export class DetallesCarritoComponent implements OnInit {
     private detallesCarritoService: DetallesCarritoService,
     public authService: AuthService,
     private router: Router,
-    private pedidoService: PedidoService
+    private pedidoService: PedidoService,
+    private usuarioService: UsuarioService
   ) {}
 
   private actualizarContadorCarrito(): void {
@@ -155,8 +157,48 @@ export class DetallesCarritoComponent implements OnInit {
       swal('Aviso', 'No hay productos en el carrito para proceder al pago', 'warning');
       return;
     }
-    this.mostrarPaypal = true;
-    this.initConfig();
+
+    // Obtener el ID del usuario actual
+    const userId = this.authService.getCurrentUserId();
+    if (!userId) {
+      swal('Error', 'No se pudo identificar al usuario actual', 'error');
+      return;
+    }
+
+    // Obtener la información más reciente del usuario desde el servidor
+    this.usuarioService.getUsuario(userId).subscribe({
+      next: (usuarioActual: Usuario) => {
+        // Verificar si el usuario tiene dirección establecida
+        if (!usuarioActual || !usuarioActual.direccion || usuarioActual.direccion.trim() === '') {
+          swal('Aviso', 'Antes de comprar debe establecer una dirección', 'warning')
+            .then(() => {
+              // Redirigir al formulario de usuario
+              this.router.navigate([`/usuario/form/${userId}`]);
+            });
+          return;
+        }
+        
+        // Actualizar la información del usuario en el localStorage
+        const usuarioGuardado = localStorage.getItem('usuario');
+        if (usuarioGuardado) {
+          try {
+            const usuarioLocalStorage = JSON.parse(usuarioGuardado);
+            usuarioLocalStorage.direccion = usuarioActual.direccion;
+            localStorage.setItem('usuario', JSON.stringify(usuarioLocalStorage));
+          } catch (error: any) {
+            console.error('Error al actualizar el usuario en localStorage:', error);
+          }
+        }
+        
+        // Continuar con el proceso de pago
+        this.mostrarPaypal = true;
+        this.initConfig();
+      },
+      error: (error: any) => {
+        console.error('Error al obtener la información del usuario:', error);
+        swal('Error', 'No se pudo obtener la información del usuario', 'error');
+      }
+    });
   }
 
   private initConfig(): void {
@@ -315,30 +357,71 @@ export class DetallesCarritoComponent implements OnInit {
               // Verificar si algún detalle tuvo error
               const detallesConError = detalles.filter(detalle => detalle && detalle.error === true);
               
-              if (detallesConError.length > 0) {
-                console.warn('Algunos detalles tuvieron errores:', detallesConError);
-                // Mostrar mensaje de éxito parcial
-                swal({
-                  title: '¡Pago completado!',
-                  text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente. Se ha creado el pedido #${pedidoCreado.id}, pero hubo un problema al registrar algunos detalles. Serás redirigido a tu perfil para ver tu historial de pedidos.`,
-                  type: 'warning',
-                  confirmButtonText: 'Continuar'
-                }).then(() => {
-                  // Eliminar los items del carrito a pesar del error
-                  this.eliminarItemsDelCarrito();
-                });
-              } else {
-                // Mostrar mensaje de éxito
-                swal({
-                  title: '¡Pago completado!',
-                  text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente. Se ha creado el pedido #${pedidoCreado.id}. Serás redirigido a tu perfil para ver tu historial de pedidos.`,
-                  type: 'success',
-                  confirmButtonText: 'Continuar'
-                }).then(() => {
-                  // Eliminar los items del carrito después de crear el pedido
-                  this.eliminarItemsDelCarrito();
-                });
-              }
+              // Esperar un segundo antes de enviar el email de confirmación para asegurarnos
+              // de que todos los detalles del pedido se hayan creado correctamente
+              setTimeout(() => {
+                // Enviar el email de confirmación después de crear todos los detalles
+                if (pedidoCreado && pedidoCreado.id) {
+                  this.pedidoService.enviarEmailConfirmacion(pedidoCreado.id).subscribe({
+                    next: (respuesta) => {
+                      console.log('Email de confirmación enviado:', respuesta);
+                      
+                      if (detallesConError.length > 0) {
+                        console.warn('Algunos detalles tuvieron errores:', detallesConError);
+                        // Mostrar mensaje de éxito parcial
+                        swal({
+                          title: '¡Pago completado!',
+                          text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente. Se ha creado el pedido #${pedidoCreado.id}, pero hubo un problema al registrar algunos detalles. Se ha enviado un email de confirmación a tu correo electrónico. Serás redirigido a tu perfil para ver tu historial de pedidos.`,
+                          type: 'warning',
+                          confirmButtonText: 'Continuar'
+                        }).then(() => {
+                          // Eliminar los items del carrito a pesar del error
+                          this.eliminarItemsDelCarrito();
+                        });
+                      } else {
+                        // Mostrar mensaje de éxito
+                        swal({
+                          title: '¡Pago completado!',
+                          text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente. Se ha creado el pedido #${pedidoCreado.id}. Se ha enviado un email de confirmación a tu correo electrónico. Serás redirigido a tu perfil para ver tu historial de pedidos.`,
+                          type: 'success',
+                          confirmButtonText: 'Continuar'
+                        }).then(() => {
+                          // Eliminar los items del carrito después de crear el pedido
+                          this.eliminarItemsDelCarrito();
+                        });
+                      }
+                    },
+                    error: (error) => {
+                      console.error('Error al enviar el email de confirmación:', error);
+                      
+                      if (detallesConError.length > 0) {
+                        console.warn('Algunos detalles tuvieron errores:', detallesConError);
+                        // Mostrar mensaje de éxito parcial
+                        swal({
+                          title: '¡Pago completado!',
+                          text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente. Se ha creado el pedido #${pedidoCreado.id}, pero hubo un problema al registrar algunos detalles y al enviar el email de confirmación. Serás redirigido a tu perfil para ver tu historial de pedidos.`,
+                          type: 'warning',
+                          confirmButtonText: 'Continuar'
+                        }).then(() => {
+                          // Eliminar los items del carrito a pesar del error
+                          this.eliminarItemsDelCarrito();
+                        });
+                      } else {
+                        // Mostrar mensaje de éxito
+                        swal({
+                          title: '¡Pago completado!',
+                          text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente. Se ha creado el pedido #${pedidoCreado.id}, pero hubo un problema al enviar el email de confirmación. Serás redirigido a tu perfil para ver tu historial de pedidos.`,
+                          type: 'warning',
+                          confirmButtonText: 'Continuar'
+                        }).then(() => {
+                          // Eliminar los items del carrito después de crear el pedido
+                          this.eliminarItemsDelCarrito();
+                        });
+                      }
+                    }
+                  });
+                }
+              }, 1000); // Esperar 1 segundo
             },
             error: (error) => {
               console.error('Error al crear los detalles del pedido:', error);

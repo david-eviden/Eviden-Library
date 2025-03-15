@@ -3,6 +3,8 @@ import { Libro } from '../libro/libro';
 import { LibroService } from '../libro/libro.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { AuthService } from '../login/auth.service';
+import { LibrosCompradosService } from '../services/libros-comprados.service';
 
 @Component({
   selector: 'app-ranking',
@@ -14,34 +16,40 @@ export class RankingComponent implements OnInit {
   
   libros: Libro[] = [];  
   fragmentos: Libro[][] = [];
+  librosPerSlide = 5;
   
-  constructor(private libroService: LibroService, private router: Router) {}
+  constructor(
+    private libroService: LibroService, 
+    private router: Router,
+    public authService: AuthService,
+    private librosCompradosService: LibrosCompradosService
+  ) {}
 
   ngOnInit(): void {
-    this.getMejorValorados();
+    // Si el usuario está logueado, cargamos sus libros comprados
+    if (this.authService.estaLogueado()) {
+      const usuarioId = this.authService.getCurrentUserId();
+      this.librosCompradosService.cargarLibrosComprados(usuarioId).subscribe(
+        () => this.cargarLibros()
+      );
+    } else {
+      this.cargarLibros();
+    }
   }
 
-  // Método para obtener los libros mejor valorados desde el backend
-  getMejorValorados(): void {
-    this.libroService.getMejorValorados().subscribe({
-      next: (data: Libro[]) => {
-        this.libros = data;
-        this.fragmentos = []; // Reiniciar fragmentos antes de dividir
-        this.slide(); // dividir los libros en fragmentos
-        //console.log('Libros cargados:', this.libros);
-        //console.log('Fragmentos creados:', this.fragmentos);
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('Error al obtener los libros carrusel :', error);
+  cargarLibros(): void {
+    this.libroService.getMejorValorados().subscribe(
+      (libros: Libro[]) => {
+        this.libros = libros;
+        this.fragmentarLibros();
       }
-    });
+    );
   }
 
-  // Método para dividir los libros en fragmentos para el carrusel
-  slide(): void {
-    const tamaño = 5;
-    for (let i = 0; i < this.libros.length; i += tamaño) {
-      this.fragmentos.push(this.libros.slice(i, i + tamaño));
+  fragmentarLibros(): void {
+    this.fragmentos = [];
+    for (let i = 0; i < this.libros.length; i += this.librosPerSlide) {
+      this.fragmentos.push(this.libros.slice(i, i + this.librosPerSlide));
     }
   }
 
@@ -52,5 +60,18 @@ export class RankingComponent implements OnInit {
     } else {
       console.error('ID de libro indefinido');
     }
+  }
+
+  /**
+   * Verifica si el usuario ha comprado un libro
+   * @param libroId ID del libro
+   * @returns true si el usuario ha comprado el libro, false en caso contrario
+   */
+  haCompradoLibro(libroId: number): boolean {
+    if (!this.authService.estaLogueado()) {
+      return false;
+    }
+    const usuarioId = this.authService.getCurrentUserId();
+    return this.librosCompradosService.haCompradoLibro(usuarioId, libroId);
   }
 }

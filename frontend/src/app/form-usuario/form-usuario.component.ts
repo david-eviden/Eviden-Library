@@ -78,6 +78,27 @@ export class FormUsuarioComponent implements OnInit {
   private updateUsuario(): void {
     this.usuarioService.update(this.usuario).subscribe({
       next: (json) => {
+        // Actualizar la información del usuario en el localStorage
+        const usuarioActualizado = json.usuario;
+        const usuarioGuardado = localStorage.getItem('usuario');
+        
+        if (usuarioGuardado) {
+          try {
+            const usuarioActual = JSON.parse(usuarioGuardado);
+            // Actualizar solo los campos que pueden cambiar en el formulario
+            usuarioActual.nombre = usuarioActualizado.nombre;
+            usuarioActual.apellido = usuarioActualizado.apellido;
+            usuarioActual.direccion = usuarioActualizado.direccion;
+            usuarioActual.email = usuarioActualizado.email;
+            usuarioActual.foto = usuarioActualizado.foto;
+            
+            // Guardar el usuario actualizado en el localStorage
+            localStorage.setItem('usuario', JSON.stringify(usuarioActual));
+          } catch (error) {
+            console.error('Error al actualizar el usuario en localStorage:', error);
+          }
+        }
+        
         swal(
           'Usuario Actualizado',
           `${json.mensaje}: ${json.usuario.nombre}`,

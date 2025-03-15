@@ -34,7 +34,8 @@ public class SecurityConfig {
  
                     // Requerir ADMIN para endpoints específicos
                     .requestMatchers("/api/autor", "/api/carritos", "/api/carrito", "/api/pedidos", "/api/pedido",
-                                     "/api/favoritos", "/api/genero", "/api/usuarios", "/api/usuario", "/api/valoracion", "/api/libro", "/api/libros").hasRole("ADMIN")
+                                     "/api/favoritos", "/api/genero", "/api/usuarios", "/api/usuario", "/api/valoracion", 
+                                     "/api/libro", "/api/libros").hasRole("ADMIN")
                     
                     .anyRequest().authenticated()
             )
@@ -47,6 +48,10 @@ public class SecurityConfig {
             	            !requestPath.startsWith("/api/registro") &&
             	            !requestPath.startsWith("/api/principal") &&
             	            !requestPath.startsWith("/api/libros") &&
+            	            !requestPath.startsWith("/api/libro") &&
+            	            !requestPath.startsWith("/api/autores") &&
+            	            !requestPath.startsWith("/api/generos") &&
+            	            !requestPath.startsWith("/api/search") &&
                             !requestPath.startsWith("/api/pedido")) {
             	            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             	        } else {

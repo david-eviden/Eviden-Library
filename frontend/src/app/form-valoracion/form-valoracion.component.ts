@@ -39,8 +39,23 @@ export class FormValoracionComponent implements OnInit {
       this.cargarUsuarios();
       this.cargarLibros();
     } else {
-      // Si es usuario normal, asignar el usuario actual
-      this.valoracion.usuario = this.authService.usuarioLogueado;
+      // Si es usuario normal, obtener los datos completos del usuario actual
+      const usuarioId = this.authService.getCurrentUserId();
+      if (usuarioId) {
+        this.usuarioService.getUsuario(usuarioId).subscribe(
+          usuario => {
+            this.valoracion.usuario = usuario;
+          },
+          error => {
+            console.error('Error al cargar datos del usuario:', error);
+            // Como fallback, usar el usuario del authService
+            this.valoracion.usuario = this.authService.usuarioLogueado;
+          }
+        );
+      } else {
+        // Si no hay ID, usar el usuario del authService como fallback
+        this.valoracion.usuario = this.authService.usuarioLogueado;
+      }
     }
 
     // Obtener el libroId de los query params

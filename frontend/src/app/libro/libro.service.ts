@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, tap, throwError } from 'rxjs';
+import { catchError, map, Observable, tap, throwError, of } from 'rxjs';
 import { Libro } from './libro';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
@@ -93,6 +93,17 @@ export class LibroService {
         });
         return response;
       }),
+      catchError(e => {
+        console.error('Error al cargar libros paginados:', e);
+        // Devolver un objeto vacío con la estructura esperada para evitar errores
+        return of({
+          content: [],
+          totalPages: 0,
+          totalElements: 0,
+          size: size,
+          number: page
+        });
+      })
     );
   }
 
@@ -190,7 +201,13 @@ export class LibroService {
 
   //Obtener autores para el filtro
   getAutores(): Observable<Autor[]> {
-    return this.http.get<Autor[]>(this.urlAutores, { headers: this.createHeaders() });
+    return this.http.get<Autor[]>(this.urlAutores, { headers: this.createHeaders() }).pipe(
+      catchError(e => {
+        console.error('Error al cargar autores:', e);
+        // Devolver un array vacío para evitar errores
+        return of([]);
+      })
+    );
   }
 
   // Obtener libros filtrados por autor
@@ -207,6 +224,40 @@ export class LibroService {
             return libro;
           });
           return response;
+        }),
+        catchError(e => {
+          console.error('Error al cargar libros por autor:', e);
+          // Si hay un error, intentar obtener todos los libros y filtrar por autor en el cliente
+          console.log('Intentando cargar todos los libros y filtrar por autor en el cliente...');
+          return this.getLibrosNoPagin().pipe(
+            map(libros => {
+              // Filtrar libros por autor
+              const librosFiltrados = libros.filter(libro => 
+                libro.autores && libro.autores.some(autor => autor.id === autorId)
+              );
+              console.log(`Encontrados ${librosFiltrados.length} libros del autor ID ${autorId} en el cliente`);
+              
+              // Crear un objeto con la misma estructura que la respuesta paginada
+              return {
+                content: librosFiltrados.slice(page * size, (page + 1) * size),
+                totalElements: librosFiltrados.length,
+                totalPages: Math.ceil(librosFiltrados.length / size),
+                size: size,
+                number: page
+              };
+            }),
+            catchError(err => {
+              console.error('Error al cargar y filtrar libros por autor en el cliente:', err);
+              // Si todo falla, devolver un objeto vacío
+              return of({
+                content: [],
+                totalPages: 0,
+                totalElements: 0,
+                size: size,
+                number: page
+              });
+            })
+          );
         })
       );
   }
