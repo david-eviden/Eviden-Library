@@ -21,16 +21,19 @@ export class AuthGuard implements CanActivate {
       '/principal',
       '/libros',
       '/libros/page',
+      '/libro',
       '/login',
+      '/resgistro',
       '/search-results',
       '/generos',
       '/autores',
       '/valoraciones',
-      '/search-results'
+      '/search-results',
+      '/error'
     ];
       
   // Verificar si la ruta actual es pública
-  const currentPath = state.url;
+  const currentPath = state.url.split('?')[0].split('/').slice(0,2).join('/');
   console.log('Guard evaluando ruta:', currentPath);
     
   const isPublicRoute = publicRoutes.some(route => 

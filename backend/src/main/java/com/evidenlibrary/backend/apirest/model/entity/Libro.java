@@ -2,6 +2,7 @@ package com.evidenlibrary.backend.apirest.model.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -53,6 +54,9 @@ public class Libro implements Serializable {
     
     @Column(nullable = true, columnDefinition = "LONGTEXT")
     private String imagen;
+    
+    @Column(nullable = true)
+    private String anio;
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -140,8 +144,16 @@ public class Libro implements Serializable {
 
 	public Long getId() {
 		return id;
-	}
+	}	
 	
+	public String getAnio() {
+		return anio;
+	}
+
+	public void setAnio(String anio) {
+		this.anio = anio;
+	}
+
 	//Valoracion media
 	public Double getValoracionMedia() {
         if (valoraciones.isEmpty()) { // No hay valoraciones

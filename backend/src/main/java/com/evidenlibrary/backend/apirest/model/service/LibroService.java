@@ -20,9 +20,7 @@ public interface LibroService {
 	public Libro obtenerLibroConValoracionMedia (Long id);//calcula media
 	
 	public Libro findById(Long id);
-	
-	//public Libro findByTitulo(String titulo);
-	
+		
 	public List<Libro> findLibrosByAutorId(Long id);
 	
 	public List<Libro> findLibrosByFavoritoId(Long id);

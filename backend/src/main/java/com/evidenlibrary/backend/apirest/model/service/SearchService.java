@@ -1,9 +1,15 @@
 package com.evidenlibrary.backend.apirest.model.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.evidenlibrary.backend.apirest.model.dao.AutorDao;
 import com.evidenlibrary.backend.apirest.model.dao.GeneroDao;
@@ -21,30 +27,106 @@ public class SearchService{
     @Autowired
     private GeneroDao generoDao;
     
-    public List<Libro> searchLibros(String query) {
-        if (query.toLowerCase().startsWith("titulo:") || query.toLowerCase().startsWith("título:") || query.toLowerCase().startsWith("libro:")) {
-            String cleanQuery = query.substring(query.indexOf(":") + 1).trim();
-            return libroDao.findByTituloContainingIgnoreCase(cleanQuery);
-        } else {
-            return libroDao.findByTituloContainingIgnoreCaseOrAutores_NombreContainingIgnoreCaseOrGeneros_NombreContainingIgnoreCase(query, query, query);
+    //Metodo dividir las consultas
+    private List<String> parseQuery(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return List.of();
         }
+        
+        return Arrays.asList(query.toLowerCase().split("\\s+"))
+                .stream()
+                .filter(term -> !term.isEmpty())
+                .collect(Collectors.toList());
+    }
+    
+    public List<Libro> searchLibros(String query) {
+    	// Dividir la consulta 
+        List<String> terms = parseQuery(query);
+
+        if (terms.isEmpty()) {
+        	return List.of(); // Lista vacía si no hay términos
+        }
+       
+        Set<Libro> allResults = new HashSet<>();
+        
+        for (String term : terms) { 
+        	
+        	//Busqueda por titulo
+        	allResults.addAll(libroDao.findByTituloContainingIgnoreCase(term));
+        	
+        	//Busqueda por año
+        	allResults.addAll(libroDao.findByAnio(term));
+        	
+            //allResults.addAll(libroDao.findByTerm(term));
+        }
+        
+        return new ArrayList<>(allResults);
     }
     
     public List<Autor> searchAutores(String query) {
-        if (query.toLowerCase().startsWith("autor:") || query.toLowerCase().startsWith("por:") || query.toLowerCase().startsWith("escrito por:") || query.toLowerCase().startsWith("de:")) {
-            String cleanQuery = query.substring(query.indexOf(":") + 1).trim();
-            return autorDao.findByNombreContainingIgnoreCase(cleanQuery);
-        } else {
-            return autorDao.findByNombreContainingOrLibros_TituloContainingOrLibros_Generos_NombreContaining(query, query, query);
+    	
+        List<String> terms = parseQuery(query);
+        
+        if (terms.isEmpty()) {
+            return List.of();
         }
+        
+        Set<Autor> allResults = new HashSet<>();
+        
+        // Buscar autores por cada término
+        for (String term : terms) {
+        	allResults.addAll(autorDao.findByNombreContainingIgnoreCase(term));
+            //allResults.addAll(autorDao.findByTerm(term));
+        }
+        
+        return new ArrayList<>(allResults);
     }
     
     public List<Genero> searchGeneros(String query) {
-        if (query.toLowerCase().startsWith("genero:") || query.toLowerCase().startsWith("género:") || query.toLowerCase().startsWith("categoria:") || query.toLowerCase().startsWith("categoría:")) {
-            String cleanQuery = query.substring(query.indexOf(":") + 1).trim();
-            return generoDao.findByNombreContainingIgnoreCase(cleanQuery);
-        } else {
-            return generoDao.findByNombreContainingIgnoreCaseOrLibros_TituloContainingIgnoreCaseOrLibros_Autores_NombreContainingIgnoreCase(query, query, query);
+    	
+        List<String> terms = parseQuery(query);
+        
+        if (terms.isEmpty()) {
+            return List.of(); 
         }
+        
+        Set<Genero> allResults = new HashSet<>();
+        
+        // Buscar géneros por cada término
+        for (String term : terms) {
+        	allResults.addAll(generoDao.findByNombreContainingIgnoreCase(term));           
+        	//allResults.addAll(generoDao.findByTerm(term));
+        }
+        
+        return new ArrayList<>(allResults);
+    }
+    
+    
+    //Todos los libros asociados  a un autor
+    @Transactional(readOnly = true)
+    public List<Libro> findLibrosByAutorId(Long autorId) {
+        // autor existe
+        Autor autor = autorDao.findById(autorId)
+            .orElseThrow(() -> new RuntimeException("Autor no encontrado con ID: " + autorId));
+        
+        // libros asociados a este autor
+        return libroDao.findByAutoresContaining(autor);
+    }
+    
+    //Todos los libros asociados a un género 
+    @Transactional(readOnly = true)
+    public List<Libro> findLibrosByGeneroId(Long generoId) {
+        // género exista
+        Genero genero = generoDao.findById(generoId)
+            .orElseThrow(() -> new RuntimeException("Género no encontrado con ID: " + generoId));
+        
+        // libros asociados a este género
+        return libroDao.findByGenerosContaining(genero);
+    }
+    
+    //Busqueda por año de publicacion
+    @Transactional(readOnly = true)
+    public List<Libro> findLibrosByAnio(String anio) {
+        return libroDao.findByAnio(anio);
     }
 }

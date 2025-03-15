@@ -30,82 +30,93 @@ export class SearchComponent implements OnInit {
       if (term.trim()) {
         this.searchForDropdown(term);
       } else {
-        this.showDropdown = false;
+        this.clearResults();
       }
     });
   }
 
   onSearchInput(event: any): void {
     const term = event.target.value;
-    const cleanTerm = term.replace(/\s+/g, ' ').trim();
+    const cleanTerm = term;
     
-    if (!cleanTerm) {
-      this.showDropdown = false;
+    if (!term.trim()) {
+      this.clearResults();
       return;
     }
     
-    this.searchTerm = cleanTerm;
-    this.searchSubject.next(cleanTerm);
+    this.searchSubject.next(term);
+  }
+
+  clearResults(): void {
+    this.showDropdown = false;
+    this.searchResults = { libros: [], autores: [], generos: [] };
+  }
+
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.clearResults();
   }
 
   searchForDropdown(term: string): void {
-    const cleanTerm = term.replace(/\s+/g, ' ').trim();
-    
-    if (cleanTerm === '') {
-      this.showDropdown = false;
+    if (!term.trim()) {
+      this.clearResults();
       return;
     }
 
-    this.searchService.search(cleanTerm).subscribe({
+    this.searchService.search(term).subscribe({
       next: (results) => {
         this.searchResults = results;
-        this.showDropdown = true;
+        this.showDropdown = this.hasResults(results);
       },
       error: (error) => {
         console.error('Error en la búsqueda: ', error);
-        this.showDropdown = false;
+        this.clearResults();
       }
     });
   }
 
   selectResult(type: string, item: any): void {
     this.showDropdown = false;
+    this.clearSearch();
+
     switch(type) {
       case 'libro':
         this.router.navigate(['/libro', item.id]);
         break;
       case 'autor':
-        this.router.navigate(['/autores', item.id]);
+        //this.router.navigate(['/autores', item.id]);
+        this.router.navigate(['/autores']);
         break;
       case 'genero':
-        this.router.navigate(['/generos', item.id]);
+        //this.router.navigate(['/generos', item.id]);
+        this.router.navigate(['/generos']);
         break;
     }
   }
 
   performFullSearch(): void {
-    const cleanTerm = this.searchTerm.replace(/\s+/g, ' ').trim();
+    const term = this.searchTerm.trim();
     
-    if (!cleanTerm) {
+    if (!term) {
       this.router.navigate(['/principal']);
       return;
     }
 
     this.showDropdown = false;
 
-    this.searchService.search(cleanTerm).subscribe({
+    this.searchService.search(term).subscribe({
       next: (results) => {
         if (this.isEmptyResults(results)) {
           this.router.navigate(['/search-results'], {
             queryParams: {
-              q: cleanTerm,
+              q: term,
               noResults: true
             }
           });
         } else {
           this.router.navigate(['/search-results'], {
             queryParams: {
-              q: cleanTerm
+              q: term
             },
             state: { results }
           });
@@ -117,18 +128,26 @@ export class SearchComponent implements OnInit {
     });
   }
 
-  private isEmptyResults(results: any): boolean {
+  isEmptyResults(results: any): boolean {
     return (!results.libros || results.libros.length === 0) &&
            (!results.autores || results.autores.length === 0) &&
            (!results.generos || results.generos.length === 0);
+  }
+  
+  hasResults(results: any): boolean {
+    return (results.libros && results.libros.length > 0) ||
+           (results.autores && results.autores.length > 0) ||
+           (results.generos && results.generos.length > 0);
   }
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: Event): void {
     const target = event.target as HTMLElement;
-  
-    if (target && target.closest && !target.closest('.search-container')) {
+    this.clearSearch();
+
+    if (target && target.closest && !target.closest('.search-container')) {//fuera de contenedor de busqueda
       this.showDropdown = false;
     }
+    //limpia busqueda y oculta el dropdown
   }
 }
