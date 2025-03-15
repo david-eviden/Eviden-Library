@@ -25,21 +25,52 @@ export class FormValoracionComponent implements OnInit {
   public valoracionesPorUsuario: Map<number, Valoracion[]> = new Map();
 
   constructor(
-    private valoracionService: ValoracionService, 
+    private valoracionService: ValoracionService,
     private usuarioService: UsuarioService,
     private libroService: LibroService,
-    public router: Router, 
+    public router: Router,
     private activatedRoute: ActivatedRoute,
     public authService: AuthService
   ) { }
 
   ngOnInit(): void {
-    this.cargarValoracion();
-    this.cargarUsuarios();
-    this.cargarLibros();
+    // Si es admin, cargar todos los usuarios y libros
+    if (this.authService.esAdmin) {
+      this.cargarUsuarios();
+      this.cargarLibros();
+    } else {
+      // Si es usuario normal, asignar el usuario actual
+      this.valoracion.usuario = this.authService.usuarioLogueado;
+    }
+
+    // Obtener el libroId de los query params
+    this.activatedRoute.queryParams.subscribe(params => {
+      const libroId = params['libroId'];
+      if (libroId) {
+        if (this.authService.esAdmin) {
+          // Si es admin, el libro ya estará en la lista cargada
+          const libroEncontrado = this.libros.find(l => l.id === +libroId);
+          if (libroEncontrado) {
+            this.valoracion.libro = libroEncontrado;
+            this.valoracion.libroDetalles = libroEncontrado.id;
+          }
+        } else {
+          // Si es usuario normal, cargar solo el libro específico
+          this.cargarLibro(+libroId);
+        }
+      }
+    });
+
+    // Si hay un ID en la ruta, cargar la valoración para editar
+    this.activatedRoute.params.subscribe(params => {
+      const id = params['id'];
+      if (id) {
+        this.cargarValoracion(id);
+      }
+    });
   }
 
-  // Cargar usuarios
+  // Cargar todos los usuarios (solo para admin)
   cargarUsuarios(): void {
     this.usuarioService.getUsuarios().subscribe(
       usuarios => {
@@ -52,7 +83,7 @@ export class FormValoracionComponent implements OnInit {
     );
   }
 
-  // Cargar libros
+  // Cargar todos los libros (solo para admin)
   cargarLibros(): void {
     this.libroService.getLibrosNoPagin().subscribe(
       libros => {
@@ -65,11 +96,61 @@ export class FormValoracionComponent implements OnInit {
     );
   }
 
+  // Cargar libro específico (para usuario normal)
+  cargarLibro(id: number): void {
+    this.libroService.getLibro(id).subscribe(
+      libro => {
+        this.valoracion.libro = libro;
+        this.valoracion.libroDetalles = libro.id;
+      },
+      error => {
+        console.error('Error al cargar el libro', error);
+        swal('Error', 'No se pudo cargar el libro seleccionado', 'error');
+        this.router.navigate(['/libros']);
+      }
+    );
+  }
+
+  // Obtener valoración por ID (para edición)
+  cargarValoracion(id: number): void {
+    this.valoracionService.getValoracion(id).subscribe(
+      valoracion => {
+        this.valoracion = valoracion;
+       
+        // Si tenemos libroDetalles pero no libro, cargar el libro
+        if (this.valoracion.libroDetalles && !this.valoracion.libro) {
+          const libroId = typeof this.valoracion.libroDetalles === 'number'
+            ? this.valoracion.libroDetalles
+            : (this.valoracion.libroDetalles as any).id;
+           
+          if (this.authService.esAdmin) {
+            const libroEncontrado = this.libros.find(l => l.id === libroId);
+            if (libroEncontrado) {
+              this.valoracion.libro = libroEncontrado;
+            }
+          } else {
+            this.cargarLibro(libroId);
+          }
+        }
+      },
+      error => {
+        console.error('Error al cargar valoración', error);
+        swal('Error', 'No se pudo cargar la valoración', 'error');
+        this.router.navigate(['/valoraciones']);
+      }
+    );
+  }
+
   // Crear valoración
   public create(): void {
 
     if (!this.valoracion.usuario) {
       swal('Error', 'Debe seleccionar un usuario para crear la valoración', 'error');
+      return;
+    }
+    
+    if (!this.valoracion.usuario || !this.valoracion.libro) {
+      swal('Error', 'Faltan datos requeridos', 'error');
       return;
     }
 
@@ -86,16 +167,12 @@ export class FormValoracionComponent implements OnInit {
 
     // Actualizar la fecha actual
     this.valoracion.fecha = new Date();
-    
+   
     this.valoracionService.create(this.valoracion).subscribe(
-      // Si OK
-      json => {
+      response => {
         this.router.navigate(['/valoraciones']);
-        // Mensaje SweetAlert
         swal('Nueva valoración', `Valoración para el libro "${this.valoracion.libro?.titulo}" creada con éxito`, 'success');
       },
-
-      // Si error
       err => {
         if (err.error.mensaje && err.error.mensaje.includes("ya ha valorado este libro")) {
           swal('Error', 'Ya has valorado este libro anteriormente. Solo puedes valorar un libro una vez.', 'error');
@@ -109,87 +186,21 @@ export class FormValoracionComponent implements OnInit {
     );
   }
 
-  // Obtener valoración por ID
-  public cargarValoracion(): void {
-    this.activatedRoute.params.subscribe(params => {
-      let id = params['id'];
-      if(id) {
-        this.valoracionService.getValoracion(id).subscribe(
-          (valoracion) => {
-            this.valoracion = valoracion;
-            
-            // Si tenemos libroDetalles pero no libro, intentamos cargar el libro
-            if (this.valoracion.libroDetalles && !this.valoracion.libro) {
-              const libroId = typeof this.valoracion.libroDetalles === 'number' 
-                ? this.valoracion.libroDetalles 
-                : (this.valoracion.libroDetalles as any).id;
-                
-              this.libroService.getLibro(libroId).subscribe(
-                libro => {
-                  this.valoracion.libro = libro;
-                },
-                error => {
-                  console.error('Error al cargar el libro para la valoración', error);
-                }
-              );
-            }
-          },
-          error => {
-            console.error('Error al cargar valoración', error);
-            swal('Error', 'No se pudo cargar la valoración', 'error');
-            this.router.navigate(['/valoraciones']);
-          }
-        );
-      }
-    });
-  }
-
-  // Update valoración por ID
-  public update(): void {
-    // Asegurarse de que el libro esté establecido correctamente
-    if (!this.valoracion.libro && this.valoracion.libroDetalles) {
-      // Buscar el libro por ID si solo tenemos libroDetalles
-      const libroId = typeof this.valoracion.libroDetalles === 'number' 
-        ? this.valoracion.libroDetalles 
-        : (this.valoracion.libroDetalles as any).id;
-        
-      const libroEncontrado = this.libros.find(l => l.id === libroId);
-      if (libroEncontrado) {
-        this.valoracion.libro = libroEncontrado;
-      } else {
-        // Si no encontramos el libro en la lista cargada, intentamos obtenerlo del servicio
-        this.libroService.getLibro(libroId).subscribe(
-          libro => {
-            this.valoracion.libro = libro;
-            this.completarActualizacion();
-          },
-          error => {
-            console.error('Error al cargar el libro para la valoración', error);
-            swal('Error', 'No se pudo cargar el libro asociado a la valoración', 'error');
-          }
-        );
-        return; // Salimos para evitar la llamada duplicada a completarActualizacion()
-      }
+  // Actualizar valoración
+  update(): void {
+    if (!this.valoracion.usuario || !this.valoracion.libro) {
+      swal('Error', 'Faltan datos requeridos', 'error');
+      return;
     }
-    
-    this.completarActualizacion();
-  }
-  
-  // Método auxiliar para completar la actualización
-  private completarActualizacion(): void {
-    this.valoracionService.updateValoracion(this.valoracion).subscribe(
-      // Si OK
-      json => {
-        this.router.navigate(['/valoraciones']);
-        //Mensaje
-        swal('Valoración Actualizada', `Valoración actualizada con éxito`, 'success');
-      },
 
-      // Si error
+    this.valoracionService.updateValoracion(this.valoracion).subscribe(
+      response => {
+        this.router.navigate(['/valoraciones']);
+        swal('Valoración Actualizada', 'La valoración se ha actualizado con éxito', 'success');
+      },
       err => {
         this.errors = err.error.errores as string[];
-        console.error('Código del error (backend): ' + err.error.status);
-        console.error(err.error.errores);
+        console.error('Error al actualizar valoración:', err);
       }
     );
   }
@@ -199,7 +210,7 @@ export class FormValoracionComponent implements OnInit {
     this.valoracion.puntuacion = rating;
   }
 
-  // Al cambiar el libro
+  // Al cambiar el libro (solo para admin)
   onLibroChange(): void {
     if (this.valoracion.libro) {
       // Verificar si el usuario ya ha valorado este libro (solo si hay un usuario seleccionado)

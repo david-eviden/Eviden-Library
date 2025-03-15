@@ -10,8 +10,8 @@ import swal from 'sweetalert2';
 })
 export class ValoracionService implements OnInit {
 
-  private urlEndPoint: string = 'http://localhost:8080/api/valoraciones';
-  private urlEndPoint1: string = 'http://localhost:8080/api/valoracion'; 
+  private urlEndPoint: string = 'http://localhost:8081/api/valoraciones';
+  private urlEndPoint1: string = 'http://localhost:8081/api/valoracion'; 
   private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
 
   // Creamos un BehaviorSubject para la lista de valoraciones
@@ -27,7 +27,8 @@ export class ValoracionService implements OnInit {
     const token = localStorage.getItem('access_token');
     /* if (!token) {
       this.router.navigate(['/login']);  // Redirigir al login si el token no está presente
-    } */
+    }  */
+
     return token;
   }
 
@@ -78,6 +79,12 @@ export class ValoracionService implements OnInit {
   // Crear valoracion
   create(valoracion: Valoracion): Observable<any> {
     return this.http.post<any>(this.urlEndPoint1, valoracion, { headers: this.createHeaders() }).pipe(
+      tap(response => {
+        //Actualizar la lista de valoraciones
+        this.getValoraciones().subscribe(valoraciones => {
+          this.valoracionesSubject.next(valoraciones);
+        });
+      }),
       catchError(e => {
         if (e.status == 400) {
           return throwError(e);
@@ -106,6 +113,12 @@ export class ValoracionService implements OnInit {
   // Actualizar valoracion
   updateValoracion(valoracion: Valoracion): Observable<any> {
     return this.http.put<any>(`${this.urlEndPoint1}/${valoracion.id}`, valoracion, { headers: this.createHeaders() }).pipe(
+      tap(response => {
+        //Actualizar la lista de valoraciones
+        this.getValoraciones().subscribe(valoraciones => {
+          this.valoracionesSubject.next(valoraciones);
+        });
+      }),
       catchError(e => {
         if (e.status == 400) {
           return throwError(e);
@@ -122,15 +135,21 @@ export class ValoracionService implements OnInit {
   // Eliminar valoracion
   delete(id: number): Observable<Valoracion> {
     return this.http.delete<Valoracion>(`${this.urlEndPoint1}/${id}`, { headers: this.createHeaders() }).pipe(
+      tap(response => {
+        //Actualizar la lista de valoraciones
+        this.getValoraciones().subscribe(valoraciones => {
+          this.valoracionesSubject.next(valoraciones);
+        });
+      }),
       catchError(e => {
         this.router.navigate(['/valoraciones']);
         console.log(e.error.mensaje);
         swal(e.error.mensaje, e.error.error, 'error');
         return throwError(e);
       }),
-      tap(() => {
+      /* tap(() => {
         this.getValoraciones().subscribe();  // Refrescamos la lista
-      })
+      }) */
     );
   }
 }

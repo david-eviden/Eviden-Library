@@ -5,19 +5,21 @@
         </div>
     </ul>
 
-    <div *ngIf="authService.esUsuario || authService.esAdmin" class="card shadow-lg">
+    <div *ngIf="authService.estaLogueado()" class="card shadow-lg">
         <div class="card-header">
             <h5 *ngIf="!valoracion.id">Crear una Valoración</h5>
             <h4 *ngIf="valoracion.id">Editar una Valoración</h4>
         </div>
         <div class="card-body">
             <form #valoracionForm="ngForm">
-                <!-- Campo Usuario -->
-                <div class="form-group row mb-4" *ngIf="!valoracion.id">
+                <!-- Campo Usuario (solo para admin) -->
+                <div class="form-group row mb-4" *ngIf="!valoracion.id && authService.esAdmin">
                     <label for="usuario" class="col-sm-3 col-form-label">Usuario:</label>
                     <div class="col-sm-9">
                         <select class="form-control form-control-lg" [(ngModel)]="valoracion.usuario" name="usuario"
+
                             #usuario="ngModel" (change)="onUsuarioChange()" required>
+
                             <option [ngValue]="undefined">-- Seleccionar Usuario --</option>
                             <option *ngFor="let user of usuarios" [ngValue]="user">
                                 {{ user.nombre }} {{ user.apellido }} ({{ user.email }})
@@ -32,8 +34,8 @@
                     </div>
                 </div>
 
-                <!-- Información del Usuario (solo en modo edición) -->
-                <div class="form-group row mb-4" *ngIf="valoracion.id && valoracion.usuario">
+                <!-- Información del Usuario (modo edición o usuario normal) -->
+                <div class="form-group row mb-4" *ngIf="(valoracion.id || !authService.esAdmin) && valoracion.usuario">
                     <label class="col-sm-3 col-form-label">Usuario:</label>
                     <div class="col-sm-9">
                         <div class="form-control-plaintext">
@@ -45,15 +47,18 @@
                     </div>
                 </div>
 
-                <!-- Campo Libro -->
-                <div class="form-group row mb-4" *ngIf="!valoracion.id">
+                <!-- Campo Libro (solo para admin) -->
+                <div class="form-group row mb-4" *ngIf="!valoracion.id && authService.esAdmin">
                     <label for="libro" class="col-sm-3 col-form-label">Libro:</label>
                     <div class="col-sm-9">
                         <select class="form-control form-control-lg" [(ngModel)]="valoracion.libro" name="libro"
                             #libro="ngModel" required (change)="onLibroChange()">
                             <option [ngValue]="undefined">-- Seleccionar Libro --</option>
                             <option *ngFor="let libro of libros" [ngValue]="libro">
-                                {{ libro.titulo }} ({{ libro.autores[0].nombre }})
+                                {{ libro.titulo }}
+                                <span *ngIf="libro.autores && libro.autores.length > 0">
+                                    ({{ libro.autores[0].nombre }})
+                                </span>
                             </option>
                         </select>
                         <div class="alert alert-danger mt-2" *ngIf="libro.invalid && (libro.dirty || libro.touched)">
@@ -64,8 +69,8 @@
                     </div>
                 </div>
 
-                <!-- Información del Libro (solo en modo edición) -->
-                <div class="form-group row mb-4" *ngIf="valoracion.id && valoracion.libro">
+                <!-- Información del Libro (modo edición o usuario normal) -->
+                <div class="form-group row mb-4" *ngIf="(valoracion.id || !authService.esAdmin) && valoracion.libro">
                     <label class="col-sm-3 col-form-label">Libro:</label>
                     <div class="col-sm-9">
                         <div class="form-control-plaintext">
