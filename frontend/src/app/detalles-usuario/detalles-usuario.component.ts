@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import swal from 'sweetalert2';
 import { DetallesUsuarioService } from '../detalles-usuario/detalles-usuario.service';
 import { Usuario } from '../usuario/usuario';
@@ -8,6 +8,8 @@ import { Pedido } from '../pedido/pedido';
 import { Valoracion } from '../valoracion/valoracion';
 import { ValoracionService } from '../valoracion/valoracion.service';
 import { AuthService } from '../login/auth.service';
+import { filter } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-detalles-usuario',
@@ -15,8 +17,8 @@ import { AuthService } from '../login/auth.service';
   templateUrl: './detalles-usuario.component.html',
   styleUrl: './detalles-usuario.component.css'
 })
-export class DetallesUsuarioComponent implements OnInit {
-  
+export class DetallesUsuarioComponent implements OnInit, OnDestroy {
+ 
   usuario: Usuario = new Usuario();
   pedidos: Pedido[] = [];
   valoraciones: Valoracion[] = [];
@@ -25,6 +27,7 @@ export class DetallesUsuarioComponent implements OnInit {
   error: string = '';
   forceRefresh: boolean = false;
   pedidoExpandido: boolean[] = []; // Array para controlar qué pedidos están expandidos
+  private routerSubscription: Subscription | undefined;
 
   constructor(
     private route: ActivatedRoute,
@@ -38,7 +41,7 @@ export class DetallesUsuarioComponent implements OnInit {
   ngOnInit(): void {
     this.cargando = true;
     this.error = '';
-    
+   
     // Check if we need to refresh the orders
     this.route.queryParams.subscribe(params => {
       const refresh = params['refresh'];
@@ -48,18 +51,18 @@ export class DetallesUsuarioComponent implements OnInit {
         this.forceRefresh = true;
       }
     });
-    
+   
     // Obtener el id del usuario desde la ruta
     this.route.paramMap.subscribe(params => {
       const idParam = params.get('id');
-      
+     
       // Verificar si el parámetro id es válido
       if (!idParam || isNaN(Number(idParam))) {
         console.log('ID de usuario no válido en la URL o no proporcionado, intentando usar el usuario actual');
-        
+       
         // Intentar usar el ID del usuario logueado
         const usuarioLogueadoId = this.authService.getCurrentUserId();
-        
+       
         if (usuarioLogueadoId && !isNaN(Number(usuarioLogueadoId))) {
           console.log('Usando ID del usuario logueado:', usuarioLogueadoId);
           this.esPerfilPropio = true;
@@ -84,23 +87,40 @@ export class DetallesUsuarioComponent implements OnInit {
         }
         return;
       }
-      
+     
       const usuarioId = Number(idParam);
-      
+     
       // Verificar si es el perfil del usuario logueado
       const usuarioLogueadoId = this.authService.getCurrentUserId();
       this.esPerfilPropio = usuarioId === usuarioLogueadoId;
-      
+     
       // Llamar al servicio para obtener el usuario por id
       this.cargarDatosUsuario(usuarioId);
     });
+
+    // Suscribirse a los eventos de navegación
+    this.routerSubscription = this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      // Recargar las valoraciones cuando se vuelve a la página
+      if (this.usuario && this.usuario.id) {
+        this.cargarValoraciones(this.usuario.id);
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    // Cancelar la suscripción cuando el componente se destruye
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
   }
 
   cargarDatosUsuario(usuarioId: number): void {
     console.log('Cargando datos del usuario con ID:', usuarioId);
     this.cargando = true;
     this.error = '';
-    
+   
     if (!usuarioId || isNaN(usuarioId)) {
       console.error('ID de usuario no válido:', usuarioId);
       this.cargando = false;
@@ -113,16 +133,16 @@ export class DetallesUsuarioComponent implements OnInit {
       this.router.navigate(['/principal']);
       return;
     }
-    
+   
     this.usuarioService.obtenerUsuarioPorId(usuarioId).subscribe(
       (usuario) => {
         console.log('Datos de usuario recibidos:', usuario);
         this.usuario = usuario;
-        
+       
         // Inicializar las colecciones si no existen
         if (!this.usuario.pedidos) this.usuario.pedidos = [];
         if (!this.usuario.valoraciones) this.usuario.valoraciones = [];
-        
+       
         // Cargar los pedidos del usuario específico
         // If forceRefresh is true, we'll add a delay before loading the orders
         if (this.forceRefresh) {
@@ -135,10 +155,10 @@ export class DetallesUsuarioComponent implements OnInit {
         } else {
           this.cargarPedidos(usuarioId);
         }
-        
+       
         // Cargar las valoraciones del usuario específico
         this.cargarValoraciones(usuarioId);
-        
+       
         this.cargando = false;
       },
       (error) => {
@@ -157,12 +177,12 @@ export class DetallesUsuarioComponent implements OnInit {
 
   cargarPedidos(usuarioId: number, intentos: number = 0): void {
     console.log(`Cargando pedidos para el usuario ID: ${usuarioId} (intento ${intentos + 1})`);
-    
+   
     // Ensure pedidos array is initialized
     if (!this.usuario.pedidos) {
       this.usuario.pedidos = [];
     }
-    
+   
     this.pedidoService.getPedidosPorUsuarioId(usuarioId).subscribe({
       next: (pedidos) => {
         console.log('Pedidos recibidos:', pedidos);
@@ -177,14 +197,14 @@ export class DetallesUsuarioComponent implements OnInit {
               }
             });
           }
-          
+         
           this.usuario.pedidos = pedidos;
           // Inicializar el array de pedidos expandidos
           this.pedidoExpandido = new Array(pedidos.length).fill(false);
-          
+         
           if (pedidos.length === 0) {
             console.log('El usuario no tiene pedidos');
-            
+           
             // If this is the first attempt and no orders were found, retry after a delay
             if (intentos === 0) {
               console.log('Intentando cargar pedidos nuevamente en 2 segundos...');
@@ -199,7 +219,7 @@ export class DetallesUsuarioComponent implements OnInit {
           console.warn('Los pedidos recibidos son nulos o indefinidos');
           this.usuario.pedidos = [];
           this.pedidoExpandido = [];
-          
+         
           // If this is the first attempt and no orders were found, retry after a delay
           if (intentos === 0) {
             console.log('Intentando cargar pedidos nuevamente en 2 segundos...');
@@ -214,7 +234,7 @@ export class DetallesUsuarioComponent implements OnInit {
         // Ensure we have an empty array in case of error
         this.usuario.pedidos = [];
         this.pedidoExpandido = [];
-        
+       
         // Show a non-intrusive message to the user
         if (error.status === 404) {
           console.warn('El endpoint para obtener pedidos no existe o no está disponible');
@@ -223,7 +243,7 @@ export class DetallesUsuarioComponent implements OnInit {
         } else {
           console.warn('Error desconocido al cargar los pedidos');
         }
-        
+       
         // If this is the first attempt, retry after a delay
         if (intentos === 0) {
           console.log('Intentando cargar pedidos nuevamente en 2 segundos...');
@@ -239,6 +259,13 @@ export class DetallesUsuarioComponent implements OnInit {
     this.valoracionService.getValoracionesPorUsuarioId(usuarioId).subscribe(
       (valoraciones) => {
         this.usuario.valoraciones = valoraciones;
+        // Suscribirse a los cambios en las valoraciones
+        this.valoracionService.valoraciones$.subscribe(
+          (todasLasValoraciones) => {
+            // Filtrar solo las valoraciones del usuario actual
+            this.usuario.valoraciones = todasLasValoraciones.filter(v => v.usuario?.id === usuarioId);
+          }
+        );
       },
       (error) => {
         console.error('Error al obtener las valoraciones del usuario:', error);
@@ -250,27 +277,27 @@ export class DetallesUsuarioComponent implements OnInit {
     console.log('Cargando datos del usuario con email:', email);
     this.cargando = true;
     this.error = '';
-    
+   
     this.usuarioService.obtenerUsuarioPorEmail(email).subscribe(
       (usuario) => {
         console.log('Datos de usuario recibidos por email:', usuario);
         this.usuario = usuario;
-        
+       
         // Inicializar las colecciones si no existen
         if (!this.usuario.pedidos) this.usuario.pedidos = [];
         if (!this.usuario.valoraciones) this.usuario.valoraciones = [];
-        
+       
         // Marcar como perfil propio
         this.esPerfilPropio = true;
-        
+       
         // Cargar los pedidos y valoraciones
         if (this.usuario.id) {
           this.cargarPedidos(this.usuario.id);
           this.cargarValoraciones(this.usuario.id);
         }
-        
+       
         this.cargando = false;
-        
+       
         // Actualizar el ID en el servicio de autenticación
         const usuarioActual = this.authService.getCurrentUser();
         if (usuarioActual && this.usuario.id) {
@@ -283,7 +310,7 @@ export class DetallesUsuarioComponent implements OnInit {
         console.error('Error al obtener los datos del usuario por email:', error);
         this.cargando = false;
         this.error = 'No se pudieron cargar los datos del usuario';
-        
+       
         // Intentar usar los datos del usuario actual como alternativa
         const usuarioActual = this.authService.getCurrentUser();
         if (usuarioActual) {
@@ -338,7 +365,7 @@ export class DetallesUsuarioComponent implements OnInit {
           },
           error => {
             console.error('Error al eliminar el usuario:', error);
-            
+           
             // Mensaje específico para el caso de usuarios con pedidos asociados
             if (error.status === 409) { // 409 Conflict
               swal(
@@ -427,11 +454,11 @@ export class DetallesUsuarioComponent implements OnInit {
   toggleDetallesPedido(index: number): void {
     if (index >= 0 && index < this.pedidoExpandido.length) {
       this.pedidoExpandido[index] = !this.pedidoExpandido[index];
-      
+     
       // Si estamos expandiendo el pedido
       if (this.pedidoExpandido[index] && this.usuario.pedidos[index]) {
         // Verificar si la dirección de envío está vacía o es "Sin dirección especificada"
-        if (!this.usuario.pedidos[index].direccionEnvio || 
+        if (!this.usuario.pedidos[index].direccionEnvio ||
             this.usuario.pedidos[index].direccionEnvio === 'Sin dirección especificada') {
           // Si el usuario tiene dirección, usarla como dirección de envío
           if (this.usuario.direccion) {
@@ -439,19 +466,19 @@ export class DetallesUsuarioComponent implements OnInit {
             this.usuario.pedidos[index].direccionEnvio = this.usuario.direccion;
           }
         }
-        
+       
         // Si no tiene detalles cargados, intentamos cargarlos
         if (!this.usuario.pedidos[index].detalles || this.usuario.pedidos[index].detalles.length === 0) {
           const pedidoId = this.usuario.pedidos[index].id;
           if (pedidoId) {
             console.log(`Cargando detalles para el pedido ID: ${pedidoId}`);
-            
+           
             // Verificar si ya tenemos los detalles en el pedido
             if (this.usuario.pedidos[index].detalles && this.usuario.pedidos[index].detalles.length > 0) {
               console.log(`El pedido ya tiene ${this.usuario.pedidos[index].detalles.length} detalles cargados`);
               return;
             }
-            
+           
             // Usar el nuevo método para obtener un pedido específico por ID
             this.pedidoService.getPedidoPorId(pedidoId).subscribe({
               next: (pedidoActualizado) => {
@@ -459,11 +486,11 @@ export class DetallesUsuarioComponent implements OnInit {
                   console.log(`Se encontraron ${pedidoActualizado.detalles.length} detalles para el pedido ID: ${pedidoId}`);
                   // Actualizar solo los detalles del pedido específico
                   this.usuario.pedidos[index].detalles = pedidoActualizado.detalles;
-                  
+                 
                   // Si la dirección de envío del pedido actualizado está vacía o es "Sin dirección especificada"
                   // y el usuario tiene dirección, actualizarla
-                  if ((!pedidoActualizado.direccionEnvio || 
-                      pedidoActualizado.direccionEnvio === 'Sin dirección especificada') && 
+                  if ((!pedidoActualizado.direccionEnvio ||
+                      pedidoActualizado.direccionEnvio === 'Sin dirección especificada') &&
                       this.usuario.direccion) {
                     this.usuario.pedidos[index].direccionEnvio = this.usuario.direccion;
                   } else {
@@ -487,11 +514,11 @@ export class DetallesUsuarioComponent implements OnInit {
                         console.log(`Se encontraron ${pedidoEncontrado.detalles.length} detalles para el pedido ID: ${pedidoId}`);
                         // Actualizar solo los detalles del pedido específico
                         this.usuario.pedidos[index].detalles = pedidoEncontrado.detalles;
-                        
+                       
                         // Si la dirección de envío del pedido encontrado está vacía o es "Sin dirección especificada"
                         // y el usuario tiene dirección, actualizarla
-                        if ((!pedidoEncontrado.direccionEnvio || 
-                            pedidoEncontrado.direccionEnvio === 'Sin dirección especificada') && 
+                        if ((!pedidoEncontrado.direccionEnvio ||
+                            pedidoEncontrado.direccionEnvio === 'Sin dirección especificada') &&
                             this.usuario.direccion) {
                           this.usuario.pedidos[index].direccionEnvio = this.usuario.direccion;
                         } else {
@@ -513,5 +540,9 @@ export class DetallesUsuarioComponent implements OnInit {
         }
       }
     }
+  }
+  tieneValoracion(libroId: number): number | null {
+    const valoracion = this.usuario.valoraciones?.find( v => v.libro?.id === libroId);
+    return valoracion ? valoracion.id : null;
   }
 }

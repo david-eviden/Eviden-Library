@@ -25,9 +25,9 @@ export class ValoracionService implements OnInit {
   // Método para obtener el token del localStorage
   private getToken(): string | null {
     const token = localStorage.getItem('access_token');
-    if (!token) {
+    /* if (!token) {
       this.router.navigate(['/login']);  // Redirigir al login si el token no está presente
-    }
+    }  */
     return token;
   }
 
@@ -74,6 +74,12 @@ export class ValoracionService implements OnInit {
   // Crear valoracion
   create(valoracion: Valoracion): Observable<any> {
     return this.http.post<any>(this.urlEndPoint1, valoracion, { headers: this.createHeaders() }).pipe(
+      tap(response => {
+        //Actualizar la lista de valoraciones
+        this.getValoraciones().subscribe(valoraciones => {
+          this.valoracionesSubject.next(valoraciones);
+        });
+      }),
       catchError(e => {
         if (e.status == 400) {
           return throwError(e);
@@ -102,6 +108,12 @@ export class ValoracionService implements OnInit {
   // Actualizar valoracion
   updateValoracion(valoracion: Valoracion): Observable<any> {
     return this.http.put<any>(`${this.urlEndPoint1}/${valoracion.id}`, valoracion, { headers: this.createHeaders() }).pipe(
+      tap(response => {
+        //Actualizar la lista de valoraciones
+        this.getValoraciones().subscribe(valoraciones => {
+          this.valoracionesSubject.next(valoraciones);
+        });
+      }),
       catchError(e => {
         if (e.status == 400) {
           return throwError(e);
@@ -118,15 +130,21 @@ export class ValoracionService implements OnInit {
   // Eliminar valoracion
   delete(id: number): Observable<Valoracion> {
     return this.http.delete<Valoracion>(`${this.urlEndPoint1}/${id}`, { headers: this.createHeaders() }).pipe(
+      tap(response => {
+        //Actualizar la lista de valoraciones
+        this.getValoraciones().subscribe(valoraciones => {
+          this.valoracionesSubject.next(valoraciones);
+        });
+      }),
       catchError(e => {
         this.router.navigate(['/valoraciones']);
         console.log(e.error.mensaje);
         swal(e.error.mensaje, e.error.error, 'error');
         return throwError(e);
       }),
-      tap(() => {
+      /* tap(() => {
         this.getValoraciones().subscribe();  // Refrescamos la lista
-      })
+      }) */
     );
   }
 }
