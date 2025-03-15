@@ -1,7 +1,7 @@
 package com.evidenlibrary.backend.apirest.config;
-
+ 
 import java.util.Arrays;
-
+ 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,13 +13,13 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
+ 
 import jakarta.servlet.http.HttpServletResponse;
-
+ 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
+ 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -27,13 +27,13 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authz -> authz
             		 // Permitir acceso público a endpoints específicos
-                    .requestMatchers("/api/login", "/api/registro", "/api/principal", "/api/generos", "/api/valoraciones", "/api/valoracion", "/api/favorito", "/api/libros/**", "/api/libros/page", "/api/libros/mejor-valorados", "/api/libro/**", "/api/autores", "/usuario", "/api/detalles-carrito", "/api/pedido").permitAll()
-
+                    .requestMatchers("/api/login", "/api/registro", "/api/principal", "/api/generos", "/api/valoraciones", "/api/valoracion", "/api/favorito", "/api/libros", "/api/libros/page", "/api/libros/mejor-valorados", "/api/libro", "/api/autores", "/usuario", "/api/detalles-carrito", "/api/pedido").permitAll()
+ 
                     // Requerir autenticación para ciertos endpoints, tanto para USER como para ADMIN
                     .requestMatchers("/api/valoraciones", "/api/detalles-carrito").hasRole("USER")
-
+ 
                     // Requerir ADMIN para endpoints específicos
-                    .requestMatchers("/api/autor", "/api/carritos", "/api/carrito", "/api/pedidos", "/api/pedido", 
+                    .requestMatchers("/api/autor", "/api/carritos", "/api/carrito", "/api/pedidos", "/api/pedido",
                                      "/api/favoritos", "/api/genero", "/api/usuarios", "/api/usuario", "/api/valoracion", "/api/libro", "/api/libros").hasRole("ADMIN")
                     
                     .anyRequest().authenticated()
@@ -43,10 +43,10 @@ public class SecurityConfig {
             	    .authenticationEntryPoint((request, response, authException) -> {
             	        // Solo redirigir a login si la ruta no es pública
             	        String requestPath = request.getRequestURI();
-            	        if (!requestPath.startsWith("/api/login") && 
+            	        if (!requestPath.startsWith("/api/login") &&
             	            !requestPath.startsWith("/api/registro") &&
-            	            !requestPath.startsWith("/api/principal") && 
-            	            !requestPath.startsWith("/api/libros") && 
+            	            !requestPath.startsWith("/api/principal") &&
+            	            !requestPath.startsWith("/api/libros") &&
                             !requestPath.startsWith("/api/pedido")) {
             	            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             	        } else {
@@ -57,7 +57,7 @@ public class SecurityConfig {
             );
         return http.build();
     }
-
+ 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter authoritiesConverter = new JwtGrantedAuthoritiesConverter();
@@ -68,7 +68,7 @@ public class SecurityConfig {
         
         return jwtConverter;
     }
-
+ 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

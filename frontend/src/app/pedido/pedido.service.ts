@@ -10,9 +10,9 @@ import { Router } from '@angular/router';
 })
 export class PedidoService {
 
-  private urlEndPoint: string = 'http://localhost:8081/api/pedidos'; 
-  private urlEndPointPedido: string = 'http://localhost:8081/api/pedido';
-  private urlEndPointDetallePedido: string = 'http://localhost:8081/api/detalle-pedido';
+  private urlEndPoint: string = 'http://localhost:8080/api/pedidos'; 
+  private urlEndPointPedido: string = 'http://localhost:8080/api/pedido';
+  private urlEndPointDetallePedido: string = 'http://localhost:8080/api/detalle-pedido';
   
     constructor(private http: HttpClient, private router: Router) {}
 
