@@ -25,11 +25,10 @@
         <div class="card-body">
             <div class="row m-1">
                 <div class="col-md-4 text-center mb-4 mb-md-0">
-                    <img [src]="usuario.foto ? usuario.foto : '/img/usuarioDefecto.png'" 
-                         [id]="'imagen-usuario-' + usuario.id" 
-                         class="img-fluid user-avatar" 
-                         alt="Imagen de {{ usuario.nombre }} {{ usuario.apellido }}">
-                    
+                    <img [src]="usuario.foto ? usuario.foto : '/img/usuarioDefecto.png'"
+                        [id]="'imagen-usuario-' + usuario.id" class="img-fluid user-avatar"
+                        alt="Imagen de {{ usuario.nombre }} {{ usuario.apellido }}">
+
                     <!-- Información básica en tarjetas para móvil -->
                     <div class="d-md-none mt-3">
                         <div class="info-card mb-2">
@@ -49,7 +48,7 @@
                     <h3 class="user-name">
                         {{ usuario.nombre }} {{ usuario.apellido }}
                     </h3>
-                    
+
                     <div class="user-info mb-4">
                         <p class="d-flex align-items-center mb-2">
                             <i class="bi bi-envelope me-2 text-primary"></i>
@@ -59,7 +58,7 @@
                             <i class="bi bi-geo-alt me-2 text-primary"></i>
                             <span>{{ usuario.direccion }}</span>
                         </p>
-                        
+
                         <!-- Rol (solo visible en desktop) -->
                         <p class="d-none d-md-flex align-items-center">
                             <i class="bi bi-person-badge me-2 text-primary"></i>
@@ -69,7 +68,7 @@
                             </span>
                         </p>
                     </div>
-                    
+
                     <!-- Botones de acción (solo admin o usuario propio) -->
                     <div class="action-buttons mt-4">
                         <a [routerLink]="['/usuario/form', usuario.id]" class="btn bg-info me-3" *ngIf="esPerfilPropio">
@@ -120,8 +119,10 @@
                                             </span>
                                         </td>
                                         <td>
-                                            <button (click)="toggleDetallesPedido(i)" class="btn btn-sm btn-primary me-1 text-white">
-                                                <i class="bi" [ngClass]="{'bi-chevron-down': !pedidoExpandido[i], 'bi-chevron-up': pedidoExpandido[i]}"></i>
+                                            <button (click)="toggleDetallesPedido(i)"
+                                                class="btn btn-sm btn-primary me-1 text-white">
+                                                <i class="bi"
+                                                    [ngClass]="{'bi-chevron-down': !pedidoExpandido[i], 'bi-chevron-up': pedidoExpandido[i]}"></i>
                                                 {{ pedidoExpandido[i] ? 'Ocultar detalles' : 'Ver detalles' }}
                                             </button>
                                         </td>
@@ -131,18 +132,21 @@
                                         <td colspan="5" class="p-0">
                                             <div class="p-3 bg-light">
                                                 <h6 class="mb-2">Detalles del pedido #{{ pedido.id }}</h6>
-                                                <p><strong>Dirección de envío:</strong> 
-                                                    <span *ngIf="pedido.direccionEnvio && pedido.direccionEnvio !== 'Sin dirección especificada'">
+                                                <p><strong>Dirección de envío:</strong>
+                                                    <span
+                                                        *ngIf="pedido.direccionEnvio && pedido.direccionEnvio !== 'Sin dirección especificada'">
                                                         {{ pedido.direccionEnvio }}
                                                     </span>
-                                                    <span *ngIf="!pedido.direccionEnvio || pedido.direccionEnvio === 'Sin dirección especificada'">
+                                                    <span
+                                                        *ngIf="!pedido.direccionEnvio || pedido.direccionEnvio === 'Sin dirección especificada'">
                                                         {{ usuario.direccion || 'Sin dirección disponible' }}
                                                         <small class="text-muted ms-1">(dirección del usuario)</small>
                                                     </span>
                                                 </p>
-                                                
+
                                                 <!-- Tabla de detalles del pedido -->
-                                                <div class="table-responsive mt-3" *ngIf="pedido.detalles && pedido.detalles.length > 0">
+                                                <div class="table-responsive mt-3"
+                                                    *ngIf="pedido.detalles && pedido.detalles.length > 0">
                                                     <table class="table table-sm table-bordered">
                                                         <thead class="table-secondary">
                                                             <tr>
@@ -150,25 +154,42 @@
                                                                 <th>Cantidad</th>
                                                                 <th>Precio unitario</th>
                                                                 <th>Subtotal</th>
+                                                                <th>Acciones</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             <tr *ngFor="let detalle of pedido.detalles">
-                                                                <td>{{ detalle.libro.titulo || 'Libro no disponible' }}</td>
+                                                                <td>{{ detalle.libro.titulo || 'Libro no disponible' }}
+                                                                </td>
                                                                 <td class="text-center">{{ detalle.cantidad }}</td>
-                                                                <td class="text-end">{{ detalle.precioUnitario | currency:'EUR':'symbol':'1.2-2' }}</td>
-                                                                <td class="text-end">{{ detalle.cantidad * detalle.precioUnitario | currency:'EUR':'symbol':'1.2-2' }}</td>
+                                                                <td class="text-end">{{ detalle.precioUnitario |
+                                                                    currency:'EUR':'symbol':'1.2-2' }}</td>
+                                                                <td class="text-end">{{ detalle.cantidad *
+                                                                    detalle.precioUnitario |
+                                                                    currency:'EUR':'symbol':'1.2-2' }}</td>
+                                                                <td class="text-center">
+                                                                    <button
+                                                                        *ngIf="!tieneValoracion(detalle.libro.id) && (authService.esUsuario || authService.esAdmin)"
+                                                                        class="btn btn-primary btn-sm"
+                                                                        [routerLink]="['/valoracion/form']"
+                                                                        [queryParams]="{libroId: detalle.libro.id}">
+                                                                        <i class="fas fa-star"></i> Valorar
+                                                                    </button>
+                                                                </td>
                                                             </tr>
                                                             <tr class="table-info">
-                                                                <td colspan="3" class="text-end"><strong>Total:</strong></td>
-                                                                <td class="text-end"><strong>{{ pedido.total | currency:'EUR':'symbol':'1.2-2' }}</strong></td>
+                                                                <td colspan="4" class="text-end"><strong>Total:</strong>
+                                                                </td>
+                                                                <td class="text-end"><strong>{{ pedido.total |
+                                                                        currency:'EUR':'symbol':'1.2-2' }}</strong></td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
                                                 </div>
-                                                
+
                                                 <!-- Mensaje si no hay detalles -->
-                                                <div *ngIf="!pedido.detalles || pedido.detalles.length === 0" class="alert alert-warning mt-3">
+                                                <div *ngIf="!pedido.detalles || pedido.detalles.length === 0"
+                                                    class="alert alert-warning mt-3">
                                                     No hay detalles disponibles para este pedido.
                                                 </div>
                                             </div>
@@ -196,14 +217,15 @@
                             <a [routerLink]="['/libro', valoracion.libro?.id]">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div>
-                                        <h5 class="card-title">{{ valoracion.usuario?.nombre}} ({{ valoracion.usuario?.email }})</h5>
+                                        <h5 class="card-title">{{ valoracion.usuario?.nombre}} ({{
+                                            valoracion.usuario?.email }})</h5>
                                     </div>
                                     <div class="stars-container">
                                         <span class="star-rating">
-                                            <i class="bi bi-star-fill text-warning" 
-                                               *ngFor="let star of getStarsArray(valoracion.puntuacion)"></i>
-                                            <i class="bi bi-star" 
-                                               *ngFor="let star of getEmptyStarsArray(valoracion.puntuacion)"></i>
+                                            <i class="bi bi-star-fill text-warning"
+                                                *ngFor="let star of getStarsArray(valoracion.puntuacion)"></i>
+                                            <i class="bi bi-star"
+                                                *ngFor="let star of getEmptyStarsArray(valoracion.puntuacion)"></i>
                                         </span>
                                     </div>
                                 </div>
@@ -218,11 +240,14 @@
                                     {{ valoracion.fecha | date:'dd/MM/yyyy' }}
                                 </small>
                             </a>
-                            <div class="d-flex justify-content-end gap-2 mt-3" *ngIf="esPerfilPropio || authService.esAdmin">
-                                <a [routerLink]="['/valoracion/form', valoracion.id]" class="btn btn-secondary text-white text-nowrap">
+                            <div class="d-flex justify-content-end gap-2 mt-3"
+                                *ngIf="esPerfilPropio || authService.esAdmin">
+                                <a [routerLink]="['/valoracion/form', valoracion.id]"
+                                    class="btn btn-secondary text-white text-nowrap">
                                     <i class="bi bi-pencil me-2"></i>Editar
                                 </a>
-                                <button type="button" name="eliminar" (click)="deleteValoracion(valoracion)" class="btn btn-danger text-nowrap">
+                                <button type="button" name="eliminar" (click)="deleteValoracion(valoracion)"
+                                    class="btn btn-danger text-nowrap">
                                     <i class="bi bi-trash3 me-2"></i>Eliminar
                                 </button>
                             </div>
