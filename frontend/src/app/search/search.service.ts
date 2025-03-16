@@ -14,22 +14,16 @@ export class SearchService {
 
   // Método para obtener el token del localStorage
   private getToken(): string | null {
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-      this.router.navigate(['/login']);  // Redirigir al login si el token no está presente
-    }
-    return token;
+    return localStorage.getItem('access_token');
   }
 
   // Método para crear cabeceras con el token
   private createHeaders(): HttpHeaders {
     const token = this.getToken();
-    let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    let headers = new HttpHeaders();
   
     if (token) {
       headers = headers.append('Authorization', `Bearer ${token}`);
-    } else {
-      console.log('No se encontró token en localStorage');
     }
   
     return headers;
