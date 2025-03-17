@@ -56,6 +56,12 @@ export class LibroComponent implements OnInit{
       let page: number = +params.get('page')! || 0;
       this.currentPage = page;
 
+      //Verificar si hay autor en la URL
+      const autorId = params.get('autorId');
+      if(autorId){
+        this.selectedAutorId = +autorId;
+      }
+
       // Si el usuario está logueado, cargamos sus libros comprados
       if (this.authService.estaLogueado()) {
         const usuarioId = this.authService.getCurrentUserId();

@@ -175,4 +175,5 @@ export class ResultadoBusquedaComponent implements OnInit {
   getDetallesLibro(libroId: number): void {
     this.router.navigate(['/libro', libroId]);
   }
+
 }

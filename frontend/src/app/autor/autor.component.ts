@@ -3,6 +3,7 @@ import { AutorService } from './autor.service';
 import { Autor } from './autor';
 import swal from 'sweetalert2';
 import { AuthService } from '../login/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-autor',
@@ -13,7 +14,11 @@ import { AuthService } from '../login/auth.service';
 export class AutorComponent implements OnInit {
   autores: Autor[] = [];
 
-  constructor(private autorService: AutorService,  public authService: AuthService ) {}
+  constructor(
+    private autorService: AutorService,  
+    public authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.autorService.autores$.subscribe(
@@ -111,4 +116,7 @@ export class AutorComponent implements OnInit {
     });
   }
 
+  verLibrosAutor(autorId: number): void {
+    this.router.navigate(['/libros/autor', autorId, 'page', 0, 'size',6]);
+  }
 }

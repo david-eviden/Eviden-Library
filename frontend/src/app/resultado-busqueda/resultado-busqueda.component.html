@@ -60,8 +60,9 @@
                         <div class="card-body">
                             <h5 class="card-title">{{autor.nombre}}</h5>
                             <p class="card-text">{{autor.biografia | slice:0:150}}...</p>
-                            <button class="btn btn-outline-primary" [routerLink]="['/autores']">
-                                Ver más
+                            <button class="btn btn-outline-primary"
+                                [routerLink]="['/libros/autor', autor.id, 'page', 0, 'size',6]">
+                                Ver sus libros
                             </button>
                         </div>
                     </div>

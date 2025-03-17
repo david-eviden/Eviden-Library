@@ -149,6 +149,7 @@ export const routes: Routes = [
   { path: 'principal', component: PrincipalComponent },
   { path: 'libros', component: LibroComponent },
   { path: 'libros/page/:page', component: LibroComponent},
+  { path: 'libros/autor/:autorId/page/:page/size/:size', component: LibroComponent},
   { path: 'libro/:id', component: DetallesLibroComponent },
   { path: 'login', component: LoginComponent },
   { path: 'registro', component: RegistroComponent },

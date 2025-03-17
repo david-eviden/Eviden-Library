@@ -85,7 +85,8 @@ export class SearchComponent implements OnInit {
         break;
       case 'autor':
         //this.router.navigate(['/autores', item.id]);
-        this.router.navigate(['/autores']);
+        //this.router.navigate(['/autores']);
+        this.router.navigate(['/libros/autor', item.id, 'page', 0, 'size',6]);
         break;
       case 'genero':
         //this.router.navigate(['/generos', item.id]);
