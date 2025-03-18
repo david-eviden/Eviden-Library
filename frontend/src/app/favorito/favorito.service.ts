@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError, of } from 'rxjs';
 import { Favorito } from './favorito';
@@ -12,53 +12,27 @@ import { AuthService } from '../login/auth.service';
 })
 export class FavoritoService {
 
-  private urlEndPoint: string = 'http://localhost:8081/api/favoritos'; 
+  private urlEndPoint: string = 'http://localhost:8081/api/favoritos';
   private urlFavoritoEndPoint: string = 'http://localhost:8081/api/favorito';
-  
+ 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private router: Router,
     private authService: AuthService
   ) {}
 
-  // Método para obtener el token del localStorage
-  private getToken(): string | null {
-    // Usar el método del servicio de autenticación
-    return this.authService.getToken();
-  }
-
-  // Método para crear cabeceras con el token
-  private createHeaders(): HttpHeaders {
-    const token = this.getToken();
-    let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-  
-    if (token) {
-      // Enviar el token tal como está, sin manipularlo
-      headers = headers.append('Authorization', `Bearer ${token}`);
-    } else {
-      console.log('No se encontró token en localStorage');
-    }
-  
-    return headers;
-  }
-  
   getUsuarios(): Observable<Favorito[]> {
-    return this.http.get(this.urlEndPoint, { headers: this.createHeaders() }).pipe(
-
-      // Conversión a favoritos (response de Object a Favorito[])
+    return this.http.get(this.urlEndPoint).pipe(
       map(response => {
-
         let favoritos = response as Favorito[];
-
         return favoritos.map(favorito => {
           favorito.usuario = favorito.usuario;
           favorito.libro = favorito.libro;
           favorito.fechaAgregado = favorito.fechaAgregado;
-         
           return favorito;
         });
-      }),
-    ); 
+      })
+    );
   }
 
   // Obtener favoritos por ID de usuario
@@ -67,12 +41,8 @@ export class FavoritoService {
       console.error('Intento de obtener favoritos sin ID de usuario');
       return of([]); // Devolver array vacío
     }
-    
-    const headers = this.createHeaders();
-    
-    return this.http.get<any>(`${this.urlFavoritoEndPoint}/usuario/${usuarioId}`, { 
-      headers: headers 
-    }).pipe(
+   
+    return this.http.get<any>(`${this.urlFavoritoEndPoint}/usuario/${usuarioId}`).pipe(
       map(response => {
         if (Array.isArray(response)) {
           return response.map(item => {
@@ -109,7 +79,7 @@ export class FavoritoService {
       console.error('Token inválido o expirado');
       return throwError('Token inválido o expirado');
     }
-    
+   
     // Obtener el usuario del localStorage
     const usuarioString = localStorage.getItem('usuario');
     if (!usuarioString) {
@@ -120,7 +90,7 @@ export class FavoritoService {
     try {
       const usuarioData = JSON.parse(usuarioString);
       const usuarioId = usuarioData.id;
-      
+     
       if (!usuarioId) {
         console.error('ID de usuario no encontrado en localStorage');
         return throwError('ID de usuario no disponible');
@@ -132,13 +102,9 @@ export class FavoritoService {
       favoritoCompleto.usuario.id = usuarioId;
       favoritoCompleto.libro = libro;
       favoritoCompleto.fechaAgregado = new Date().toISOString();
-      
-      // Enviar la solicitud con las cabeceras correctas
-      const headers = this.createHeaders();
-      
-      return this.http.post(`${this.urlFavoritoEndPoint}`, favoritoCompleto, { 
-        headers: headers,
-        observe: 'response'  // Para obtener la respuesta completa, incluyendo cabeceras y estado
+     
+      return this.http.post(`${this.urlFavoritoEndPoint}`, favoritoCompleto, {
+        observe: 'response'
       }).pipe(
         map(response => {
           return response.body;
@@ -172,18 +138,14 @@ export class FavoritoService {
     try {
       const usuarioData = JSON.parse(usuarioString);
       const usuarioId = usuarioData.id;
-      
+     
       if (!usuarioId) {
         console.error('ID de usuario no encontrado en localStorage');
         return of(false); // Asumir que no es favorito
       }
-
-      const headers = this.createHeaders();
-      
+     
       // Intentar con el endpoint específico
-      return this.http.get<boolean>(`${this.urlEndPoint}/check/${usuarioId}/${libroId}`, { 
-        headers: headers 
-      }).pipe(
+      return this.http.get<boolean>(`${this.urlEndPoint}/check/${usuarioId}/${libroId}`).pipe(
         map(response => {
           return response;
         }),
@@ -195,10 +157,10 @@ export class FavoritoService {
             message: error.message,
             error: error.error
           });
-          
+         
           // Si el endpoint no existe o hay un error de permisos, obtener todos los favoritos y verificar manualmente
           console.log('Endpoint de verificación no disponible, obteniendo todos los favoritos');
-          
+         
           // Alternativa: obtener todos los favoritos del usuario y verificar manualmente
           return this.getFavoritosByUsuarioId(usuarioId).pipe(
             map(favoritos => {
@@ -225,14 +187,10 @@ export class FavoritoService {
       console.error('Intento de eliminar un favorito sin ID');
       return throwError('No se puede eliminar un favorito sin ID');
     }
-    
+   
     console.log(`Eliminando favorito con ID: ${favorito.id}`);
-    
-    const headers = this.createHeaders();
-    
-    // Intentar primero con el endpoint estándar
-    return this.http.delete(`${this.urlFavoritoEndPoint}/${favorito.id}`, { 
-      headers: headers,
+   
+    return this.http.delete(`${this.urlFavoritoEndPoint}/${favorito.id}`, {
       observe: 'response'
     }).pipe(
       map(response => {
@@ -246,53 +204,29 @@ export class FavoritoService {
           message: error.message,
           error: error.error
         });
-        
-        // Si falla con el endpoint estándar, intentar con un endpoint alternativo
-        if (error.status === 403 || error.status === 404) {
-          // Intentar con un endpoint alternativo si el usuario y libro están disponibles
-          if (favorito.usuario?.id && favorito.libro?.id) {
-            return this.http.delete(`${this.urlFavoritoEndPoint}/usuario/${favorito.usuario.id}/libro/${favorito.libro.id}`, {
-              headers: headers,
-              observe: 'response'
-            }).pipe(
-              map(response => {
-                return response.body;
-              }),
-              catchError(secondError => {
-                console.error('Error al eliminar favorito con endpoint alternativo:', secondError);
-                return throwError(secondError);
-              })
-            );
-          }
-        }
-        
         return throwError(error);
       })
     );
   }
 
-  // Eliminar un favorito por ID de libro y usuario
+  // Eliminar favorito por libro y usuario
   deleteFavoritoByLibroAndUsuario(libroId: number, usuarioId: number): Observable<any> {
-    // Imprimir la URL completa y las cabeceras para depuración
-    const headers = this.createHeaders();
-    const url = `${this.urlFavoritoEndPoint}/usuario/${usuarioId}/libro/${libroId}`;
-    
-    return this.http.delete(url, { 
-      headers: headers,
+    if (!libroId || !usuarioId) {
+      console.error('Intento de eliminar favorito sin libroId o usuarioId');
+      return throwError('No se puede eliminar un favorito sin libroId o usuarioId');
+    }
+   
+    console.log(`Eliminando favorito para libro ${libroId} y usuario ${usuarioId}`);
+   
+    return this.http.delete(`${this.urlFavoritoEndPoint}/libro/${libroId}/usuario/${usuarioId}`, {
       observe: 'response'
     }).pipe(
       map(response => {
         return response.body;
       }),
       catchError(error => {
-        console.error('Error al eliminar favorito:', error);
-        console.error('Detalles del error:', {
-          status: error.status,
-          statusText: error.statusText,
-          message: error.message,
-          error: error.error
-        });
-        return throwError(() => error);
+        console.error(`Error al eliminar favorito para libro ${libroId} y usuario ${usuarioId}:`, error);
+        return throwError(error);
       })
     );
   }

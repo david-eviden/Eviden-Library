@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { Carrito } from './carrito';
@@ -10,38 +10,13 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class CarritoService {
-
-  private urlEndPoint: string = 'http://localhost:8081/api/carritos'; 
-  private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
+  private urlEndPoint: string = 'http://localhost:8081/api/carritos';
   private carrito: any[] = [];
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  // Método para obtener el token del localStorage
-  private getToken(): string | null {
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-      this.router.navigate(['/login']);  // Redirigir al login si el token no está presente
-    }
-    return token;
-  }
-
-  // Método para crear cabeceras con el token
-  private createHeaders(): HttpHeaders {
-    const token = this.getToken();
-    let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-  
-    if (token) {
-      headers = headers.append('Authorization', `Bearer ${token}`);
-    } else {
-      console.log('No se encontró token en localStorage');
-    }
-  
-    return headers;
-  }
-
   getCarritos(): Observable<Carrito[]> {
-    return this.http.get<any[]>(this.urlEndPoint, { headers: this.createHeaders() }).pipe(
+    return this.http.get<any[]>(this.urlEndPoint).pipe(
       map(response => {
         return response.map(item => {
           const carrito = new Carrito();
@@ -55,7 +30,7 @@ export class CarritoService {
             detalleCarrito.id = detalle.id;
             detalleCarrito.cantidad = detalle.cantidad;
             detalleCarrito.precioUnitario = detalle.precioUnitario;
-            
+           
             // Mapear el libro correctamente
             if (detalle.libro) {
               const libro = new Libro();
@@ -65,13 +40,13 @@ export class CarritoService {
               libro.stock = detalle.libro.stock;
               detalleCarrito.libro = libro;
             }
-            
+           
             return detalleCarrito;
-          }) || []; 
+          }) || [];
           return carrito;
         });
       })
-    ); 
+    );
   }
 
   addToCarrito(libro: any): void {
