@@ -188,7 +188,7 @@ export class AuthService {
     email: string,
     password: string 
   }): Observable<any> {
-    const registroPublicoEndPoint = 'http://localhost:8080/api/registro';
+    const registroPublicoEndPoint = 'http://localhost:8081/api/registro';
     
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
@@ -286,7 +286,7 @@ export class AuthService {
     const headers = this.createHeaders();
     
     // URL para obtener usuario por email (ajusta según tu API)
-    const url = 'http://localhost:8080/api/usuario/email/' + email;
+    const url = 'http://localhost:8081/api/usuario/email/' + email;
     
     return this.http.get<any>(url, { headers }).pipe(
       catchError(error => {
