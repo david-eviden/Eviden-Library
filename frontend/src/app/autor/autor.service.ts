@@ -8,10 +8,9 @@ import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'  //disponible a nivel global
 })
-export class AutorService implements OnInit{
+export class AutorService implements OnInit {
   private urlEndPoint: string = 'http://localhost:8081/api/autores';
-  private urlEndPoint1: string = 'http://localhost:8081/api/autor'; 
-  private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
+  private urlEndPoint1: string = 'http://localhost:8081/api/autor';
 
   // Creamos un BehaviorSubject para la lista de autores
   private autoresSubject = new BehaviorSubject<Autor[]>([]);
@@ -21,32 +20,9 @@ export class AutorService implements OnInit{
 
   ngOnInit(): void {}
 
-  // Método para obtener el token del localStorage
-  private getToken(): string | null {
-    const token = localStorage.getItem('access_token');
-    /* if (!token) {
-      this.router.navigate(['/login']);  // Redirigir al login si el token no está presente
-    } */
-    return token;
-  }
-
-  // Método para crear cabeceras con el token
-  private createHeaders(): HttpHeaders {
-    const token = this.getToken();
-    let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-  
-    if (token) {
-      headers = headers.append('Authorization', `Bearer ${token}`);
-    } else {
-      console.log('No se encontró token en localStorage');
-    }
-  
-    return headers;
-  }
-
   // Obtener lista de autores
   getAutores(): Observable<Autor[]> {
-    return this.http.get(this.urlEndPoint, { headers: this.createHeaders() }).pipe(
+    return this.http.get(this.urlEndPoint).pipe(
       map(response => {
         let autores = response as Autor[];
         return autores.map(autor => {
@@ -64,7 +40,7 @@ export class AutorService implements OnInit{
 
   // Crear autor
   create(autor: Autor): Observable<any> {
-    return this.http.post<any>(this.urlEndPoint1, autor, { headers: this.createHeaders() }).pipe(
+    return this.http.post<any>(this.urlEndPoint1, autor).pipe(
       catchError(e => {
         if (e.status == 400) {
           return throwError(e);
@@ -80,7 +56,7 @@ export class AutorService implements OnInit{
 
   // Obtener autor individual
   getAutor(id: number): Observable<Autor> {
-    return this.http.get<Autor>(`${this.urlEndPoint1}/${id}`, { headers: this.createHeaders() }).pipe(
+    return this.http.get<Autor>(`${this.urlEndPoint1}/${id}`).pipe(
       catchError(e => {
         this.router.navigate(['/autores']);
         console.log(e.error.mensaje);
@@ -92,7 +68,7 @@ export class AutorService implements OnInit{
 
   // Actualizar autor
   updateAutor(autor: Autor): Observable<any> {
-    return this.http.put<any>(`${this.urlEndPoint1}/${autor.id}`, autor, { headers: this.createHeaders() }).pipe(
+    return this.http.put<any>(`${this.urlEndPoint1}/${autor.id}`, autor).pipe(
       catchError(e => {
         if (e.status == 400) {
           return throwError(e);
@@ -108,7 +84,7 @@ export class AutorService implements OnInit{
 
   // Eliminar autor
   delete(id: number): Observable<Autor> {
-    return this.http.delete<Autor>(`${this.urlEndPoint1}/${id}`, { headers: this.createHeaders() }).pipe(
+    return this.http.delete<Autor>(`${this.urlEndPoint1}/${id}`).pipe(
       catchError(e => {
         this.router.navigate(['/autores']);
         console.log(e.error.mensaje);
@@ -123,7 +99,6 @@ export class AutorService implements OnInit{
 
   // Eliminar todos los autores
   deleteAll(): Observable<void> {
-    return this.http.delete<void>(`${this.urlEndPoint}`, { headers: this.createHeaders() });
+    return this.http.delete<void>(`${this.urlEndPoint}`);
   }
 }
-
