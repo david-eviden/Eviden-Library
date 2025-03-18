@@ -41,6 +41,7 @@ class GeneroServiceTest {
     private Libro libro2;
     
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         // Configurar datos de prueba
         genero1 = new Genero();
