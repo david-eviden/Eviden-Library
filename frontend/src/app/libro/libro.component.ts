@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { LibroService } from './libro.service';
 import { Libro } from './libro';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
@@ -21,10 +21,11 @@ export class LibroComponent implements OnInit{
   autores : Autor[]= [];
   paginador: any;
   animationState = "in"
-  pageSizes: number[] = [3, 6, 9, 12]; // Opciones de tamaño de página
-  currentPageSize: number = 6; // Tamaño de página por defecto
+  pageSizes: number[] = [4, 8, 12, 16]; // Opciones de tamaño de página
+  currentPageSize: number = 8; // Tamaño de página por defecto
   currentPage: number = 0; // Página actual
   selectedAutorId: number = 0; // ID del autor seleccionado (0 para todos)
+  isMobile: boolean = false;
 
   constructor(
     private libroService: LibroService, 
@@ -39,6 +40,22 @@ export class LibroComponent implements OnInit{
     ).subscribe(() => {
       this.handleViewTransition();
     });
+    this.checkScreenSize();
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.checkScreenSize();
+  }
+
+  private checkScreenSize() {
+    this.isMobile = window.innerWidth < 768; // Consideramos móvil si el ancho es menor a 768px
+    if (this.isMobile) {
+      this.currentPageSize = 4;
+    } else {
+      this.currentPageSize = 8;
+    }
+    this.cargarLibros();
   }
 
   handleViewTransition(): void {

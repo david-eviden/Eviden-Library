@@ -71,6 +71,14 @@ export class FormLibroComponent implements OnInit {
   }
 
   private saveLibro(): void {
+    // Asignar el autor y género seleccionados al libro
+    if (this.autorSeleccionado && this.autorSeleccionado.id !== 0) {
+      this.libro.autores = [this.autorSeleccionado];
+    }
+    if (this.generoSeleccionado && this.generoSeleccionado.id !== 0) {
+      this.libro.generos = [this.generoSeleccionado];
+    }
+
     this.libroService.create(this.libro).subscribe({
       next: (response) => {
         swal(
@@ -127,6 +135,14 @@ export class FormLibroComponent implements OnInit {
   }
 
   private updateLibro(): void {
+    // Asignar el autor y género seleccionados al libro
+    if (this.autorSeleccionado && this.autorSeleccionado.id !== 0) {
+      this.libro.autores = [this.autorSeleccionado];
+    }
+    if (this.generoSeleccionado && this.generoSeleccionado.id !== 0) {
+      this.libro.generos = [this.generoSeleccionado];
+    }
+
     this.libroService.updateLibro(this.libro).subscribe({
       next: (json) => {
         swal(

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { detallesCarrito } from './detalles-carrito';
-import { DetallesCarritoService } from './detalles-carrito.service';
+import { detallesCarrito } from '../detalles-carrito/detalles-carrito';
+import { DetallesCarritoService } from '../detalles-carrito/detalles-carrito.service';
 import { AuthService } from '../login/auth.service';
 import { Router } from '@angular/router';
 import swal from 'sweetalert2';
@@ -9,9 +9,9 @@ import { Pedido } from '../pedido/pedido';
 import { PedidoService } from '../pedido/pedido.service';
 import { detallesPedido } from '../detalles-pedido/detalles-pedido';
 import { Usuario } from '../usuario/usuario';
-import { forkJoin } from 'rxjs';
-import { of } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
 import { UsuarioService } from '../usuario/usuario.service';
+import { LibrosCompradosService } from '../services/libros-comprados.service';
 
 @Component({
   selector: 'app-detalles-carrito',
@@ -30,7 +30,8 @@ export class DetallesCarritoComponent implements OnInit {
     public authService: AuthService,
     private router: Router,
     private pedidoService: PedidoService,
-    private usuarioService: UsuarioService
+    private usuarioService: UsuarioService,
+    private librosCompradosService: LibrosCompradosService
   ) {}
 
   private actualizarContadorCarrito(): void {
@@ -336,6 +337,9 @@ export class DetallesCarritoComponent implements OnInit {
               
               // Si no hay detalles que crear, mostrar mensaje de éxito directamente
               if (detallesObservables.length === 0) {
+                // Actualizar el caché de libros comprados
+                this.librosCompradosService.cargarLibrosComprados(usuarioActual.id).subscribe();
+                
                 swal({
                   title: '¡Pago completado!',
                   text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente. Se ha creado el pedido #${pedidoCreado.id}.`,
@@ -347,125 +351,65 @@ export class DetallesCarritoComponent implements OnInit {
                 return;
               }
               
-              // Usar forkJoin para esperar a que todos los observables se completen
+              // Crear todos los detalles del pedido
               forkJoin(detallesObservables).subscribe({
-                next: (detalles) => {
-                  // Verificar si algún detalle tuvo error
-                  const detallesConError = detalles.filter(detalle => detalle && detalle.error === true);
+                next: (resultados) => {
+                  // Verificar si hubo algún error en la creación de detalles
+                  const errores = resultados.filter(r => r.error);
                   
-                  // Esperar un segundo antes de enviar el email de confirmación para asegurarnos
-                  // de que todos los detalles del pedido se hayan creado correctamente
-                  setTimeout(() => {
-                    // Enviar el email de confirmación después de crear todos los detalles
-                    if (pedidoCreado && pedidoCreado.id) {
-                      this.pedidoService.enviarEmailConfirmacion(pedidoCreado.id).subscribe({
-                        next: (respuesta) => {
-                          console.log('Email de confirmación enviado:', respuesta);
-                          
-                          if (detallesConError.length > 0) {
-                            console.warn('Algunos detalles tuvieron errores:', detallesConError);
-                            // Mostrar mensaje de éxito parcial
-                            swal({
-                              title: '¡Pago completado!',
-                              text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente. Se ha creado el pedido #${pedidoCreado.id}, pero hubo un problema al registrar algunos detalles. Se ha enviado un email de confirmación a tu correo electrónico. Serás redirigido a tu perfil para ver tu historial de pedidos.`,
-                              type: 'warning',
-                              confirmButtonText: 'Continuar'
-                            }).then(() => {
-                              // Eliminar los items del carrito a pesar del error
-                              this.eliminarItemsDelCarrito();
-                            });
-                          } else {
-                            // Mostrar mensaje de éxito
-                            swal({
-                              title: '¡Pago completado!',
-                              text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente. Se ha creado el pedido #${pedidoCreado.id}. Se ha enviado un email de confirmación a tu correo electrónico. Serás redirigido a tu perfil para ver tu historial de pedidos.`,
-                              type: 'success',
-                              confirmButtonText: 'Continuar'
-                            }).then(() => {
-                              // Eliminar los items del carrito después de crear el pedido
-                              this.eliminarItemsDelCarrito();
-                            });
-                          }
-                        },
-                        error: (error) => {
-                          console.error('Error al enviar el email de confirmación:', error);
-                          
-                          if (detallesConError.length > 0) {
-                            console.warn('Algunos detalles tuvieron errores:', detallesConError);
-                            // Mostrar mensaje de éxito parcial
-                            swal({
-                              title: '¡Pago completado!',
-                              text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente. Se ha creado el pedido #${pedidoCreado.id}, pero hubo un problema al registrar algunos detalles y al enviar el email de confirmación. Serás redirigido a tu perfil para ver tu historial de pedidos.`,
-                              type: 'warning',
-                              confirmButtonText: 'Continuar'
-                            }).then(() => {
-                              // Eliminar los items del carrito a pesar del error
-                              this.eliminarItemsDelCarrito();
-                            });
-                          } else {
-                            // Mostrar mensaje de éxito
-                            swal({
-                              title: '¡Pago completado!',
-                              text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente. Se ha creado el pedido #${pedidoCreado.id}, pero hubo un problema al enviar el email de confirmación. Serás redirigido a tu perfil para ver tu historial de pedidos.`,
-                              type: 'warning',
-                              confirmButtonText: 'Continuar'
-                            }).then(() => {
-                              // Eliminar los items del carrito después de crear el pedido
-                              this.eliminarItemsDelCarrito();
-                            });
-                          }
-                        }
+                  if (errores.length > 0) {
+                    console.error('Errores al crear algunos detalles del pedido:', errores);
+                    swal('Advertencia', 'Algunos detalles del pedido no se pudieron crear correctamente.', 'warning');
+                  }
+                  
+                  // Actualizar el caché de libros comprados
+                  this.librosCompradosService.cargarLibrosComprados(usuarioActual.id).subscribe();
+                  
+                  // Enviar email de confirmación
+                  this.pedidoService.enviarEmailConfirmacion(pedidoCreado.id!).subscribe({
+                    next: () => {
+                      swal({
+                        title: '¡Pago completado!',
+                        text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente. Se ha creado el pedido #${pedidoCreado.id}.`,
+                        type: 'success',
+                        confirmButtonText: 'Continuar'
+                      }).then(() => {
+                        this.eliminarItemsDelCarrito();
+                      });
+                    },
+                    error: (error) => {
+                      console.error('Error al enviar el email de confirmación:', error);
+                      swal({
+                        title: '¡Pago completado!',
+                        text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente. Se ha creado el pedido #${pedidoCreado.id}.`,
+                        type: 'success',
+                        confirmButtonText: 'Continuar'
+                      }).then(() => {
+                        this.eliminarItemsDelCarrito();
                       });
                     }
-                  }, 1000); // Esperar 1 segundo
+                  });
                 },
                 error: (error) => {
                   console.error('Error al crear los detalles del pedido:', error);
-                  // Mostrar mensaje de éxito parcial
-                  swal({
-                    title: '¡Pago completado!',
-                    text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente, pero hubo un problema al registrar tu pedido. Por favor, contacta con soporte. Serás redirigido a tu perfil para ver tu historial de pedidos.`,
-                    type: 'warning',
-                    confirmButtonText: 'Continuar'
-                  }).then(() => {
-                    // Eliminar los items del carrito a pesar del error
-                    this.eliminarItemsDelCarrito();
-                  });
+                  swal('Error', 'Hubo un error al procesar los detalles del pedido.', 'error');
                 }
               });
             },
             error: (error) => {
               console.error('Error al crear el pedido:', error);
-              
-              // Mostrar mensaje de error pero aún así eliminar los items del carrito
-              swal({
-                title: '¡Pago completado!',
-                text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente, pero hubo un problema al registrar tu pedido. Por favor, contacta con soporte. Serás redirigido a tu perfil para ver tu historial de pedidos.`,
-                type: 'warning',
-                confirmButtonText: 'Continuar'
-              }).then(() => {
-                // Eliminar los items del carrito a pesar del error
-                this.eliminarItemsDelCarrito();
-              });
+              swal('Error', 'Hubo un error al crear el pedido.', 'error');
             }
           });
         },
-        error: (error: any) => {
+        error: (error) => {
           console.error('Error al obtener la información del usuario:', error);
-          swal('Error', 'No se pudo obtener la información del usuario', 'error');
+          swal('Error', 'No se pudo obtener la información del usuario.', 'error');
         }
       });
     } catch (error) {
-      console.error('Error inesperado al procesar la compra:', error);
-      swal({
-        title: '¡Pago completado!',
-        text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente, pero hubo un problema al registrar tu pedido. Por favor, contacta con soporte. Serás redirigido a tu perfil para ver tu historial de pedidos.`,
-        type: 'warning',
-        confirmButtonText: 'Continuar'
-      }).then(() => {
-        // Eliminar los items del carrito a pesar del error
-        this.eliminarItemsDelCarrito();
-      });
+      console.error('Error en procesarCompraExitosa:', error);
+      swal('Error', 'Hubo un error al procesar la compra.', 'error');
     }
   }
   

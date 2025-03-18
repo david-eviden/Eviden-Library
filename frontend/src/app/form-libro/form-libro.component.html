@@ -39,6 +39,34 @@
                     </div>
                 </div>
 
+                <!-- Campo Año -->
+                <div class="form-group row mb-4">
+                    <label for="anio" class="col-sm-3 col-form-label">Año:</label>
+                    <div class="col-sm-9">
+                        <input type="text" 
+                               class="form-control form-control-lg" 
+                               [(ngModel)]="libro.anio" 
+                               name="anio" 
+                               #anio="ngModel" 
+                               placeholder="Año de publicación..."
+                               maxlength="4" 
+                               minlength="4" 
+                               pattern="[0-9]*"
+                               required>
+                        <div class="alert alert-danger mt-2" *ngIf="anio.invalid && (anio.dirty || anio.touched)">
+                            <div *ngIf="anio.errors?.['required']">
+                                El año es requerido
+                            </div>
+                            <div *ngIf="anio.errors?.['maxlength'] || anio.errors?.['minlength']">
+                                El año debe tener 4 dígitos
+                            </div>
+                            <div *ngIf="anio.errors?.['pattern']">
+                                El año debe contener solo números
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Campo Descripción -->
                 <div class="form-group row mb-4">
                     <label for="descripcion" class="col-sm-3 col-form-label">Descripción:</label>

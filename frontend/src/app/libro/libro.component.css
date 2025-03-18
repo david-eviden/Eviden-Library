@@ -8,6 +8,9 @@
 
 .card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+  max-width: 250px;
+  margin: 0 auto;
 }
 
 .card:hover {
@@ -17,9 +20,10 @@
 }
 
 .card-img-top {
-  height: 250px;
+  aspect-ratio: 2/3;
+  width: 100%;
   object-fit: cover;
-  object-position: center;
+  max-height: 350px;
 }
 
 .btn-primary:hover {
@@ -27,12 +31,40 @@
   border-color: #0056b3;
 }
 
+/* Responsive */
+@media (max-width: 992px) {
+  .card {
+    max-width: 230px;
+  }
+}
+
 @media (max-width: 767px) {
-  .card-img-top {
-    height: 200px;
+  .card {
+    max-width: 220px;
+  }
+}
+
+@media (max-width: 650px) {
+  .flex-grow-0 {
+    flex-basis: 98.5%;
+    margin-top: 1rem;
   }
   .input-group {
     width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .card {
+    max-width: 280px;
+  }
+  .card-img-top {
+    aspect-ratio: 2/3;
+    max-height: 400px;
+  }
+  .input-group {
+    width: 80%;
+    margin: 0 auto;
   }
   .flex-grow-0 {
     flex-basis: 98.5%;
