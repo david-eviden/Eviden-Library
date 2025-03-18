@@ -11,8 +11,7 @@ import swal from 'sweetalert2';
 export class ValoracionService implements OnInit {
 
   private urlEndPoint: string = 'http://localhost:8081/api/valoraciones';
-  private urlEndPoint1: string = 'http://localhost:8081/api/valoracion'; 
-  private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
+  private urlEndPoint1: string = 'http://localhost:8081/api/valoracion';
 
   // Creamos un BehaviorSubject para la lista de valoraciones
   private valoracionesSubject = new BehaviorSubject<Valoracion[]>([]);
@@ -22,33 +21,9 @@ export class ValoracionService implements OnInit {
 
   ngOnInit(): void {}
 
-  // Método para obtener el token del localStorage
-  private getToken(): string | null {
-    const token = localStorage.getItem('access_token');
-    /* if (!token) {
-      this.router.navigate(['/login']);  // Redirigir al login si el token no está presente
-    }  */
-
-    return token;
-  }
-
-  // Método para crear cabeceras con el token
-  private createHeaders(): HttpHeaders {
-    const token = this.getToken();
-    let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-  
-    if (token) {
-      headers = headers.append('Authorization', `Bearer ${token}`);
-    } else {
-      console.log('No se encontró token en localStorage');
-    }
-  
-    return headers;
-  }
-
   // Obtener valoraciones por ID de usuario
   getValoracionesPorUsuarioId(usuarioId: number): Observable<Valoracion[]> {
-    return this.http.get<Valoracion[]>(`${this.urlEndPoint}/usuario/${usuarioId}`, { headers: this.createHeaders() }).pipe(
+    return this.http.get<Valoracion[]>(`${this.urlEndPoint}/usuario/${usuarioId}`).pipe(
       catchError(e => {
         console.error(e.error.mensaje);
         return throwError(() => e);
@@ -57,7 +32,7 @@ export class ValoracionService implements OnInit {
   }
 
   getValoraciones(): Observable<Valoracion[]> {
-    return this.http.get<any[]>(this.urlEndPoint, { headers: this.createHeaders() }).pipe(
+    return this.http.get<any[]>(this.urlEndPoint).pipe(
       map(response => {
         return response.map(item => {
           const valoracion = new Valoracion();
@@ -71,12 +46,12 @@ export class ValoracionService implements OnInit {
           return valoracion;
         });
       })
-    ); 
+    );
   }
 
   // Crear valoracion
   create(valoracion: Valoracion): Observable<any> {
-    return this.http.post<any>(this.urlEndPoint1, valoracion, { headers: this.createHeaders() }).pipe(
+    return this.http.post<any>(this.urlEndPoint1, valoracion).pipe(
       tap(response => {
         //Actualizar la lista de valoraciones
         this.getValoraciones().subscribe(valoraciones => {
@@ -98,7 +73,7 @@ export class ValoracionService implements OnInit {
 
   // Obtener valoracion individual
   getValoracion(id: number): Observable<Valoracion> {
-    return this.http.get<Valoracion>(`${this.urlEndPoint1}/${id}`, { headers: this.createHeaders() }).pipe(
+    return this.http.get<Valoracion>(`${this.urlEndPoint1}/${id}`).pipe(
       catchError(e => {
         this.router.navigate(['/valoraciones']);
         console.log(e.error.mensaje);
@@ -110,7 +85,7 @@ export class ValoracionService implements OnInit {
 
   // Actualizar valoracion
   updateValoracion(valoracion: Valoracion): Observable<any> {
-    return this.http.put<any>(`${this.urlEndPoint1}/${valoracion.id}`, valoracion, { headers: this.createHeaders() }).pipe(
+    return this.http.put<any>(`${this.urlEndPoint1}/${valoracion.id}`, valoracion).pipe(
       tap(response => {
         //Actualizar la lista de valoraciones
         this.getValoraciones().subscribe(valoraciones => {
@@ -132,7 +107,7 @@ export class ValoracionService implements OnInit {
 
   // Eliminar valoracion
   delete(id: number): Observable<Valoracion> {
-    return this.http.delete<Valoracion>(`${this.urlEndPoint1}/${id}`, { headers: this.createHeaders() }).pipe(
+    return this.http.delete<Valoracion>(`${this.urlEndPoint1}/${id}`).pipe(
       tap(response => {
         //Actualizar la lista de valoraciones
         this.getValoraciones().subscribe(valoraciones => {
