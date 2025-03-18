@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -20,25 +20,13 @@ export class DetallesCarritoService {
     private authService: AuthService
   ) { }
 
-  private createHeaders(): HttpHeaders {
-    const token = this.authService.getToken();
-    if (!token) {
-      throw new Error('No hay token de autenticación');
-    }
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    });
-  }
-
   getdetallesCarrito(): Observable<detallesCarrito[]> {
     const userId = this.authService.getCurrentUserId();
     if (!userId) {
       return throwError(() => new Error('Usuario no autenticado'));
     }
 
-    const headers = this.createHeaders();
-    return this.http.get<detallesCarrito[]>(`${this.urlEndPoint}/usuario/${userId}`, { headers }).pipe(
+    return this.http.get<detallesCarrito[]>(`${this.urlEndPoint}/usuario/${userId}`).pipe(
       catchError(error => {
         console.error('Error al obtener detalles del carrito:', error);
         return throwError(() => error);
@@ -47,8 +35,7 @@ export class DetallesCarritoService {
   }
 
   getDetalleCarrito(id: number): Observable<detallesCarrito> {
-    const headers = this.createHeaders();
-    return this.http.get<detallesCarrito>(`${this.urlEndPoint}/${id}`, { headers }).pipe(
+    return this.http.get<detallesCarrito>(`${this.urlEndPoint}/${id}`).pipe(
       catchError(error => {
         console.error('Error al obtener detalle del carrito:', error);
         return throwError(() => error);
@@ -57,8 +44,7 @@ export class DetallesCarritoService {
   }
 
   create(detalleCarrito: detallesCarrito): Observable<detallesCarrito> {
-    const headers = this.createHeaders();
-    return this.http.post<detallesCarrito>(`${this.urlEndPoint}`, detalleCarrito, { headers }).pipe(
+    return this.http.post<detallesCarrito>(`${this.urlEndPoint}`, detalleCarrito).pipe(
       catchError(error => {
         console.error('Error al crear detalle del carrito:', error);
         return throwError(() => error);
@@ -67,8 +53,7 @@ export class DetallesCarritoService {
   }
 
   update(detalleCarrito: detallesCarrito): Observable<detallesCarrito> {
-    const headers = this.createHeaders();
-    return this.http.put<any>(`http://localhost:8081/api/detalle-carrito/${detalleCarrito.id}`, detalleCarrito, { headers }).pipe(
+    return this.http.put<any>(`http://localhost:8081/api/detalle-carrito/${detalleCarrito.id}`, detalleCarrito).pipe(
       map(response => response.detalleCarrito as detallesCarrito),
       catchError(error => {
         console.error('Error al actualizar detalle del carrito:', error);
@@ -78,8 +63,7 @@ export class DetallesCarritoService {
   }
 
   delete(id: number): Observable<void> {
-    const headers = this.createHeaders();
-    return this.http.delete<void>(`http://localhost:8081/api/detalle-carrito/${id}`, { headers }).pipe(
+    return this.http.delete<void>(`http://localhost:8081/api/detalle-carrito/${id}`).pipe(
       catchError(error => {
         console.error('Error al eliminar detalle del carrito:', error);
         return throwError(() => error);
@@ -93,14 +77,13 @@ export class DetallesCarritoService {
       return throwError(() => new Error('Usuario no autenticado'));
     }
 
-    const headers = this.createHeaders();
     const detalleCarrito = {
       libro: libro,
       cantidad: cantidad,
       precioUnitario: libro.precio
     };
 
-    return this.http.post<detallesCarrito>(`${this.urlEndPoint}/add/${userId}`, detalleCarrito, { headers }).pipe(
+    return this.http.post<detallesCarrito>(`${this.urlEndPoint}/add/${userId}`, detalleCarrito).pipe(
       map(response => {
         // Después de añadir el item, obtenemos el total actualizado
         this.getdetallesCarrito().subscribe(items => {
