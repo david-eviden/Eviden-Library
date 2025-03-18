@@ -306,5 +306,53 @@ export class LibroService {
       })
     );
   }
-  
+ 
+  // Obtener libros filtrados por autor y género
+  getLibrosPorAutorYGenero(page: number, size: number, autorId: number, generoId: number): Observable<any> {
+    return this.http.get(`${this.urlEndPoint}/autor/${autorId}/genero/${generoId}/page/${page}/size/${size}`, { headers: this.createHeaders() })
+      .pipe(
+        map((response: any) => {
+          (response.content as Libro[]).map(libro => {
+            libro.titulo = libro.titulo;
+            libro.precio = libro.precio;
+            libro.stock = libro.stock;
+            libro.descripcion = libro.descripcion;
+            return libro;
+          });
+          return response;
+        }),
+        catchError(e => {
+          console.error('Error al cargar libros por autor y género:', e);
+          // Si hay un error, intentar obtener todos los libros y filtrar en el cliente
+          return this.getLibrosNoPagin().pipe(
+            map(libros => {
+              // Filtrar libros por autor y género
+              const librosFiltrados = libros.filter(libro =>
+                libro.autores && libro.autores.some(autor => autor.id === autorId) &&
+                libro.generos && libro.generos.some(genero => genero.id === generoId)
+              );
+             
+              // Crear un objeto con la misma estructura que la respuesta paginada
+              return {
+                content: librosFiltrados.slice(page * size, (page + 1) * size),
+                totalElements: librosFiltrados.length,
+                totalPages: Math.ceil(librosFiltrados.length / size),
+                size: size,
+                number: page
+              };
+            }),
+            catchError(err => {
+              console.error('Error al cargar y filtrar libros por autor y género en el cliente:', err);
+              return of({
+                content: [],
+                totalPages: 0,
+                totalElements: 0,
+                size: size,
+                number: page
+              });
+            })
+          );
+        })
+      );
+  }
 }

@@ -89,11 +89,11 @@ public class LibroController {
     // Obtener libros de un genero y autor específico (paginado con tamaño personalizado)
     @GetMapping("/libros/genero/{generoId}/autor/{autorId}/page/{page}/size/{size}")
     public Page<Libro> getLibrosPorGeneroYAutor(
-            @PathVariable(name = "generoId") Long generoId,
-            @PathVariable(name = "autorId") Long autorId,
+    		@PathVariable(name = "autorId") Long autorId,
+            @PathVariable(name = "generoId") Long generoId,            
             @PathVariable(name = "page") Integer page, 
             @PathVariable(name = "size") Integer size) {
-        return libroService.findByGeneroIdPaginado(generoId, PageRequest.of(page, size));
+        return libroService.findByGeneroIdAndAutorIdPaginado(generoId, autorId, PageRequest.of(page, size));
     }
     
     //Obtener mejor valorados
