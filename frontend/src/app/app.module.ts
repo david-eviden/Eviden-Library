@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { PrincipalComponent } from './principal/principal.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FooterComponent } from './footer/footer.component';
 import { AutorComponent } from './autor/autor.component';
 import { LibroComponent } from './libro/libro.component';
@@ -40,6 +40,7 @@ import { RegistroComponent } from './registro/registro.component';
 import { SeccionCategoriaComponent } from './seccion-categoria/seccion-categoria.component';
 import { NgxPayPalModule } from 'ngx-paypal';
 import { PaypalComponent } from './paypal/paypal.component';
+import { AuthInterceptor } from './login/auth.interceptor';
 
 
 @NgModule({
@@ -85,7 +86,11 @@ import { PaypalComponent } from './paypal/paypal.component';
     FormsModule,
     NgxPayPalModule
 ],
-  providers: [...appConfig.providers, LibroService],
+  providers: [
+    ...appConfig.providers, 
+    LibroService,
+    {provide:HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
