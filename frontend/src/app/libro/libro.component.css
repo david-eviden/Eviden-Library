@@ -27,13 +27,39 @@
   border-color: #0056b3;
 }
 
+/*Generos*/
+.generos-horizontal {
+  padding: 1rem o;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.generos-horizontal .btn {
+  transition: all 0.3s ease;
+  border-radius: 20px;
+  padding: 0.5 rem 1.5 rem;
+  font-size: 0.9rem;
+}
+
+.generos-horizontal .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.generos-horizontal .btn.active {
+  background-color: #0d6efd;
+  color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
 @media (max-width: 767px) {
   .card-img-top {
     height: 200px;
   }
+
   .input-group {
     width: 100%;
   }
+
   .flex-grow-0 {
     flex-basis: 98.5%;
   }

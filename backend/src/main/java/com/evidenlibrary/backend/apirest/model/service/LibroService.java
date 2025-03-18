@@ -11,9 +11,11 @@ public interface LibroService {
 
 	public List<Libro> findAll();
 	
+	//Filtros
 	public Page<Libro> findAllPaginado(Pageable pageable); // Paginación
-	
 	public Page<Libro> findByAutorIdPaginado(Long autorId, Pageable pageable); //Paginacion con autor
+	public Page<Libro> findByGeneroIdPaginado(Long generoId, Pageable pageable); //Paginacion con genero
+	public Page<Libro> findByGeneroIdAndAutorIdPaginado(Long generoId,Long autorId, Pageable pageable);//TODO
 	
 	public List<Libro> getMejorValorados();//Mejor valorados
 	

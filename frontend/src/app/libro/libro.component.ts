@@ -8,6 +8,8 @@ import { AuthService } from '../login/auth.service';
 import { Autor } from '../autor/autor';
 import { DetallesCarritoService } from '../detalles-carrito/detalles-carrito.service';
 import { LibrosCompradosService } from '../services/libros-comprados.service';
+import { GeneroService } from '../generos/generos.service';
+import { Genero } from '../generos/generos';
 
 @Component({
   selector: 'app-libro',
@@ -19,20 +21,23 @@ export class LibroComponent implements OnInit{
 
   libros : Libro[]= [];
   autores : Autor[]= [];
+  generos: Genero[] = [];
   paginador: any;
   animationState = "in"
   pageSizes: number[] = [3, 6, 9, 12]; // Opciones de tamaño de página
   currentPageSize: number = 6; // Tamaño de página por defecto
   currentPage: number = 0; // Página actual
   selectedAutorId: number = 0; // ID del autor seleccionado (0 para todos)
+  selectedGeneroId: number = 0; // ID del género seleccionado (0 para todos)
 
   constructor(
-    private libroService: LibroService, 
-    private router: Router, 
-    private activatedRoute: ActivatedRoute, 
+    private libroService: LibroService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
     public authService: AuthService,
     private carritoService: DetallesCarritoService,
-    private librosCompradosService: LibrosCompradosService
+    private librosCompradosService: LibrosCompradosService,
+    private generoService: GeneroService
   ) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationStart)
@@ -51,15 +56,24 @@ export class LibroComponent implements OnInit{
   ngOnInit(): void {
     //Cargamos la lista de autores
     this.cargarAutores();
+    //Cargamos la lista de géneros
+    this.cargarGeneros();
 
-    this.activatedRoute.paramMap.subscribe(params => {
-      let page: number = +params.get('page')! || 0;
-      this.currentPage = page;
+    this.activatedRoute.queryParams.subscribe((params: { [key: string]: string | string[] | undefined }) => {
+      // Actualizar página actual
+      const pageParam = params['page'];
+      this.currentPage = pageParam ? +pageParam : 0;
 
-      //Verificar si hay autor en la URL
-      const autorId = params.get('autorId');
-      if(autorId){
-        this.selectedAutorId = +autorId;
+      // Actualizar filtro de autor
+      const autorIdParam = params['autorId'];
+      if (autorIdParam && typeof autorIdParam === 'string') {
+        this.selectedAutorId = +autorIdParam;
+      }
+
+      // Actualizar filtro de género
+      const generoIdParam = params['generoId'];
+      if (generoIdParam && typeof generoIdParam === 'string') {
+        this.selectedGeneroId = +generoIdParam;
       }
 
       // Si el usuario está logueado, cargamos sus libros comprados
@@ -73,7 +87,7 @@ export class LibroComponent implements OnInit{
       }
     });
 
-  
+ 
     /* Sin paginacion */
     /*
     this.libroService.getLibros().subscribe(
@@ -132,7 +146,7 @@ export class LibroComponent implements OnInit{
           response => {
             // Vaciamos el array de libros
             this.libros = [];
-  
+ 
             swal(
               '¡Eliminados!',
               'Todos los libros han sido eliminados :(',
@@ -171,7 +185,7 @@ export class LibroComponent implements OnInit{
       }
     });
   }
-  
+ 
   // Método para cambiar el tamaño de la página
   cambiarTamanioPagina(event: any): void {
     this.currentPageSize = +event.target.value;
@@ -182,56 +196,88 @@ export class LibroComponent implements OnInit{
 
   // Método para filtrar por autor
   filtrarPorAutor(event: any): void {
-    this.selectedAutorId = +event.target.value;
-    
-    // Si no hay autores cargados y se intenta filtrar, cargar autores primero
-    if (this.autores.length === 0 && this.selectedAutorId > 0) {
-      console.log('No hay autores cargados, intentando cargar autores primero...');
-      this.cargarAutores();
+    const autorId = +event.target.value;
+    this.selectedAutorId = autorId;
+    this.currentPage = 0; // Resetear a la primera página
+   
+    // Actualizar la URL con los parámetros actuales
+    const params: any = { page: this.currentPage };
+   
+    if (autorId > 0) {
+      params.autorId = autorId;
     }
-    
-    this.currentPage = 0; // Volvemos a la primera página al cambiar el filtro
+   
+    if (this.selectedGeneroId > 0) {
+      params.generoId = this.selectedGeneroId;
+    }
+   
+    this.router.navigate(['/libros'], {
+      queryParams: params,
+      queryParamsHandling: 'merge'
+    });
+   
     this.cargarLibros();
-    this.router.navigate(['/libros/page', 0]); // Actualizamos la URL
   }
 
-  // Método para cargar libros con el tamaño de página actual y filtro de autor
-  cargarLibros(): void {
+  // Método para filtrar por género
+  filtrarPorGenero(generoId: number): void {
+    this.selectedGeneroId = generoId;
+    this.currentPage = 0; // Resetear a la primera página
+   
+    // Actualizar la URL con los parámetros actuales
+    const params: any = { page: this.currentPage };
+   
     if (this.selectedAutorId > 0) {
-      // Si hay un autor seleccionado, cargar libros filtrados
-      this.libroService.getLibrosPorAutor(this.currentPage, this.currentPageSize, this.selectedAutorId)
-        .subscribe({
-          next: (response) => {
-            this.libros = response.content as Libro[];
-            this.paginador = response;
-            if (this.libros.length === 0) {
-              console.log("No se encontraron libros para el autor seleccionado");
-            }
-          },
-          error: (error) => {
-            console.error('Error cargando los libros del autor: ', error);
-            this.libros = [];
-            this.paginador = null;
-          }
-        });
-    } else {
-      // Si no hay autor seleccionado, cargar todos los libros
-      this.libroService.getLibrosConTamanio(this.currentPage, this.currentPageSize)
-        .subscribe({
-          next: (response) => {
-            this.libros = response.content as Libro[];
-            this.paginador = response;
-            if (this.libros.length === 0) {
-              console.log("No se encontraron libros en el catálogo");
-            }
-          },
-          error: (error) => {
-            console.error('Error cargando los libros: ', error);
-            this.libros = [];
-            this.paginador = null;
-          }
-        });
+      params.autorId = this.selectedAutorId;
     }
+   
+    if (generoId > 0) {
+      params.generoId = generoId;
+    }
+   
+    this.router.navigate(['/libros'], {
+      queryParams: params,
+      queryParamsHandling: 'merge'
+    });
+   
+    this.cargarLibros();
+  }
+
+  // Método para cargar libros con el tamaño de página actual y filtros
+  cargarLibros(): void {
+    // Primero cargamos todos los libros
+    this.libroService.getLibrosConTamanio(this.currentPage, this.currentPageSize).subscribe({
+      next: (response) => {
+        let librosFiltrados = response.content as Libro[];
+       
+        // Aplicamos el filtro de autor si está seleccionado
+        if (this.selectedAutorId > 0) {
+          librosFiltrados = librosFiltrados.filter(libro => libro.autor.id === this.selectedAutorId);
+        }
+       
+        // Aplicamos el filtro de género si está seleccionado
+        if (this.selectedGeneroId > 0) {
+          librosFiltrados = librosFiltrados.filter(libro => libro.genero.id === this.selectedGeneroId);
+        }
+       
+        this.libros = librosFiltrados;
+        this.paginador = {
+          ...response,
+          content: librosFiltrados,
+          totalElements: librosFiltrados.length,
+          totalPages: Math.ceil(librosFiltrados.length / this.currentPageSize)
+        };
+       
+        if (this.libros.length === 0) {
+          console.log("No se encontraron libros con los filtros seleccionados");
+        }
+      },
+      error: (error) => {
+        console.error('Error cargando los libros: ', error);
+        this.libros = [];
+        this.paginador = null;
+      }
+    });
   }
 
   addToCart(libro: Libro): void {
@@ -262,5 +308,18 @@ export class LibroComponent implements OnInit{
     }
     const usuarioId = this.authService.getCurrentUserId();
     return this.librosCompradosService.haCompradoLibro(usuarioId, libroId);
+  }
+
+  // Cargar géneros
+  cargarGeneros(): void {
+    this.generoService.getGeneros().subscribe({
+      next: (generos) => {
+        this.generos = generos;
+      },
+      error: (error) => {
+        console.error('Error al cargar géneros:', error);
+        this.generos = [];
+      }
+    });
   }
 }

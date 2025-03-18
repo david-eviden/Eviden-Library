@@ -32,14 +32,14 @@ export class AutorService implements OnInit{
 
   // Método para crear cabeceras con el token
   private createHeaders(): HttpHeaders {
-    const token = this.getToken();
+    //const token = this.getToken();
     let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
   
-    if (token) {
+    /* if (token) {
       headers = headers.append('Authorization', `Bearer ${token}`);
     } else {
       console.log('No se encontró token en localStorage');
-    }
+    } */
   
     return headers;
   }

@@ -3,6 +3,7 @@ import { Genero } from './generos';
 import { GeneroService } from './generos.service';
 import swal from 'sweetalert2';
 import { AuthService } from '../login/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-generos',
@@ -12,7 +13,10 @@ import { AuthService } from '../login/auth.service';
 })
 export class GenerosComponent implements OnInit{
   generos : Genero[]= [];
-  constructor(private generoService: GeneroService, public authService: AuthService ) {}
+  constructor(private generoService: GeneroService, 
+    public authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.generoService.getGeneros().subscribe(
@@ -109,5 +113,8 @@ export class GenerosComponent implements OnInit{
     });
   }
     
+  verLibrosGenero(generoId: number): void {
+    this.router.navigate(['/libros/genero', generoId, 'page', 0, 'size', 6]);
+  }
 }
     
