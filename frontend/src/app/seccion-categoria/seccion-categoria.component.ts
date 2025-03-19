@@ -15,7 +15,7 @@ import { LibrosCompradosService } from '../services/libros-comprados.service';
 })
 export class SeccionCategoriaComponent implements OnInit {
   // Los géneros que quieres mostrar
-  generosMostrados: string[] = ['Fantasía', 'Romance', 'Misterio'];
+  generosMostrados: string[] = ['Fantasía', 'Autoayuda', 'Misterio'];
   
   // Estructura para almacenar libros por género
   librosPorGenero: Map<string, Libro[]> = new Map();
