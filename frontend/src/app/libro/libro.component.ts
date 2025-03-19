@@ -190,8 +190,27 @@ export class LibroComponent implements OnInit{
   cambiarTamanioPagina(event: any): void {
     this.currentPageSize = +event.target.value;
     this.currentPage = 0; // Volvemos a la primera página al cambiar el tamaño
+    
+    // Actualizar la URL con los parámetros actuales
+    const params: any = { page: this.currentPage };
+    
+    // Mantener los filtros existentes
+    if (this.selectedAutorId > 0) {
+      params.autorId = this.selectedAutorId;
+    }
+    
+    if (this.selectedGeneroId > 0) {
+      params.generoId = this.selectedGeneroId;
+    }
+    
+    // Añadir el tamaño de página a los parámetros
+    params.size = this.currentPageSize;
+    
+    this.router.navigate(['/libros'], {
+      queryParams: params
+    });
+    
     this.cargarLibros();
-    this.router.navigate(['/libros/page', 0]); // Actualizamos la URL
   }
 
   // Método para filtrar por autor
