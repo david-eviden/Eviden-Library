@@ -1,6 +1,6 @@
 <div class="container2 my-3">
     <h2 class="text-center mb-4">Lista de Generos</h2>
-    
+
     <!-- Botón para crear genero y eliminar todos -->
     <div *ngIf="authService.esAdmin" class="text-center mb-4 w-100">
         <div class="btn-group gap-2 w-100">
@@ -20,13 +20,15 @@
 
     <!-- Lista de generos -->
     <ul class="list-unstyled">
-        <li *ngFor="let genero of generos" class="mb-3 p-3 border rounded shadow-sm d-flex flex-column flex-md-row justify-content-between align-items-start">
-            <div class="mb-3 mb-md-0">
+        <li *ngFor="let genero of generos"
+            class="mb-3 p-3 border rounded shadow-sm d-flex flex-column flex-md-row justify-content-between align-items-start">
+            <div class="mb-3 mb-md-0" style="cursor: pointer;" (click)="verLibrosGenero(genero.id)">
                 <h4 class="mb-2 text-muted">{{ genero.nombre }}</h4>
                 <p class="text-muted">{{ genero.descripcion }}</p>
             </div>
-            <div  *ngIf="authService.esAdmin" class="d-flex flex-sm-row flex-md-row gap-2">
-                <button type="button" name="editar" [routerLink]="['/genero/form', genero.id]" class="btn btn-secondary text-nowrap">
+            <div *ngIf="authService.esAdmin" class="d-flex flex-sm-row flex-md-row gap-2">
+                <button type="button" name="editar" [routerLink]="['/genero/form', genero.id]"
+                    class="btn btn-secondary text-nowrap">
                     <i class="bi bi-pencil me-2"></i>Editar
                 </button>
                 <button type="button" name="eliminar" (click)="delete(genero)" class="btn btn-danger text-nowrap">
@@ -34,5 +36,5 @@
                 </button>
             </div>
         </li>
-    </ul>    
+    </ul>
 </div>

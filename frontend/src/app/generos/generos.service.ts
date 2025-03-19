@@ -9,8 +9,8 @@ import swal from 'sweetalert2';
   providedIn: 'root'  //disponible a nivel global
 })
 export class GeneroService implements OnInit{
-  private urlEndPoint: string = 'http://localhost:8080/api/generos';
-  private urlEndPoint1: string = 'http://localhost:8080/api/genero'; 
+  private urlEndPoint: string = 'http://localhost:8081/api/generos';
+  private urlEndPoint1: string = 'http://localhost:8081/api/genero'; 
   private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
 
   // Creamos un BehaviorSubject para la lista de generoes
@@ -32,14 +32,14 @@ export class GeneroService implements OnInit{
 
   // Método para crear cabeceras con el token
   private createHeaders(): HttpHeaders {
-    const token = this.getToken();
+    //const token = this.getToken();
     let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
   
-    if (token) {
+    /* if (token) {
       headers = headers.append('Authorization', `Bearer ${token}`);
     } else {
       console.log('No se encontró token en localStorage');
-    }
+    } */
   
     return headers;
   }

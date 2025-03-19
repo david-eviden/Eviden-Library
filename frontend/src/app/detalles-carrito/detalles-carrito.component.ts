@@ -24,7 +24,7 @@ export class DetallesCarritoComponent implements OnInit {
   cargando: boolean = true;
   public payPalConfig?: IPayPalConfig;
   mostrarPaypal: boolean = false;
-
+ 
   constructor(
     private detallesCarritoService: DetallesCarritoService,
     public authService: AuthService,
@@ -33,18 +33,18 @@ export class DetallesCarritoComponent implements OnInit {
     private usuarioService: UsuarioService,
     private librosCompradosService: LibrosCompradosService
   ) {}
-
+ 
   private actualizarContadorCarrito(): void {
     const totalItems = this.detallesCarrito.reduce((total, item) => total + item.cantidad, 0);
     this.detallesCarritoService.updateCartItemCount(totalItems);
   }
-
+ 
   ngOnInit(): void {
     if (!this.authService.estaLogueado()) {
       this.router.navigate(['/login']);
       return;
     }
-
+ 
     this.detallesCarritoService.getdetallesCarrito().subscribe({
       next: (detallesCarritos) => {
         this.detallesCarrito = detallesCarritos;
@@ -58,25 +58,25 @@ export class DetallesCarritoComponent implements OnInit {
       }
     });
   }
-
+ 
   verDetallesLibro(libroId: number | undefined): void {
     if (libroId) {
       this.router.navigate(['/libro', libroId]);
     }
   }
-
+ 
   calcularTotal(): number {
     const total = this.detallesCarrito.reduce((total, item) => {
       return total + ((item.libro?.precio || 0) * item.cantidad);
     }, 0);
-    
+   
     return Number(total.toFixed(2));
   }
-
+ 
   seguirComprando(): void {
     this.router.navigate(['/libros']);
   }
-
+ 
   actualizarCantidad(item: detallesCarrito, incremento: number): void {
     const nuevaCantidad = item.cantidad + incremento;
     if (nuevaCantidad < 1) {
@@ -84,7 +84,7 @@ export class DetallesCarritoComponent implements OnInit {
       this.eliminarDelCarrito(item);
       return;
     }
-
+ 
     // Asegurarnos de que mantenemos toda la estructura del objeto
     const detalleActualizado = {
       ...item,
@@ -92,7 +92,7 @@ export class DetallesCarritoComponent implements OnInit {
       carrito: item.carrito,
       libro: item.libro
     };
-
+ 
     this.detallesCarritoService.update(detalleActualizado).subscribe({
       next: (resultado) => {
         const index = this.detallesCarrito.findIndex(i => i.id === item.id);
@@ -113,13 +113,13 @@ export class DetallesCarritoComponent implements OnInit {
       }
     });
   }
-
+ 
   eliminarDelCarrito(item: detallesCarrito): void {
     if (!item.id) {
       swal('Error', 'No se puede eliminar un item sin ID', 'error');
       return;
     }
-    
+   
     // Mostrar confirmación antes de eliminar
     swal({
       title: '¿Estás seguro?',
@@ -152,20 +152,20 @@ export class DetallesCarritoComponent implements OnInit {
       }
     });
   }
-
+ 
   procederAlPago(): void {
     if (this.detallesCarrito.length === 0) {
       swal('Aviso', 'No hay productos en el carrito para proceder al pago', 'warning');
       return;
     }
-
+ 
     // Obtener el ID del usuario actual
     const userId = this.authService.getCurrentUserId();
     if (!userId) {
       swal('Error', 'No se pudo identificar al usuario actual', 'error');
       return;
     }
-
+ 
     // Obtener la información más reciente del usuario desde el servidor
     this.usuarioService.getUsuario(userId).subscribe({
       next: (usuarioActual: Usuario) => {
@@ -178,7 +178,7 @@ export class DetallesCarritoComponent implements OnInit {
             });
           return;
         }
-        
+       
         // Actualizar la información del usuario en el localStorage
         const usuarioGuardado = localStorage.getItem('usuario');
         if (usuarioGuardado) {
@@ -190,7 +190,7 @@ export class DetallesCarritoComponent implements OnInit {
             console.error('Error al actualizar el usuario en localStorage:', error);
           }
         }
-        
+       
         // Continuar con el proceso de pago
         this.mostrarPaypal = true;
         this.initConfig();
@@ -201,10 +201,10 @@ export class DetallesCarritoComponent implements OnInit {
       }
     });
   }
-
+ 
   private initConfig(): void {
     const total = this.calcularTotal().toFixed(2);
-    
+   
     this.payPalConfig = {
       currency: 'EUR',
       clientId: 'AZ4VTAcwLv65C04xUkcAGD40fx1ffeNsQtjt5_nb8h_ghpcHckhOd8kcVlvirW8dEkFTloz4GEheKcko',
@@ -263,19 +263,19 @@ export class DetallesCarritoComponent implements OnInit {
       }
     };
   }
-
+ 
   procesarCompraExitosa(data: any): void {
     try {
       // Crear un nuevo pedido con los libros comprados
       const nuevoPedido = new Pedido();
-      
+     
       // Obtener el usuario actual
       const usuarioActual = this.authService.getCurrentUser();
       if (!usuarioActual || !usuarioActual.id) {
         swal('Error', 'No se pudo identificar al usuario actual', 'error');
         return;
       }
-      
+
       // Obtener la información más reciente del usuario
       this.usuarioService.getUsuario(usuarioActual.id).subscribe({
         next: (usuarioActualizado) => {
@@ -283,23 +283,23 @@ export class DetallesCarritoComponent implements OnInit {
           const usuario = new Usuario();
           usuario.id = usuarioActual.id;
           nuevoPedido.usuario = usuario;
-          
+
           // Formatear la fecha como dd/MM/yyyy
           const hoy = new Date();
           const dia = String(hoy.getDate()).padStart(2, '0');
           const mes = String(hoy.getMonth() + 1).padStart(2, '0');
           const anio = hoy.getFullYear();
           const fechaFormateada = `${dia}/${mes}/${anio}`;
-          
+         
           console.log('Fecha formateada para el backend:', fechaFormateada);
-          
+         
           nuevoPedido.fechaPedido = fechaFormateada; // Formato dd/MM/yyyy que espera el backend
-          
+         
           nuevoPedido.estado = "COMPLETADO";
           nuevoPedido.total = this.calcularTotal();
           nuevoPedido.precioTotal = this.calcularTotal();
           nuevoPedido.direccionEnvio = usuarioActualizado.direccion;
-          
+
           // Para evitar problemas con la relación bidireccional, enviamos solo los datos necesarios
           // sin incluir la referencia circular a pedido
           const pedidoParaEnviar = {
@@ -311,7 +311,7 @@ export class DetallesCarritoComponent implements OnInit {
             // No enviamos detalles aquí, los crearemos después de crear el pedido
             detalles: []
           };
-          
+
           // Guardar el pedido en la base de datos
           this.pedidoService.createPedido(pedidoParaEnviar as any).subscribe({
             next: (pedidoCreado) => {
@@ -324,13 +324,14 @@ export class DetallesCarritoComponent implements OnInit {
                     mensaje: 'El item del carrito no tiene un libro asociado'
                   });
                 }
-                
+
                 const detallePedido = {
                   pedido: { id: pedidoCreado.id },
                   libro: { id: item.libro.id },
                   cantidad: item.cantidad,
                   precioUnitario: item.libro.precio || 0
                 };
+
 
                 return this.pedidoService.createDetallePedido(detallePedido);
               });
@@ -388,6 +389,19 @@ export class DetallesCarritoComponent implements OnInit {
                         this.eliminarItemsDelCarrito();
                       });
                     }
+                  }, 1000); // Esperar 1 segundo
+                },
+                error: (error) => {
+                  console.error('Error al crear los detalles del pedido:', error);
+                  // Mostrar mensaje de éxito parcial
+                  swal({
+                    title: '¡Pago completado!',
+                    text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente, pero hubo un problema al registrar tu pedido. Por favor, contacta con soporte. Serás redirigido a tu perfil para ver tu historial de pedidos.`,
+                    type: 'warning',
+                    confirmButtonText: 'Continuar'
+                  }).then(() => {
+                    // Eliminar los items del carrito a pesar del error
+                    this.eliminarItemsDelCarrito();
                   });
                 },
                 error: (error) => {
@@ -412,13 +426,13 @@ export class DetallesCarritoComponent implements OnInit {
       swal('Error', 'Hubo un error al procesar la compra.', 'error');
     }
   }
-  
+ 
   // Método para eliminar los items del carrito después de crear el pedido
   private eliminarItemsDelCarrito(): void {
     // Get the current user ID
     const usuarioActual = this.authService.getCurrentUser();
     const usuarioId = usuarioActual?.id;
-    
+   
     // Si no hay id, navegar a libros
     if (!usuarioId) {
       console.warn('No se pudo obtener el ID del usuario actual, redirigiendo a libros');
@@ -427,7 +441,7 @@ export class DetallesCarritoComponent implements OnInit {
       this.router.navigate(['/libros']);
       return;
     }
-    
+   
     // Añadir un delay
     setTimeout(() => {
       // Forzar refresco
@@ -443,21 +457,21 @@ export class DetallesCarritoComponent implements OnInit {
       });
     }, 1000); // 1 segundo
   }
-  
+ 
   private limpiarCarritoYNavegar(usuarioId: number): void {
     if (this.detallesCarrito.length === 0) {
       // Si no hay items, simplemente redirigir a la página de detalles del usuario
       this.router.navigate(['/usuario', usuarioId], { queryParams: { refresh: 'true' } });
       return;
     }
-
+ 
     // Crear una copia de los IDs para evitar problemas al modificar el array durante la iteración
     const itemIds = this.detallesCarrito
       .filter(item => item.id !== undefined)
       .map(item => item.id!);
-    
-
-    
+   
+ 
+   
     // Si no hay items con ID, simplemente redirigir
     if (itemIds.length === 0) {
       console.log('No hay items con ID para eliminar');
@@ -466,10 +480,10 @@ export class DetallesCarritoComponent implements OnInit {
       this.router.navigate(['/usuario', usuarioId], { queryParams: { refresh: 'true' } });
       return;
     }
-    
+   
     let itemsEliminados = 0;
     const totalItems = itemIds.length;
-
+ 
     // Función para verificar si todos los items han sido eliminados
     const verificarFinalizacion = () => {
       itemsEliminados++;
@@ -481,7 +495,7 @@ export class DetallesCarritoComponent implements OnInit {
         this.router.navigate(['/usuario', usuarioId], { queryParams: { refresh: 'true' } });
       }
     };
-
+ 
     // Eliminar cada item uno por uno
     itemIds.forEach(id => {
       this.detallesCarritoService.delete(id).subscribe({
@@ -496,7 +510,7 @@ export class DetallesCarritoComponent implements OnInit {
       });
     });
   }
-
+ 
   eliminarTodosDelCarrito(): void {
     // Confirmación antes de eliminar todos los elementos
     swal({
@@ -525,10 +539,10 @@ export class DetallesCarritoComponent implements OnInit {
             }
           });
         });
-
+ 
         // Actualizar el contador a 0 después de eliminar todos los items
         this.detallesCarritoService.updateCartItemCount(0);
-        
+       
         swal('Eliminados', 'Todos los libros han sido eliminados del carrito', 'success');
       }
     });

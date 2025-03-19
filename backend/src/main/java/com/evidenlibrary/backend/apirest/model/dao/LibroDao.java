@@ -21,8 +21,9 @@ public interface LibroDao extends JpaRepository<Libro, Long> {
 	@Query("SELECT l FROM Libro l LEFT JOIN l.valoraciones v GROUP BY l.id ORDER BY AVG(v.puntuacion) DESC LIMIT 10")
     List<Libro> findTop10MejorValorados();
 	
-	//Filtrar por autor
+	//Filtrar por autor y genero
 	Page<Libro> findByAutoresId(Long autorId, Pageable pageable);
+	Page<Libro> findByGenerosId(Long generoId, Pageable pageable);
 	
 	//Busqueda	
 	List<Libro> findByTituloContainingIgnoreCase(String titulo);
@@ -38,7 +39,8 @@ public interface LibroDao extends JpaRepository<Libro, Long> {
     	       "LOWER(l.descripcion) LIKE LOWER(CONCAT('%', :term, '%'))")
     List<Libro> findByTerm(@Param("term") String term);
 
-	
+	@Query("SELECT l FROM Libro l JOIN l.generos g JOIN l.autores a WHERE g.id =:generoId AND a.id = :autorId")
+	Page<Libro> findByGenerosIdAndAutoresId(@Param("generoId") Long generoId, @Param("autorId") Long autorId, Pageable pageable);
 
 
 }

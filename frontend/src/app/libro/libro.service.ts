@@ -11,9 +11,9 @@ import { Autor } from '../autor/autor';
   providedIn: 'root'  //disponible a nivel global
 })
 export class LibroService {
-  private urlEndPoint: string = 'http://localhost:8080/api/libros'; 
-  private urlEndPoint1: string = 'http://localhost:8080/api/libro';
-  private urlAutores: string = 'http://localhost:8080/api/autores'; 
+  private urlEndPoint: string = 'http://localhost:8081/api/libros';
+  private urlEndPoint1: string = 'http://localhost:8081/api/libro';
+  private urlAutores: string = 'http://localhost:8081/api/autores';
   private httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
 
   constructor(private http: HttpClient, private router: Router) {}
@@ -29,18 +29,18 @@ export class LibroService {
 
   // Método para crear cabeceras con el token
   private createHeaders(): HttpHeaders {
-    const token = this.getToken();
+    //const token = this.getToken();
     let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-  
-    if (token) {
+ 
+    /* if (token) {
       headers = headers.append('Authorization', `Bearer ${token}`);
     } else {
       console.log('No se encontró token en localStorage');
-    }
-  
+    } */
+ 
     return headers;
   }
-  
+ 
 
   //Get mejor valorados
   getMejorValorados(): Observable<Libro[]> {
@@ -69,7 +69,7 @@ export class LibroService {
 
           //let datePipe = new DatePipe('es');
           //libro.createAt = libro.createAt ? datePipe.transform(libro.createAt, 'EEEE dd, MMM yyyy') ?? '11-12-2001' : '11-12-2001';
-          
+         
           return libro;
         });
         return response;
@@ -87,7 +87,7 @@ export class LibroService {
           libro.precio = libro.precio;
           libro.stock = libro.stock;
           libro.descripcion = libro.descripcion;
-          
+         
           return libro;
         });
         return response;
@@ -124,7 +124,7 @@ export class LibroService {
           libro.precio = libro.precio;
           libro.stock = libro.stock;
           libro.descripcion = libro.descripcion;
-          
+         
           return libro;
         });
       }),
@@ -211,18 +211,32 @@ export class LibroService {
 
   // Obtener libros filtrados por autor
   getLibrosPorAutor(page: number, size: number, autorId: number): Observable<any> {
+    // Asegurarse de que page y size sean números válidos
+    page = Math.max(0, page);
+    size = Math.max(1, size);
+
     return this.http.get(`${this.urlEndPoint}/autor/${autorId}/page/${page}/size/${size}`, { headers: this.createHeaders() })
       .pipe(
         map((response: any) => {
-          (response.content as Libro[]).map(libro => {
-            libro.titulo = libro.titulo;
-            libro.precio = libro.precio;
-            libro.stock = libro.stock;
-            libro.descripcion = libro.descripcion;
-            
-            return libro;
-          });
-          return response;
+          // Procesar los libros de la respuesta
+          if (response.content) {
+            response.content = (response.content as Libro[]).map(libro => {
+              libro.titulo = libro.titulo;
+              libro.precio = libro.precio;
+              libro.stock = libro.stock;
+              libro.descripcion = libro.descripcion;
+              return libro;
+            });
+          }
+
+          // Asegurarse de que la respuesta tenga la estructura correcta
+          return {
+            content: response.content || [],
+            totalElements: response.totalElements || 0,
+            totalPages: response.totalPages || 0,
+            size: size,
+            number: page
+          };
         }),
         catchError(e => {
           console.error('Error al cargar libros por autor:', e);
@@ -230,22 +244,32 @@ export class LibroService {
           return this.getLibrosNoPagin().pipe(
             map(libros => {
               // Filtrar libros por autor
-              const librosFiltrados = libros.filter(libro => 
+              const librosFiltrados = libros.filter(libro =>
                 libro.autores && libro.autores.some(autor => autor.id === autorId)
               );
-              
+             
+              // Calcular el total de páginas
+              const totalPages = Math.ceil(librosFiltrados.length / size);
+             
+              // Asegurarse de que la página solicitada no exceda el total de páginas
+              const validPage = Math.min(page, totalPages - 1);
+             
+              // Obtener los libros para la página actual
+              const startIndex = validPage * size;
+              const endIndex = startIndex + size;
+              const librosPagina = librosFiltrados.slice(startIndex, endIndex);
+             
               // Crear un objeto con la misma estructura que la respuesta paginada
               return {
-                content: librosFiltrados.slice(page * size, (page + 1) * size),
+                content: librosPagina,
                 totalElements: librosFiltrados.length,
-                totalPages: Math.ceil(librosFiltrados.length / size),
+                totalPages: totalPages,
                 size: size,
-                number: page
+                number: validPage
               };
             }),
             catchError(err => {
               console.error('Error al cargar y filtrar libros por autor en el cliente:', err);
-              // Si todo falla, devolver un objeto vacío
               return of({
                 content: [],
                 totalPages: 0,
@@ -259,5 +283,152 @@ export class LibroService {
       );
   }
 
+  // Obtener libros filtrados por género
+  getLibrosPorGenero(generoId: number, page: number, size: number): Observable<any> {
+    // Asegurarse de que page y size sean números válidos
+    page = Math.max(0, page);
+    size = Math.max(1, size);
 
+    return this.http.get(`${this.urlEndPoint}/genero/${generoId}/page/${page}/size/${size}`, { headers: this.createHeaders() })
+      .pipe(
+        map((response: any) => {
+          // Procesar los libros de la respuesta
+          if (response.content) {
+            response.content = (response.content as Libro[]).map(libro => {
+              libro.titulo = libro.titulo;
+              libro.precio = libro.precio;
+              libro.stock = libro.stock;
+              libro.descripcion = libro.descripcion;
+              return libro;
+            });
+          }
+
+          // Asegurarse de que la respuesta tenga la estructura correcta
+          return {
+            content: response.content || [],
+            totalElements: response.totalElements || 0,
+            totalPages: response.totalPages || 0,
+            size: size,
+            number: page
+          };
+        }),
+        catchError(e => {
+          console.error('Error al cargar libros por género:', e);
+          // Si hay un error, intentar obtener todos los libros y filtrar por género en el cliente
+          return this.getLibrosNoPagin().pipe(
+            map(libros => {
+              // Filtrar libros por género
+              const librosFiltrados = libros.filter(libro =>
+                libro.generos && libro.generos.some(genero => genero.id === generoId)
+              );
+             
+              // Calcular el total de páginas
+              const totalPages = Math.ceil(librosFiltrados.length / size);
+             
+              // Asegurarse de que la página solicitada no exceda el total de páginas
+              const validPage = Math.min(page, totalPages - 1);
+             
+              // Obtener los libros para la página actual
+              const startIndex = validPage * size;
+              const endIndex = startIndex + size;
+              const librosPagina = librosFiltrados.slice(startIndex, endIndex);
+             
+              // Crear un objeto con la misma estructura que la respuesta paginada
+              return {
+                content: librosPagina,
+                totalElements: librosFiltrados.length,
+                totalPages: totalPages,
+                size: size,
+                number: validPage
+              };
+            }),
+            catchError(err => {
+              console.error('Error al cargar y filtrar libros por género en el cliente:', err);
+              return of({
+                content: [],
+                totalPages: 0,
+                totalElements: 0,
+                size: size,
+                number: page
+              });
+            })
+          );
+        })
+      );
+  }
+ 
+  // Obtener libros filtrados por autor y género
+  getLibrosPorAutorYGenero(page: number, size: number, autorId: number, generoId: number): Observable<any> {
+    // Asegurarse de que page y size sean números válidos
+    page = Math.max(0, page);
+    size = Math.max(1, size);
+
+    return this.http.get(`${this.urlEndPoint}/autor/${autorId}/genero/${generoId}/page/${page}/size/${size}`, { headers: this.createHeaders() })
+      .pipe(
+        map((response: any) => {
+          // Procesar los libros de la respuesta
+          if (response.content) {
+            response.content = (response.content as Libro[]).map(libro => {
+              libro.titulo = libro.titulo;
+              libro.precio = libro.precio;
+              libro.stock = libro.stock;
+              libro.descripcion = libro.descripcion;
+              return libro;
+            });
+          }
+
+          // Asegurarse de que la respuesta tenga la estructura correcta
+          return {
+            content: response.content || [],
+            totalElements: response.totalElements || 0,
+            totalPages: response.totalPages || 0,
+            size: size,
+            number: page
+          };
+        }),
+        catchError(e => {
+          console.error('Error al cargar libros por autor y género:', e);
+          // Si hay un error, intentar obtener todos los libros y filtrar en el cliente
+          return this.getLibrosNoPagin().pipe(
+            map(libros => {
+              // Filtrar libros por autor y género
+              const librosFiltrados = libros.filter(libro =>
+                libro.autores && libro.autores.some(autor => autor.id === autorId) &&
+                libro.generos && libro.generos.some(genero => genero.id === generoId)
+              );
+             
+              // Calcular el total de páginas
+              const totalPages = Math.ceil(librosFiltrados.length / size);
+             
+              // Asegurarse de que la página solicitada no exceda el total de páginas
+              const validPage = Math.min(page, totalPages - 1);
+             
+              // Obtener los libros para la página actual
+              const startIndex = validPage * size;
+              const endIndex = startIndex + size;
+              const librosPagina = librosFiltrados.slice(startIndex, endIndex);
+             
+              // Crear un objeto con la misma estructura que la respuesta paginada
+              return {
+                content: librosPagina,
+                totalElements: librosFiltrados.length,
+                totalPages: totalPages,
+                size: size,
+                number: validPage
+              };
+            }),
+            catchError(err => {
+              console.error('Error al cargar y filtrar libros por autor y género en el cliente:', err);
+              return of({
+                content: [],
+                totalPages: 0,
+                totalElements: 0,
+                size: size,
+                number: page
+              });
+            })
+          );
+        })
+      );
+  }
 }
