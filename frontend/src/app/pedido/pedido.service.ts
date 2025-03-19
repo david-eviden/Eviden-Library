@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, catchError, throwError, of } from 'rxjs';
 import { Pedido } from './pedido';
@@ -10,66 +10,41 @@ import { Router } from '@angular/router';
 })
 export class PedidoService {
 
-  private urlEndPoint: string = 'http://localhost:8081/api/pedidos'; 
+  private urlEndPoint: string = 'http://localhost:8081/api/pedidos';
   private urlEndPointPedido: string = 'http://localhost:8081/api/pedido';
   private urlEndPointDetallePedido: string = 'http://localhost:8081/api/detalle-pedido';
-  
+ 
     constructor(private http: HttpClient, private router: Router) {}
-
-    // Método para obtener el token del localStorage
-    private getToken(): string | null {
-      const token = localStorage.getItem('access_token');
-      if (!token) {
-        this.router.navigate(['/login']);  // Redirigir al login si el token no está presente
-      }
-      return token;
-    }
-
-    // Método para crear cabeceras con el token
-    private createHeaders(): HttpHeaders {
-      const token = this.getToken();
-      let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    
-      if (token) {
-        headers = headers.append('Authorization', `Bearer ${token}`);
-      } else {
-        console.log('No se encontró token en localStorage');
-      }
-    
-      return headers;
-    }
 
     // Método para crear un nuevo pedido
     createPedido(pedido: any): Observable<Pedido> {
-      const headers = this.createHeaders();
-      
       // Asegurarnos de que el pedido tiene todos los campos necesarios
       if (!pedido.usuario || !pedido.usuario.id) {
         console.error('Error: El pedido no tiene un usuario asociado');
         return throwError(() => new Error('El pedido no tiene un usuario asociado'));
       }
-      
+     
       if (!pedido.fechaPedido) {
         console.error('Error: El pedido no tiene una fecha');
         return throwError(() => new Error('El pedido no tiene una fecha'));
       }
-      
+     
       if (!pedido.estado) {
         console.error('Error: El pedido no tiene un estado');
         return throwError(() => new Error('El pedido no tiene un estado'));
       }
-      
+     
       if (!pedido.total) {
         console.error('Error: El pedido no tiene un total');
         return throwError(() => new Error('El pedido no tiene un total'));
       }
-      
+     
       if (!pedido.direccionEnvio) {
         console.error('Error: El pedido no tiene una dirección de envío');
         return throwError(() => new Error('El pedido no tiene una dirección de envío'));
       }
-      
-      return this.http.post<any>(`${this.urlEndPointPedido}`, pedido, { headers }).pipe(
+     
+      return this.http.post<any>(`${this.urlEndPointPedido}`, pedido).pipe(
         map(response => {
           console.log('Respuesta del servidor al crear pedido:', response);
           if (response && response.pedido) {
@@ -89,11 +64,11 @@ export class PedidoService {
           if (error.error && error.error.mensaje) {
             console.error('Mensaje de error del servidor:', error.error.mensaje);
           }
-          
+         
           // Si el error es por formato de fecha, intentar con otro formato
           if (error.error && error.error.includes && error.error.includes('Cannot deserialize value of type `java.util.Date`')) {
             console.log('Error de formato de fecha, intentando con otro formato...');
-            
+           
             // Convertir la fecha al formato esperado por el backend
             const fechaPedido = pedido.fechaPedido;
             if (typeof fechaPedido === 'string' && fechaPedido.includes('-')) {
@@ -105,7 +80,7 @@ export class PedidoService {
               }
             }
           }
-          
+         
           return throwError(() => error);
         })
       );
@@ -113,17 +88,15 @@ export class PedidoService {
 
     getPedidosPorUsuarioId(usuarioId: number): Observable<Pedido[]> {
       const url = `${this.urlEndPoint}/usuario/${usuarioId}`;
-      
-      return this.http.get<any[]>(url, 
-        { headers: this.createHeaders() }
-      ).pipe(
+     
+      return this.http.get<any[]>(url).pipe(
         map(response => {
           // Comprobar si es null
           if (!response) {
             console.warn('La respuesta del servidor es nula o indefinida');
             return [];
           }
-          
+         
           // Asegurar que es un array
           if (!Array.isArray(response)) {
             // Si es un objeto, hazlo array
@@ -133,7 +106,7 @@ export class PedidoService {
               return [];
             }
           }
-          
+         
           return response.map(item => {
             const pedido = new Pedido();
             pedido.id = item.id;
@@ -142,7 +115,7 @@ export class PedidoService {
             pedido.total = item.total;
             pedido.precioTotal = item.precioTotal;
             pedido.direccionEnvio = item.direccionEnvio;
-            
+           
             if (item.usuario) {
               const usuario = new Usuario();
               usuario.id = item.usuario.id;
@@ -154,7 +127,7 @@ export class PedidoService {
               usuario.rol = item.usuario.rol;
               pedido.usuario = usuario;
             }
-            
+           
             // Verificar explícitamente si hay detalles antes de mapear
             if (item.detalles && Array.isArray(item.detalles) && item.detalles.length > 0) {
               pedido.detalles = item.detalles.map((detalle: any) => ({
@@ -167,7 +140,7 @@ export class PedidoService {
               console.warn(`No se encontraron detalles para el pedido ID: ${item.id}`);
               pedido.detalles = [];
             }
-            
+           
             return pedido;
           });
         }),
@@ -177,15 +150,15 @@ export class PedidoService {
         })
       );
     }
-  
+ 
     getPedidos(): Observable<Pedido[]> {
-      return this.http.get<any[]>(this.urlEndPoint, { headers: this.createHeaders() }).pipe(
+      return this.http.get<any[]>(this.urlEndPoint).pipe(
         map(response => {
           if (!response) {
             console.warn('La respuesta del servidor es nula o indefinida');
             return [];
           }
-          
+         
           if (!Array.isArray(response)) {
             if (response && typeof response === 'object') {
               response = [response];
@@ -193,7 +166,7 @@ export class PedidoService {
               return [];
             }
           }
-          
+         
           return response.map(item => {
             const pedido = new Pedido();
             pedido.id = item.id;
@@ -213,7 +186,7 @@ export class PedidoService {
               usuario.rol = item.usuario.rol;
               pedido.usuario = usuario;
             }
-        
+       
             // Verificar explícitamente si hay detalles antes de mapear
             if (item.detalles && Array.isArray(item.detalles) && item.detalles.length > 0) {
               pedido.detalles = item.detalles.map((detalle: any) => ({
@@ -226,7 +199,7 @@ export class PedidoService {
               console.warn(`No se encontraron detalles para el pedido ID: ${item.id}`);
               pedido.detalles = [];
             }
-            
+           
             return pedido;
           });
         }),
@@ -234,20 +207,20 @@ export class PedidoService {
           console.error('Error al obtener todos los pedidos:', error);
           return of([]);
         })
-      ); 
+      );
     }
 
     // Método para obtener un pedido por su ID
     getPedidoPorId(pedidoId: number): Observable<Pedido> {
       const url = `${this.urlEndPointPedido}/${pedidoId}`;
-      
-      return this.http.get<any>(url, { headers: this.createHeaders() }).pipe(
+     
+      return this.http.get<any>(url).pipe(
         map(response => {
           if (!response) {
             console.warn('La respuesta del servidor es nula o indefinida');
             throw new Error('No se encontró el pedido');
           }
-          
+         
           const pedido = new Pedido();
           pedido.id = response.id;
           pedido.fechaPedido = response.fechaPedido;
@@ -255,7 +228,7 @@ export class PedidoService {
           pedido.total = response.total;
           pedido.precioTotal = response.precioTotal;
           pedido.direccionEnvio = response.direccionEnvio;
-          
+         
           if (response.usuario) {
             const usuario = new Usuario();
             usuario.id = response.usuario.id;
@@ -267,7 +240,7 @@ export class PedidoService {
             usuario.rol = response.usuario.rol;
             pedido.usuario = usuario;
           }
-          
+         
           // Verificar explícitamente si hay detalles antes de mapear
           if (response.detalles && Array.isArray(response.detalles) && response.detalles.length > 0) {
             pedido.detalles = response.detalles.map((detalle: any) => ({
@@ -280,7 +253,7 @@ export class PedidoService {
             console.warn(`No se encontraron detalles para el pedido ID: ${pedido.id}`);
             pedido.detalles = [];
           }
-          
+         
           return pedido;
         }),
         catchError(error => {
@@ -292,9 +265,7 @@ export class PedidoService {
 
     // Método para crear un detalle de pedido
     createDetallePedido(detallePedido: any): Observable<any> {
-      const headers = this.createHeaders();
-      
-      return this.http.post<any>(`${this.urlEndPointDetallePedido}`, detallePedido, { headers }).pipe(
+      return this.http.post<any>(`${this.urlEndPointDetallePedido}`, detallePedido).pipe(
         map(response => {
           if (response && response.detallePedido) {
             return response.detallePedido;
@@ -308,11 +279,10 @@ export class PedidoService {
         })
       );
     }
-    
+   
     // Método para enviar el email de confirmación después de crear todos los detalles del pedido
     enviarEmailConfirmacion(pedidoId: number): Observable<any> {
-      const headers = this.createHeaders();
-      return this.http.post<any>(`${this.urlEndPointPedido}/enviar-email/${pedidoId}`, {}, { headers }).pipe(
+      return this.http.post<any>(`${this.urlEndPointPedido}/enviar-email/${pedidoId}`, {}).pipe(
         map(response => {
           return response;
         }),
