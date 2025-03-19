@@ -14,6 +14,7 @@ export class DetallesUsuarioService implements OnInit {
   private urlEndPoint: string = 'http://localhost:8081/api/usuarios';
   private urlEndPoint1: string = 'http://localhost:8081/api/usuario';
 
+
   constructor(private http: HttpClient, private router: Router) { }
 
   ngOnInit(): void {}

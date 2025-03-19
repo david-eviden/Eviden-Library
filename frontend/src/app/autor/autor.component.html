@@ -1,6 +1,6 @@
 <div class="container2 my-3">
     <h2 class="text-center mb-4">Lista de Autores</h2>
-    
+
     <!-- Botón para crear autor y eliminar todos -->
     <div *ngIf="authService.esAdmin" class="text-center mb-4 w-100">
         <div class="btn-group gap-2 w-100">
@@ -20,13 +20,15 @@
 
     <!-- Lista de autores -->
     <ul class="list-unstyled">
-        <li *ngFor="let autor of autores" class="mb-3 p-3 border rounded shadow-sm d-flex flex-column flex-md-row justify-content-between align-items-start">
-            <div class="mb-3 mb-md-0">
+        <li *ngFor="let autor of autores"
+            class="mb-3 p-3 border rounded shadow-sm d-flex flex-column flex-md-row justify-content-between align-items-start">
+            <div class="mb-3 mb-md-0" style="cursor: pointer;" (click)="verLibrosAutor(autor.id)">
                 <h4 class="mb-2">{{ autor.nombre }}</h4>
                 <p class="text-muted">{{ autor.biografia }}</p>
             </div>
             <div *ngIf="authService.esAdmin" class="d-flex gap-2">
-                <button type="button" name="editar" [routerLink]="['/autor/form', autor.id]" class="btn btn-secondary text-nowrap">
+                <button type="button" name="editar" [routerLink]="['/autor/form', autor.id]"
+                    class="btn btn-secondary text-nowrap">
                     <i class="bi bi-pencil me-2"></i>Editar
                 </button>
                 <button type="button" name="eliminar" (click)="delete(autor)" class="btn btn-danger text-nowrap">
@@ -34,5 +36,5 @@
                 </button>
             </div>
         </li>
-    </ul>    
+    </ul>
 </div>

@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'  //disponible a nivel global
 })
+
 export class AutorService implements OnInit {
   private urlEndPoint: string = 'http://localhost:8081/api/autores';
   private urlEndPoint1: string = 'http://localhost:8081/api/autor';

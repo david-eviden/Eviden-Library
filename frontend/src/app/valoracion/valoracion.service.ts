@@ -11,6 +11,7 @@ import swal from 'sweetalert2';
 export class ValoracionService implements OnInit {
 
   private urlEndPoint: string = 'http://localhost:8081/api/valoraciones';
+
   private urlEndPoint1: string = 'http://localhost:8081/api/valoracion';
 
   // Creamos un BehaviorSubject para la lista de valoraciones

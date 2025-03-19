@@ -12,7 +12,6 @@ INSERT INTO usuarios (nombre, apellido, direccion, email, password, rol) VALUES
 -- Géneros literarios
 INSERT INTO generos (nombre, descripcion) VALUES
 ('Ficción Literaria', 'Obras de ficción con valor literario significativo'),
-('Ciencia Ficción', 'Literatura que explora impactos de la ciencia y tecnología'),
 ('Fantasía', 'Literatura con elementos mágicos y sobrenaturales'),
 ('Romance', 'Historias centradas en relaciones románticas'),
 ('Misterio', 'Obras que involucran enigmas y suspense'),
@@ -37,7 +36,17 @@ INSERT INTO autores (nombre, biografia) VALUES
 ('Nicholas Sparks', 'Escritor estadounidense conocido por sus novelas románticas, a menudo enfocadas en relaciones complicadas y conmovedoras.'),
 ('E.L. James', 'Autora británica, conocida por la exitosa saga erótica de "Cincuenta sombras de Grey".'),
 ('Agatha Christie', 'Escritora británica famosa por sus novelas de misterio y detectives, especialmente aquellas protagonizadas por Hercule Poirot y Miss Marple.'),
-('Arthur Conan Doyle', 'Escritor británico, conocido por ser el creador del detective Sherlock Holmes, uno de los personajes más icónicos de la literatura de misterio.');
+('Arthur Conan Doyle', 'Escritor británico, conocido por ser el creador del detective Sherlock Holmes, uno de los personajes más icónicos de la literatura de misterio.'),
+('Frank Herbert', 'Frank Herbert fue un escritor y periodista estadounidense, conocido principalmente por su serie de ciencia ficción "Dune", que se considera una de las más importantes del género. Su trabajo explora temas como la política, la religión y la ecología.'),
+('William Gibson', 'William Gibson es un escritor estadounidense de ciencia ficción, conocido principalmente por su novela "Neuromante" (1984), que ayudó a definir el género ciberpunk. Sus obras exploran la interacción entre tecnología, cultura y sociedad.'),
+('Ray Bradbury', 'Ray Bradbury fue un escritor y guionista estadounidense, famoso por sus obras de ciencia ficción y fantasía. Su novela más conocida, "Fahrenheit 451", es una crítica a la censura y la opresión del pensamiento.'),
+('Stephen R. Covey', 'Stephen Covey fue un educador, autor y conferencista estadounidense, conocido por su libro "Los 7 hábitos de la gente altamente efectiva". Sus enseñanzas sobre liderazgo y productividad han influido a millones de personas en todo el mundo.'),
+('Eckhart Tolle', 'Eckhart Tolle es un escritor y maestro espiritual nacido en Alemania, conocido por su libro "El poder del ahora". Sus enseñanzas se centran en la importancia de vivir en el presente y superar el sufrimiento a través de la conciencia plena.'),
+('Napoleon Hill', 'Napoleon Hill fue un escritor y orador estadounidense, famoso por su libro "Piensa y hazte rico". Fue pionero en el desarrollo de conceptos sobre el éxito personal y la mentalidad positiva.'),
+('Maurice Sendak', 'Maurice Sendak fue un escritor e ilustrador estadounidense, conocido por su libro infantil "Donde viven los monstruos". Su obra aborda temas de la infancia y la imaginación, con un enfoque único y, a menudo, sombrío.'),
+('Anna Llenas', 'Anna Llenas es una escritora e ilustradora española, famosa por sus libros infantiles que ayudan a los niños a identificar y gestionar sus emociones, como "El monstruo de colores".'),
+('Emilio del Río', 'Emilio del Río es un escritor y conferencista español, conocido por sus obras de autoayuda y motivación. Su libro "Carpe Diem" promueve la importancia de vivir el momento presente y aprovechar cada oportunidad.'),
+('James Clear', 'James Clear es un escritor y experto en hábitos, conocido por su libro "Hábitos Atómicos", que ofrece estrategias prácticas para la mejora personal a través de cambios pequeños pero significativos en los hábitos cotidianos.');
 
 
 -- Libros
@@ -65,7 +74,13 @@ INSERT INTO libros (titulo, precio, stock, descripcion, anio) VALUES
 ('El cuaderno de Noah', 18.99, 30, 'Una conmovedora historia de amor entre Noah y Allie, dos jóvenes que se enamoran en la época de la Segunda Guerra Mundial, con una narrativa entre el pasado y el presente.', '1996'),
 ('Cincuenta sombras de Grey', 22.99, 40, 'Una historia de amor apasionada y controversial entre la joven Anastasia Steele y el multimillonario Christian Grey. Explora la compleja relación entre ambos.', '2011'),
 ('Asesinato en el Orient Express', 19.99, 25, 'Un intrigante misterio en el famoso tren Orient Express, donde el detective Hercule Poirot investiga el asesinato de un millonario, descubriendo secretos oscuros entre los pasajeros.', '1934'),
-('Estudio en escarlata', 21.99, 30, 'La primera novela que presenta a Sherlock Holmes, donde el detective resuelve un misterio relacionado con un asesinato en Londres, mientras construye su famosa relación con el Dr. Watson.', '1887');
+('Estudio en escarlata', 21.99, 30, 'La primera novela que presenta a Sherlock Holmes, donde el detective resuelve un misterio relacionado con un asesinato en Londres, mientras construye su famosa relación con el Dr. Watson.', '1887'),
+('Carpe Diem', 16.99, 80, 'Emilio del Río ofrece una reflexión profunda sobre cómo aprovechar al máximo la vida, tomar decisiones conscientes y vivir con propósito, destacando la importancia de vivir en el presente y aprovechar cada momento.', '2012'),
+('Hábitos Atómicos', 19.99, 120, 'James Clear presenta un enfoque práctico para mejorar los hábitos a través de pequeñas acciones cotidianas. El libro enseña cómo cambiar tu vida a través de hábitos minúsculos pero poderosos, con la idea de que el cambio positivo se da con el tiempo.', '2018'),
+('El poder del ahora', 20.00, 100, 'Un enfoque espiritual sobre cómo alcanzar la paz interior mediante la conciencia plena y vivir el presente.', 1997),
+('Piensa y hágase rico', 17.99, 180, 'Un clásico de la literatura de desarrollo personal que se enfoca en la importancia del pensamiento positivo y la determinación.', 1937),
+('Donde viven los monstruos', 15.50, 50, 'Un cuento infantil que narra la historia de un niño llamado Max que viaja a un mundo donde viven monstruos.', 1963),
+('Diario de emociones', 12.99, 75, 'Un libro infantil que ayuda a los niños a identificar y gestionar sus emociones a través de una historia visualmente atractiva.', 2012);
 
 
 
@@ -95,34 +110,48 @@ INSERT INTO libro_autor (libro_id, autor_id) VALUES
 (21, 11), -- Nicholas Sparks - El cuaderno de Noah
 (22, 12), -- E.L. James - Cincuenta sombras de Grey
 (23, 13), -- Agatha Christie - Asesinato en el Orient Express
-(24, 14); -- Arthur Conan Doyle - Estudio en escarlata
+(24, 14), -- Arthur Conan Doyle - Estudio en escarlata
+(25, 15), -- Emilio del Río - Carpe Diem
+(26, 16), -- James Clear - Hábitos Atómicos
+(27, 17), -- Eckhart Tolle - El poder del ahora
+(28, 18), -- Napoleon Hill - Piensa y hazte rico
+(29, 19), -- Maurice Sendak - Donde viven los monstruos
+(30, 20); -- Anna Llenas - El monstruo de colores
 
 -- Relaciones Libro-Género
 INSERT INTO libro_genero (libro_id, genero_id) VALUES
-(1, 1), (1, 3), -- Cien años de soledad: Ficción, Fantasía
-(2, 1), (2, 5), -- El Aleph: Ficción, Misterio
-(3, 1), (3, 3), -- La casa de los espíritus: Ficción, Fantasía
-(4, 1), -- Rayuela: Ficción
-(5, 1), -- La ciudad y los perros: Ficción
-(6, 3), -- Juego de tronos: Fantasía
-(7, 3), (7, 10), -- Harry Potter: Fantasía, Infantil
-(8, 6), -- El resplandor: Terror
-(9, 1), (9, 4), -- Orgullo y prejuicio: Ficción, Romance
-(10, 1), -- El viejo y el mar: Ficción
-(11, 1), (11, 5), -- Ficciones: Ficción, Misterio
-(12, 8), -- Paula: Biografía
-(13, 1), -- 62/Modelo para armar: Ficción
-(14, 1), (14, 7), -- Conversación en la catedral: Ficción, Historia
-(15, 3), -- Choque de reyes: Fantasía
-(16, 1), (16, 8), -- Daughter of Fortune: Ficción, Historia
-(17, 1), (17, 8), -- Portrait in Sepia: Ficción, Historia
-(18, 1), (18, 7), -- La isla bajo el mar: Ficción, Historia
-(19, 1), (19, 8), -- El cuaderno de Maya: Ficción, Biografía
-(20, 1), (20, 4), -- El amante japonés: Ficción, Romance
-(21, 4), -- El cuaderno de Noah: Romance
-(22, 4), -- Cincuenta sombras de Grey: Romance
-(23, 5), -- Asesinato en el Orient Express: Misterio
-(24, 5); -- Estudio en escarlata: Misterio
+(1, 1), (1, 2), -- Cien años de soledad: Ficción Literaria, Fantasía
+(2, 1), (2, 4), -- El Aleph: Ficción Literaria, Misterio
+(3, 1), (3, 2), -- La casa de los espíritus: Ficción Literaria, Fantasía
+(4, 1), -- Rayuela: Ficción Literaria
+(5, 1), -- La ciudad y los perros: Ficción Literaria
+(6, 2), -- Juego de tronos: Fantasía
+(7, 2), (7, 9), -- Harry Potter: Fantasía, Infantil
+(8, 5), -- El resplandor: Terror
+(9, 1), (9, 3), -- Orgullo y prejuicio: Ficción Literaria, Romance
+(10, 1), -- El viejo y el mar: Ficción Literaria
+(11, 1), (11, 4), -- Ficciones: Ficción Literaria, Misterio
+(12, 7), -- Paula: Biografía
+(13, 1), -- 62/Modelo para armar: Ficción Literaria
+(14, 1), (14, 6), -- Conversación en la catedral: Ficción Literaria, Historia
+(15, 2), -- Choque de reyes: Fantasía
+(16, 1), (16, 6), -- Daughter of Fortune: Ficción Literaria, Historia
+(17, 1), (17, 6), -- Portrait in Sepia: Ficción Literaria, Historia
+(18, 1), (18, 6), -- La isla bajo el mar: Ficción Literaria, Historia
+(19, 1), (19, 7), -- El cuaderno de Maya: Ficción Literaria, Biografía
+(20, 1), (20, 3), -- El amante japonés: Ficción Literaria, Romance
+(21, 3), -- El cuaderno de Noah: Romance
+(22, 3), -- Cincuenta sombras de Grey: Romance
+(23, 4), -- Asesinato en el Orient Express: Misterio
+(24, 4), -- Estudio en escarlata: Misterio
+(25, 8), -- Carpe Diem: Autoayuda
+(26, 8), -- Hábitos Atómicos: Autoayuda
+(27, 8), -- El poder del ahora: Autoayuda
+(28, 8), -- Piensa y hazte rico: Autoayuda
+(29, 9), -- Donde viven los monstruos: Infantil
+(30, 9); -- El monstruo de colores: Infantil
+
+
 
 -- Carritos activos
 INSERT INTO carritos (usuario_id, fecha_creacion, estado) VALUES
@@ -225,7 +254,27 @@ INSERT INTO valoraciones (usuario_id, libro_id, puntuacion, comentario, fecha) V
 (6, 12, 4, 'Una obra conmovedora sobre la vida y la muerte', '2025-02-22'),
 (7, 6, 5, 'Un libro que cada vez que lo releo, me sorprende', '2025-02-22'),
 (8, 2, 5, 'Borges siempre te transporta a un mundo de infinitas posibilidades', '2025-02-23'),
-(8, 1, 4, 'Un clásico que sigue siendo relevante, a pesar del tiempo', '2025-02-23');
+(8, 1, 4, 'Un clásico que sigue siendo relevante, a pesar del tiempo', '2025-02-23'),
+(7, 13, 5, 'Una historia conmovedora y reflexiva sobre la vida.', '2025-03-19'),
+(6, 19, 4, 'Un libro que nos hace reflexionar sobre el autodescubrimiento y la importancia del presente.', '2025-03-19'),
+(5, 29, 4, 'Una obra que ayuda a los niños a comprender y gestionar sus emociones de forma divertida.', '2025-03-19'),
+(6, 5, 4, 'Una crítica social profunda y bien escrita.', '2025-03-19'),  
+(7, 11, 3, 'Una obra interesante, pero con un ritmo algo lento.', '2025-03-19'), 
+(8, 13, 4, 'Una narración conmovedora que toca temas profundos.', '2025-03-19'),  
+(6, 14, 5, 'Una obra maestra sobre la política y la corrupción.', '2025-03-19'), 
+(5, 16, 4, 'Un relato histórico fascinante y bien detallado.', '2025-03-19'), 
+(4, 17, 5, 'Una historia emocionalmente rica sobre el pasado y la identidad.', '2025-03-19'),  
+(7, 18, 4, 'Un relato histórico que ilumina la lucha por la libertad.', '2025-03-19'),  
+(5, 20, 5, 'Una historia de amor profundamente conmovedora.', '2025-03-19'),  
+(8, 21, 4, 'Una historia romántica que toca el alma.', '2025-03-19'), 
+(7, 22, 4, 'Una trama intrigante, aunque algo predecible.', '2025-03-19'),  
+(5, 23, 4, 'Un misterio bien construido con una resolución interesante.', '2025-03-19'),  
+(6, 24, 4, 'Un inicio de saga prometedor con un buen misterio.', '2025-03-19'), 
+(4, 25, 4, 'Una reflexión profunda sobre cómo aprovechar la vida.', '2025-03-19'),  
+(5, 26, 5, 'Un enfoque práctico y motivador para mejorar los hábitos.', '2025-03-19'),  
+(7, 27, 4, 'Un libro importante para vivir el presente y alcanzar la paz interior.', '2025-03-19'),  
+(6, 28, 5, 'Un libro que inspira a alcanzar el éxito personal y la prosperidad.', '2025-03-19'), 
+(8, 30, 5, 'Una historia encantadora que ayuda a los niños a gestionar sus emociones.', '2025-03-19'); 
 
 
 -- Favoritos

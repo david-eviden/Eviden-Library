@@ -8,6 +8,8 @@ import { AuthService } from '../login/auth.service';
 import { Autor } from '../autor/autor';
 import { DetallesCarritoService } from '../detalles-carrito/detalles-carrito.service';
 import { LibrosCompradosService } from '../services/libros-comprados.service';
+import { GeneroService } from '../generos/generos.service';
+import { Genero } from '../generos/generos';
 
 @Component({
   selector: 'app-libro',
@@ -19,21 +21,25 @@ export class LibroComponent implements OnInit{
 
   libros : Libro[]= [];
   autores : Autor[]= [];
+  generos: Genero[] = [];
   paginador: any;
   animationState = "in"
   pageSizes: number[] = [4, 8, 12, 16]; // Opciones de tamaño de página
   currentPageSize: number = 8; // Tamaño de página por defecto
   currentPage: number = 0; // Página actual
   selectedAutorId: number = 0; // ID del autor seleccionado (0 para todos)
+  selectedGeneroId: number = 0; // ID del género seleccionado (0 para todos)
   isMobile: boolean = false;
 
+
   constructor(
-    private libroService: LibroService, 
-    private router: Router, 
-    private activatedRoute: ActivatedRoute, 
+    private libroService: LibroService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
     public authService: AuthService,
     private carritoService: DetallesCarritoService,
-    private librosCompradosService: LibrosCompradosService
+    private librosCompradosService: LibrosCompradosService,
+    private generoService: GeneroService
   ) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationStart)
@@ -68,10 +74,25 @@ export class LibroComponent implements OnInit{
   ngOnInit(): void {
     //Cargamos la lista de autores
     this.cargarAutores();
+    //Cargamos la lista de géneros
+    this.cargarGeneros();
 
-    this.activatedRoute.paramMap.subscribe(params => {
-      let page: number = +params.get('page')! || 0;
-      this.currentPage = page;
+    this.activatedRoute.queryParams.subscribe((params: { [key: string]: string | string[] | undefined }) => {
+      // Actualizar página actual
+      const pageParam = params['page'];
+      this.currentPage = pageParam ? +pageParam : 0;
+
+      // Actualizar filtro de autor
+      const autorIdParam = params['autorId'];
+      if (autorIdParam && typeof autorIdParam === 'string') {
+        this.selectedAutorId = +autorIdParam;
+      }
+
+      // Actualizar filtro de género
+      const generoIdParam = params['generoId'];
+      if (generoIdParam && typeof generoIdParam === 'string') {
+        this.selectedGeneroId = +generoIdParam;
+      }
 
       // Si el usuario está logueado, cargamos sus libros comprados
       if (this.authService.estaLogueado()) {
@@ -84,7 +105,7 @@ export class LibroComponent implements OnInit{
       }
     });
 
-  
+ 
     /* Sin paginacion */
     /*
     this.libroService.getLibros().subscribe(
@@ -143,7 +164,7 @@ export class LibroComponent implements OnInit{
           response => {
             // Vaciamos el array de libros
             this.libros = [];
-  
+ 
             swal(
               '¡Eliminados!',
               'Todos los libros han sido eliminados :(',
@@ -182,59 +203,137 @@ export class LibroComponent implements OnInit{
       }
     });
   }
-  
+ 
   // Método para cambiar el tamaño de la página
   cambiarTamanioPagina(event: any): void {
     this.currentPageSize = +event.target.value;
     this.currentPage = 0; // Volvemos a la primera página al cambiar el tamaño
+    
+    // Actualizar la URL con los parámetros actuales
+    const params: any = { page: this.currentPage };
+    
+    // Mantener los filtros existentes
+    if (this.selectedAutorId > 0) {
+      params.autorId = this.selectedAutorId;
+    }
+    
+    if (this.selectedGeneroId > 0) {
+      params.generoId = this.selectedGeneroId;
+    }
+    
+    // Añadir el tamaño de página a los parámetros
+    params.size = this.currentPageSize;
+    
+    this.router.navigate(['/libros'], {
+      queryParams: params
+    });
+    
     this.cargarLibros();
-    this.router.navigate(['/libros/page', 0]); // Actualizamos la URL
   }
 
   // Método para filtrar por autor
   filtrarPorAutor(event: any): void {
-    this.selectedAutorId = +event.target.value;
-    
-    // Si no hay autores cargados y se intenta filtrar, cargar autores primero
-    if (this.autores.length === 0 && this.selectedAutorId > 0) {
-      console.log('No hay autores cargados, intentando cargar autores primero...');
-      this.cargarAutores();
+    const autorId = +event.target.value;
+    this.selectedAutorId = autorId;
+    this.currentPage = 0; // Resetear a la primera página
+   
+    // Actualizar la URL con los parámetros actuales
+    const params: any = { page: this.currentPage };
+   
+    if (autorId > 0) {
+      params.autorId = autorId;
     }
-    
-    this.currentPage = 0; // Volvemos a la primera página al cambiar el filtro
+   
+    if (this.selectedGeneroId > 0) {
+      params.generoId = this.selectedGeneroId;
+    }
+   
+    this.router.navigate(['/libros'], {
+      queryParams: params,
+      queryParamsHandling: 'merge'
+    });
+   
     this.cargarLibros();
-    this.router.navigate(['/libros/page', 0]); // Actualizamos la URL
   }
 
-  // Método para cargar libros con el tamaño de página actual y filtro de autor
-  cargarLibros(): void {
+  // Método para filtrar por género
+  filtrarPorGenero(generoId: number): void {
+    this.selectedGeneroId = generoId;
+    this.currentPage = 0; // Resetear a la primera página
+   
+    // Actualizar la URL con los parámetros actuales
+    const params: any = { page: this.currentPage };
+   
     if (this.selectedAutorId > 0) {
-      // Si hay un autor seleccionado, cargar libros filtrados
+      params.autorId = this.selectedAutorId;
+    }
+   
+    if (generoId > 0) {
+      params.generoId = generoId;
+    }
+   
+    this.router.navigate(['/libros'], {
+      queryParams: params,
+      queryParamsHandling: 'merge'
+    });
+   
+    this.cargarLibros();
+  }
+
+  // Método para cargar libros con el tamaño de página actual y filtros
+  cargarLibros(): void {
+    // Si ambos filtros están activos
+    if (this.selectedAutorId > 0 && this.selectedGeneroId > 0) {
+      this.libroService.getLibrosPorAutorYGenero(this.currentPage, this.currentPageSize, this.selectedAutorId, this.selectedGeneroId)
+        .subscribe({
+          next: (response) => {
+            this.libros = response.content as Libro[];
+            this.paginador = response;
+          },
+          error: (error) => {
+            console.error('Error cargando los libros: ', error);
+            this.libros = [];
+            this.paginador = null;
+          }
+        });
+    }
+    // Si solo el filtro de autor está activo
+    else if (this.selectedAutorId > 0) {
       this.libroService.getLibrosPorAutor(this.currentPage, this.currentPageSize, this.selectedAutorId)
         .subscribe({
           next: (response) => {
             this.libros = response.content as Libro[];
             this.paginador = response;
-            if (this.libros.length === 0) {
-              console.log("No se encontraron libros para el autor seleccionado");
-            }
           },
           error: (error) => {
-            console.error('Error cargando los libros del autor: ', error);
+            console.error('Error cargando los libros: ', error);
             this.libros = [];
             this.paginador = null;
           }
         });
-    } else {
-      // Si no hay autor seleccionado, cargar todos los libros
+    }
+    // Si solo el filtro de género está activo
+    else if (this.selectedGeneroId > 0) {
+      this.libroService.getLibrosPorGenero(this.selectedGeneroId, this.currentPage, this.currentPageSize)
+        .subscribe({
+          next: (response) => {
+            this.libros = response.content as Libro[];
+            this.paginador = response;
+          },
+          error: (error) => {
+            console.error('Error cargando los libros: ', error);
+            this.libros = [];
+            this.paginador = null;
+          }
+        });
+    }
+    // Si no hay filtros activos
+    else {
       this.libroService.getLibrosConTamanio(this.currentPage, this.currentPageSize)
         .subscribe({
           next: (response) => {
             this.libros = response.content as Libro[];
             this.paginador = response;
-            if (this.libros.length === 0) {
-              console.log("No se encontraron libros en el catálogo");
-            }
           },
           error: (error) => {
             console.error('Error cargando los libros: ', error);
@@ -273,5 +372,18 @@ export class LibroComponent implements OnInit{
     }
     const usuarioId = this.authService.getCurrentUserId();
     return this.librosCompradosService.haCompradoLibro(usuarioId, libroId);
+  }
+
+  // Cargar géneros
+  cargarGeneros(): void {
+    this.generoService.getGeneros().subscribe({
+      next: (generos) => {
+        this.generos = generos;
+      },
+      error: (error) => {
+        console.error('Error al cargar géneros:', error);
+        this.generos = [];
+      }
+    });
   }
 }

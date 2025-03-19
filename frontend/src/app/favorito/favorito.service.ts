@@ -14,7 +14,7 @@ export class FavoritoService {
 
   private urlEndPoint: string = 'http://localhost:8081/api/favoritos';
   private urlFavoritoEndPoint: string = 'http://localhost:8081/api/favorito';
- 
+
   constructor(
     private http: HttpClient,
     private router: Router,

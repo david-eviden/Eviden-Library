@@ -54,6 +54,7 @@ export class DetallesCarritoService {
 
   update(detalleCarrito: detallesCarrito): Observable<detallesCarrito> {
     return this.http.put<any>(`http://localhost:8081/api/detalle-carrito/${detalleCarrito.id}`, detalleCarrito).pipe(
+
       map(response => response.detalleCarrito as detallesCarrito),
       catchError(error => {
         console.error('Error al actualizar detalle del carrito:', error);
@@ -64,6 +65,7 @@ export class DetallesCarritoService {
 
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`http://localhost:8081/api/detalle-carrito/${id}`).pipe(
+
       catchError(error => {
         console.error('Error al eliminar detalle del carrito:', error);
         return throwError(() => error);
