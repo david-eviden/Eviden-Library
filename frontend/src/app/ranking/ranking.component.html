@@ -1,11 +1,11 @@
 <div class="container2 my-3">
-    <h2 class="text-center mb-4">Ranking Mejor Valorados</h2>
+    <h2 class="text-center mb-4 text-decoration-underline">Ranking Mejor Valorados</h2>
 
     <!-- Carrusel-->
     <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
             <div *ngFor="let fragmento of fragmentos; let i = index" [class.active]="i === 0" class="carousel-item">
-                <div class="row g-4 justify-content-center book-grid">
+                <div class="row g-2 justify-content-center book-grid">
                     <div *ngFor="let libro of fragmento" class="col-12 col-sm-6 col-md-4 col-lg-2-4 book-item">
                         <div class="card h-100" (click)="verDetallesLibro(libro.id)">
                             <div class="position-relative">

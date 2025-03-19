@@ -21,11 +21,11 @@ export class SearchService {
   private createHeaders(): HttpHeaders {
     const token = this.getToken();
     let headers = new HttpHeaders();
- 
+
     if (token) {
       headers = headers.append('Authorization', `Bearer ${token}`);
     }
- 
+
     return headers;
   }
  

@@ -1,0 +1,1973 @@
+# Documentación Swagger para Eviden Library API
+openapi: 3.0.0
+info:
+  title: Eviden Library API
+  description: Documentación API proyecto Eviden Library - Fernando Robla y Maria Amigo
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api
+    description: Servidor de desarrollo
+  - url: http://localhost:8082
+    description: Servidor de autenticación Keycloak
+
+tags:
+  - name: Autenticación
+    description: Endpoints para registro y autenticación de usuarios
+  - name: Libros
+    description: Endpoints para gestión de libros
+  - name: Autores
+    description: Endpoints para gestión de autores
+  - name: Géneros
+    description: Endpoints para gestión de géneros
+  - name: Usuarios
+    description: Endpoints para gestión de usuarios
+  - name: Valoraciones
+    description: Endpoints para gestión de valoraciones
+  - name: Carrito
+    description: Endpoints para gestión del carrito de compras
+  - name: Pedidos
+    description: Endpoints para gestión de pedidos
+  - name: Favoritos
+    description: Endpoints para gestión de favoritos
+  - name: Búsqueda
+    description: Endpoints para búsqueda de libros, autores y géneros
+
+components:
+  schemas:
+    Libro:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        titulo:
+          type: string
+        precio:
+          type: number
+          format: double
+        stock:
+          type: integer
+        descripcion:
+          type: string
+        imagen:
+          type: string
+        anio:
+          type: string
+        autores:
+          type: array
+          items:
+            $ref: '#/components/schemas/Autor'
+        generos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Genero'
+        valoracionMedia:
+          type: number
+          format: double
+    
+    Autor:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        nombre:
+          type: string
+        biografia:
+          type: string
+        libros:
+          type: array
+          items:
+            $ref: '#/components/schemas/LibroSimple'
+
+    LibroSimple:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        titulo:
+          type: string
+        precio:
+          type: number
+          format: double
+        stock:
+          type: integer
+
+    Genero:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        nombre:
+          type: string
+        descripcion:
+          type: string
+
+    Usuario:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        nombre:
+          type: string
+        apellido:
+          type: string
+        direccion:
+          type: string
+        email:
+          type: string
+          format: email
+        rol:
+          type: string
+          enum: [ROLE_USER, ROLE_ADMIN]
+        foto:
+          type: string
+          format: uri
+        pedidos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Pedido'
+        valoraciones:
+          type: array
+          items:
+            $ref: '#/components/schemas/Valoracion'
+        carritos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Carrito'
+        favoritos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Favorito'
+
+    Valoracion:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        puntuacion:
+          type: integer
+        comentario:
+          type: string
+        fecha:
+          type: string
+          format: date
+        usuario:
+          $ref: '#/components/schemas/Usuario'
+        libro:
+          $ref: '#/components/schemas/Libro'
+
+    Carrito:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        usuario:
+          $ref: '#/components/schemas/Usuario'
+        fechaCreacion:
+          type: string
+          format: date-time
+          description: Fecha de creación del carrito
+        estado:
+          type: string
+          description: Estado del carrito (activo, completado, cancelado)
+          enum: [activo, completado, cancelado]
+        detalles:
+          type: array
+          items:
+            $ref: '#/components/schemas/DetalleCarrito'
+
+    DetalleCarrito:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        libro:
+          $ref: '#/components/schemas/Libro'
+        cantidad:
+          type: integer
+        precioUnitario:
+          type: number
+          format: double
+
+    Pedido:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        usuario:
+          $ref: '#/components/schemas/Usuario'
+        fecha:
+          type: string
+          format: date
+        detalles:
+          type: array
+          items:
+            $ref: '#/components/schemas/DetallePedido'
+
+    DetallePedido:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        libro:
+          $ref: '#/components/schemas/Libro'
+        cantidad:
+          type: integer
+        precioUnitario:
+          type: number
+          format: double
+
+    Favorito:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        usuario:
+          $ref: '#/components/schemas/Usuario'
+        libro:
+          $ref: '#/components/schemas/Libro'
+        fechaAgregado:
+          type: string
+          format: date
+
+    RegistroRequest:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - email
+        - password
+      properties:
+        firstName:
+          type: string
+          description: Nombre del usuario
+        lastName:
+          type: string
+          description: Apellidos del usuario
+        email:
+          type: string
+          format: email
+          description: Email del usuario (será usado como nombre de usuario)
+        password:
+          type: string
+          format: password
+          description: Contraseña del usuario
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+    TokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+        expires_in:
+          type: integer
+        refresh_token:
+          type: string
+        scope:
+          type: string
+
+    EmailConfirmacionResponse:
+      type: object
+      properties:
+        emailEnviado:
+          type: boolean
+          description: Indica si el email fue enviado correctamente
+        mensaje:
+          type: string
+          description: Mensaje informativo sobre el resultado del envío
+    
+    SearchResponse:
+      type: object
+      properties:
+        libros:
+          type: array
+          items:
+            $ref: '#/components/schemas/Libro'
+        autores:
+          type: array
+          items:
+            $ref: '#/components/schemas/Autor'
+        generos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Genero'
+
+paths:
+  /libros:
+    get:
+      tags:
+        - Libros
+      summary: Obtener todos los libros
+      responses:
+        '200':
+          description: Lista de libros
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Libro'
+    delete:
+      tags:
+        - Libros
+      summary: Eliminar todos los libros
+      responses:
+        '201':
+          description: Libros eliminados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Libro'
+        '400':
+          description: Error al eliminar los libros
+        '500':
+          description: Error en el servidor
+
+  /libros/page/{page}:
+    get:
+      tags:
+        - Libros
+      summary: Obtener libros paginados
+      parameters:
+        - name: page
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Página de libros
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Libro'
+                  totalPages:
+                    type: integer
+                  totalElements:
+                    type: integer
+
+  /libros/page/{page}/size/{size}:
+    get:
+      tags:
+        - Libros
+      summary: Obtener libros paginados con tamaño personalizado
+      parameters:
+        - name: page
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: size
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Página de libros
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Libro'
+                  totalPages:
+                    type: integer
+                  totalElements:
+                    type: integer
+
+  /libros/mejor-valorados:
+    get:
+      tags:
+        - Libros
+      summary: Obtener libros mejor valorados
+      responses:
+        '200':
+          description: Lista de libros mejor valorados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Libro'
+
+  /autores:
+    get:
+      tags:
+        - Autores
+      summary: Obtener todos los autores
+      responses:
+        '200':
+          description: Lista de autores
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Autor'
+    post:
+      tags:
+        - Autores
+      summary: Crear un nuevo autor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Autor'
+      responses:
+        '201':
+          description: Autor creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Autor'
+    delete:
+      tags:
+        - Autores
+      summary: Eliminar todos los autores
+      responses:
+        '200':
+          description: Todos los autores eliminados
+        '500':
+          description: Error al eliminar los autores
+
+  /autor/{id}:
+    get:
+      tags:
+        - Autores
+      summary: Obtener autor por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Autor encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Autor'
+        '404':
+          description: Autor no encontrado
+    put:
+      tags:
+        - Autores
+      summary: Actualizar un autor
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Autor'
+      responses:
+        '200':
+          description: Autor actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Autor'
+        '404':
+          description: Autor no encontrado
+    delete:
+      tags:
+        - Autores
+      summary: Eliminar un autor
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Autor eliminado
+        '404':
+          description: Autor no encontrado
+
+  /generos:
+    get:
+      tags:
+        - Géneros
+      summary: Obtener todos los géneros
+      responses:
+        '200':
+          description: Lista de géneros
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Genero'
+    post:
+      tags:
+        - Géneros
+      summary: Crear un nuevo género
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Genero'
+      responses:
+        '201':
+          description: Género creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Genero'
+
+  /genero/{id}:
+    get:
+      tags:
+        - Géneros
+      summary: Obtener género por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Género encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Genero'
+        '404':
+          description: Género no encontrado
+    put:
+      tags:
+        - Géneros
+      summary: Actualizar un género
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Genero'
+      responses:
+        '200':
+          description: Género actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Genero'
+        '404':
+          description: Género no encontrado
+    delete:
+      tags:
+        - Géneros
+      summary: Eliminar un género
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Género eliminado
+        '404':
+          description: Género no encontrado
+
+  /valoraciones:
+    get:
+      tags:
+        - Valoraciones
+      summary: Obtener todas las valoraciones
+      responses:
+        '200':
+          description: Lista de valoraciones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Valoracion'
+
+  /valoracion/{id}:
+    get:
+      tags:
+        - Valoraciones
+      summary: Obtener valoración por ID
+      description: Obtiene una valoración específica por su ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID de la valoración
+      responses:
+        '200':
+          description: Valoración encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Valoracion'
+        '404':
+          description: Valoración no encontrada
+        '500':
+          description: Error en el servidor
+    put:
+      tags:
+        - Valoraciones
+      summary: Actualizar una valoración
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Valoracion'
+      responses:
+        '200':
+          description: Valoración actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Valoracion'
+        '404':
+          description: Valoración no encontrada
+    delete:
+      tags:
+        - Valoraciones
+      summary: Eliminar una valoración
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Valoración eliminada
+        '404':
+          description: Valoración no encontrada
+
+  /carritos:
+    get:
+      tags:
+        - Carrito
+      summary: Obtener todos los carritos
+      responses:
+        '200':
+          description: Lista de carritos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Carrito'
+
+  /carrito/{id}:
+    get:
+      tags:
+        - Carrito
+      summary: Obtener carrito por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Carrito encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carrito'
+        '404':
+          description: Carrito no encontrado
+    put:
+      tags:
+        - Carrito
+      summary: Actualizar un carrito
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Carrito'
+      responses:
+        '200':
+          description: Carrito actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carrito'
+        '404':
+          description: Carrito no encontrado
+    delete:
+      tags:
+        - Carrito
+      summary: Eliminar un carrito
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Carrito eliminado
+        '404':
+          description: Carrito no encontrado
+
+  /pedidos:
+    get:
+      tags:
+        - Pedidos
+      summary: Obtener todos los pedidos
+      responses:
+        '200':
+          description: Lista de pedidos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pedido'
+
+  /pedido/{id}:
+    get:
+      tags:
+        - Pedidos
+      summary: Obtener pedido por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Pedido encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pedido'
+        '404':
+          description: Pedido no encontrado
+    put:
+      tags:
+        - Pedidos
+      summary: Actualizar un pedido
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pedido'
+      responses:
+        '200':
+          description: Pedido actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pedido'
+        '404':
+          description: Pedido no encontrado
+    delete:
+      tags:
+        - Pedidos
+      summary: Eliminar un pedido
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Pedido eliminado
+        '404':
+          description: Pedido no encontrado
+
+  /favoritos:
+    get:
+      tags:
+        - Favoritos
+      summary: Obtener todos los favoritos
+      responses:
+        '200':
+          description: Lista de favoritos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Favorito'
+
+  /favorito/{id}:
+    get:
+      tags:
+        - Favoritos
+      summary: Obtener favorito por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del favorito
+      responses:
+        '200':
+          description: Favorito encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Favorito'
+        '404':
+          description: Favorito no encontrado
+    put:
+      tags:
+        - Favoritos
+      summary: Actualizar un favorito
+      description: Actualiza un favorito existente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del favorito
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Favorito'
+      responses:
+        '200':
+          description: Favorito actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Favorito'
+        '404':
+          description: Favorito no encontrado
+        '500':
+          description: Error en el servidor
+    delete:
+      tags:
+        - Favoritos
+      summary: Eliminar un favorito
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del favorito
+      responses:
+        '200':
+          description: Favorito eliminado
+        '404':
+          description: Favorito no encontrado
+
+  /detalles-carrito:
+    get:
+      tags:
+        - Carrito
+      summary: Obtener todos los detalles de carrito
+      responses:
+        '200':
+          description: Lista de detalles de carrito
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DetalleCarrito'
+                  
+  /realms/EvidenLibrary/protocol/openid-connect/token:
+    post:
+      tags:
+        - Autenticación
+      summary: Obtener token de acceso
+      description: Endpoint de Keycloak para obtener tokens de acceso
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                  default: eviden-library-rest-api
+                username:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                grant_type:
+                  type: string
+                  default: password
+      responses:
+        '200':
+          description: Token generado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '401':
+          description: Credenciales inválidas
+        '500':
+          description: Error en el servidor
+
+  /registro:
+    post:
+      tags:
+        - Autenticación
+      summary: Registrar un nuevo usuario
+      description: Registra un nuevo usuario en el sistema y en Keycloak
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistroRequest'
+      responses:
+        '201':
+          description: Usuario registrado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                  usuario:
+                    $ref: '#/components/schemas/Usuario'
+        '400':
+          description: Error en los datos proporcionados
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                    example: El email ya está registrado
+        '500':
+          description: Error interno del servidor
+
+  /login:
+    post:
+      tags:
+        - Autenticación
+      summary: Iniciar sesión
+      description: Autentica al usuario y devuelve un token JWT
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                  default: eviden-library-rest-api
+                username:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                grant_type:
+                  type: string
+                  default: password
+      responses:
+        '200':
+          description: Login exitoso
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/TokenResponse'
+                  - type: object
+                    properties:
+                      usuario:
+                        $ref: '#/components/schemas/Usuario'
+        '401':
+          description: Credenciales inválidas
+        '500':
+          description: Error en el servidor
+
+  /search:
+    get:
+      tags:
+        - Búsqueda
+      summary: Buscar libros, autores y géneros
+      description: Realiza una búsqueda global en la base de datos
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Término de búsqueda
+        - name: searchLibros
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: true
+          description: Indica si se deben buscar libros
+        - name: searchAutores
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: true
+          description: Indica si se deben buscar autores
+        - name: searchGeneros
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: true
+          description: Indica si se deben buscar géneros
+      responses:
+        '200':
+          description: Resultados de la búsqueda
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        '500':
+          description: Error en el servidor
+
+  /search/libros/autor/{autorId}:
+    get:
+      tags:
+        - Búsqueda
+      summary: Buscar libros por autor
+      description: Obtiene todos los libros de un autor específico
+      parameters:
+        - name: autorId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del autor
+      responses:
+        '200':
+          description: Lista de libros del autor
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Libro'
+        '500':
+          description: Error en el servidor
+
+  /search/libros/genero/{generoId}:
+    get:
+      tags:
+        - Búsqueda
+      summary: Buscar libros por género
+      description: Obtiene todos los libros de un género específico
+      parameters:
+        - name: generoId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del género
+      responses:
+        '200':
+          description: Lista de libros del género
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Libro'
+        '500':
+          description: Error en el servidor
+
+  /search/libros/anio/{anio}:
+    get:
+      tags:
+        - Búsqueda
+      summary: Buscar libros por año
+      description: Obtiene todos los libros publicados en un año específico
+      parameters:
+        - name: anio
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Año de publicación
+      responses:
+        '200':
+          description: Lista de libros del año
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Libro'
+        '500':
+          description: Error en el servidor
+
+  /usuario/email/{email}:
+    get:
+      tags:
+        - Usuarios
+      summary: Obtener usuario por email
+      description: Busca un usuario por su dirección de email
+      parameters:
+        - name: email
+          in: path
+          required: true
+          schema:
+            type: string
+            format: email
+          description: Email del usuario
+      responses:
+        '200':
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        '404':
+          description: Usuario no encontrado
+        '500':
+          description: Error en el servidor
+
+  /detalles-carrito/usuario/{usuarioId}:
+    get:
+      tags:
+        - Carrito
+      summary: Obtener detalles del carrito activo de un usuario
+      description: Obtiene los detalles del carrito activo de un usuario específico
+      parameters:
+        - name: usuarioId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del usuario
+      responses:
+        '200':
+          description: Lista de detalles del carrito activo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DetalleCarrito'
+        '500':
+          description: Error en el servidor
+
+  /detalles-carrito/add/{usuarioId}:
+    post:
+      tags:
+        - Carrito
+      summary: Añadir libro al carrito
+      description: Añade un libro al carrito activo del usuario o crea un nuevo carrito si no existe
+      parameters:
+        - name: usuarioId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DetalleCarrito'
+      responses:
+        '201':
+          description: Libro añadido al carrito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensaje:
+                    type: string
+                  detalleCarrito:
+                    $ref: '#/components/schemas/DetalleCarrito'
+        '404':
+          description: Usuario no encontrado
+        '500':
+          description: Error en el servidor
+
+  /detalles-carrito/carrito/{id}:
+    get:
+      tags:
+        - Carrito
+      summary: Obtener detalles de un carrito específico
+      description: Obtiene todos los detalles de un carrito por su ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del carrito
+      responses:
+        '200':
+          description: Lista de detalles del carrito
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DetalleCarrito'
+        '500':
+          description: Error en el servidor
+
+  /pedido/enviar-email/{id}:
+    post:
+      tags:
+        - Pedidos
+      summary: Enviar email de confirmación de pedido
+      description: Envía un email de confirmación al usuario que realizó el pedido
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del pedido
+      responses:
+        '200':
+          description: Resultado del envío del email
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailConfirmacionResponse'
+        '404':
+          description: Pedido no encontrado
+        '500':
+          description: Error en el servidor
+
+  /libros/autor/{autorId}/page/{page}/size/{size}:
+    get:
+      tags:
+        - Libros
+      summary: Obtener libros de un autor específico (paginado)
+      description: Obtiene todos los libros de un autor específico con paginación
+      parameters:
+        - name: autorId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del autor
+        - name: page
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Número de página (empezando desde 0)
+        - name: size
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Tamaño de la página
+      responses:
+        '200':
+          description: Página de libros del autor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Libro'
+                  totalPages:
+                    type: integer
+                  totalElements:
+                    type: integer
+        '500':
+          description: Error en el servidor
+
+  /libro/{id}:
+    get:
+      tags:
+        - Libros
+      summary: Obtener libro por ID
+      description: Obtiene un libro específico por su ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del libro
+      responses:
+        '200':
+          description: Libro encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Libro'
+        '404':
+          description: Libro no encontrado
+        '500':
+          description: Error en el servidor
+    put:
+      tags:
+        - Libros
+      summary: Actualizar un libro
+      description: Actualiza un libro existente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del libro
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Libro'
+      responses:
+        '201':
+          description: Libro actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Libro'
+        '404':
+          description: Libro no encontrado
+        '500':
+          description: Error en el servidor
+    delete:
+      tags:
+        - Libros
+      summary: Eliminar un libro
+      description: Elimina un libro existente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del libro
+      responses:
+        '200':
+          description: Libro eliminado
+        '404':
+          description: Libro no encontrado
+        '500':
+          description: Error en el servidor
+
+  /libro:
+    post:
+      tags:
+        - Libros
+      summary: Crear un nuevo libro
+      description: Crea un nuevo libro en la base de datos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Libro'
+      responses:
+        '201':
+          description: Libro creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Libro'
+        '400':
+          description: Error en los datos proporcionados
+        '500':
+          description: Error en el servidor
+
+  /valoraciones/libro/{id}:
+    get:
+      tags:
+        - Valoraciones
+      summary: Obtener valoraciones de un libro
+      description: Obtiene todas las valoraciones de un libro específico
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del libro
+      responses:
+        '200':
+          description: Lista de valoraciones del libro
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Valoracion'
+        '404':
+          description: Libro no encontrado
+        '500':
+          description: Error en el servidor
+
+  /valoraciones/usuario/{id}:
+    get:
+      tags:
+        - Valoraciones
+      summary: Obtener valoraciones de un usuario
+      description: Obtiene todas las valoraciones realizadas por un usuario
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del usuario
+      responses:
+        '200':
+          description: Lista de valoraciones del usuario
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Valoracion'
+        '404':
+          description: Usuario no encontrado
+        '500':
+          description: Error en el servidor
+
+  /usuarios:
+    get:
+      tags:
+        - Usuarios
+      summary: Obtener todos los usuarios
+      description: Obtiene la lista de todos los usuarios registrados
+      responses:
+        '200':
+          description: Lista de usuarios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Usuario'
+        '500':
+          description: Error en el servidor
+
+  /usuario/{id}:
+    get:
+      tags:
+        - Usuarios
+      summary: Obtener usuario por ID
+      description: Obtiene un usuario específico por su ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del usuario
+      responses:
+        '200':
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        '404':
+          description: Usuario no encontrado
+        '500':
+          description: Error en el servidor
+    put:
+      tags:
+        - Usuarios
+      summary: Actualizar un usuario
+      description: Actualiza los datos de un usuario existente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+      responses:
+        '200':
+          description: Usuario actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        '404':
+          description: Usuario no encontrado
+        '500':
+          description: Error en el servidor
+    delete:
+      tags:
+        - Usuarios
+      summary: Eliminar un usuario
+      description: Elimina un usuario existente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del usuario
+      responses:
+        '200':
+          description: Usuario eliminado
+        '404':
+          description: Usuario no encontrado
+        '500':
+          description: Error en el servidor
+
+  /usuario:
+    post:
+      tags:
+        - Usuarios
+      summary: Crear un nuevo usuario
+      description: Crea un nuevo usuario en el sistema
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+      responses:
+        '201':
+          description: Usuario creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        '400':
+          description: Error en los datos proporcionados
+        '500':
+          description: Error en el servidor
+
+  /carritos/usuario/{id}:
+    get:
+      tags:
+        - Carrito
+      summary: Obtener carritos de un usuario
+      description: Obtiene todos los carritos de un usuario específico
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del usuario
+      responses:
+        '200':
+          description: Lista de carritos del usuario
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Carrito'
+        '404':
+          description: Usuario no encontrado
+        '500':
+          description: Error en el servidor
+
+  /detalle-carrito/{id}:
+    get:
+      tags:
+        - Carrito
+      summary: Obtener detalle de carrito por ID
+      description: Obtiene un detalle de carrito específico por su ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del detalle de carrito
+      responses:
+        '200':
+          description: Detalle de carrito encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetalleCarrito'
+        '404':
+          description: Detalle de carrito no encontrado
+        '500':
+          description: Error en el servidor
+    put:
+      tags:
+        - Carrito
+      summary: Actualizar un detalle de carrito
+      description: Actualiza un detalle de carrito existente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del detalle de carrito
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DetalleCarrito'
+      responses:
+        '200':
+          description: Detalle de carrito actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetalleCarrito'
+        '404':
+          description: Detalle de carrito no encontrado
+        '500':
+          description: Error en el servidor
+    delete:
+      tags:
+        - Carrito
+      summary: Eliminar un detalle de carrito
+      description: Elimina un detalle de carrito existente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del detalle de carrito
+      responses:
+        '200':
+          description: Detalle de carrito eliminado
+        '404':
+          description: Detalle de carrito no encontrado
+        '500':
+          description: Error en el servidor
+
+  /detalle-carrito:
+    post:
+      tags:
+        - Carrito
+      summary: Crear un nuevo detalle de carrito
+      description: Crea un nuevo detalle de carrito
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DetalleCarrito'
+      responses:
+        '201':
+          description: Detalle de carrito creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetalleCarrito'
+        '400':
+          description: Error en los datos proporcionados
+        '500':
+          description: Error en el servidor
+
+  /pedidos/usuario/{id}:
+    get:
+      tags:
+        - Pedidos
+      summary: Obtener pedidos de un usuario
+      description: Obtiene todos los pedidos de un usuario específico
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del usuario
+      responses:
+        '200':
+          description: Lista de pedidos del usuario
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pedido'
+        '404':
+          description: Usuario no encontrado
+        '500':
+          description: Error en el servidor
+
+  /favorito/usuario/{usuarioId}/libro/{libroId}:
+    delete:
+      tags:
+        - Favoritos
+      summary: Eliminar un favorito por usuario y libro
+      description: Elimina un favorito específico de un usuario para un libro
+      parameters:
+        - name: usuarioId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del usuario
+        - name: libroId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del libro
+      responses:
+        '200':
+          description: Favorito eliminado
+        '404':
+          description: Favorito no encontrado
+        '500':
+          description: Error en el servidor
+
+  /favorito/usuario/{usuarioId}:
+    get:
+      tags:
+        - Favoritos
+      summary: Obtener favoritos de un usuario
+      description: Obtiene todos los favoritos de un usuario específico
+      parameters:
+        - name: usuarioId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID del usuario
+      responses:
+        '200':
+          description: Lista de favoritos del usuario
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Favorito'
+        '404':
+          description: Usuario no encontrado
+        '500':
+          description: Error en el servidor
+
+# Correcting the incorrect POST endpoints
+  /valoracion:
+    post:
+      tags:
+        - Valoraciones
+      summary: Crear una nueva valoración
+      description: Crea una nueva valoración para un libro
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Valoracion'
+      responses:
+        '201':
+          description: Valoración creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Valoracion'
+        '400':
+          description: Error en los datos proporcionados
+        '500':
+          description: Error en el servidor
+
+  /carrito:
+    post:
+      tags:
+        - Carrito
+      summary: Crear un nuevo carrito
+      description: Crea un nuevo carrito de compras
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Carrito'
+      responses:
+        '201':
+          description: Carrito creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carrito'
+        '400':
+          description: Error en los datos proporcionados
+        '500':
+          description: Error en el servidor
+
+  /pedido:
+    post:
+      tags:
+        - Pedidos
+      summary: Crear un nuevo pedido
+      description: Crea un nuevo pedido
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pedido'
+      responses:
+        '201':
+          description: Pedido creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pedido'
+        '400':
+          description: Error en los datos proporcionados
+        '500':
+          description: Error en el servidor
+
+  /favorito:
+    post:
+      tags:
+        - Favoritos
+      summary: Crear un nuevo favorito
+      description: Añade un libro a los favoritos del usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Favorito'
+      responses:
+        '201':
+          description: Favorito creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Favorito'
+        '400':
+          description: Error en los datos proporcionados
+        '500':
+          description: Error en el servidor
