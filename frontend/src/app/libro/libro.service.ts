@@ -239,7 +239,7 @@ export class LibroService {
     page = Math.max(0, page);
     size = Math.max(1, size);
 
-    return this.http.get(`${this.urlEndPoint}/genero/${generoId}/page/${page}/size/${size}`, { headers: this.createHeaders() })
+    return this.http.get(`${this.urlEndPoint}/genero/${generoId}/page/${page}/size/${size}`)
       .pipe(
         map((response: any) => {
           // Procesar los libros de la respuesta
@@ -313,7 +313,7 @@ export class LibroService {
     page = Math.max(0, page);
     size = Math.max(1, size);
 
-    return this.http.get(`${this.urlEndPoint}/autor/${autorId}/genero/${generoId}/page/${page}/size/${size}`, { headers: this.createHeaders() })
+    return this.http.get(`${this.urlEndPoint}/autor/${autorId}/genero/${generoId}/page/${page}/size/${size}`)
       .pipe(
         map((response: any) => {
           // Procesar los libros de la respuesta

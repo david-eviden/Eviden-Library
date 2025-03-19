@@ -53,6 +53,7 @@
   background-color: #0d6efd;
   color: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
 
 /* Responsive */
 @media (max-width: 992px) {
@@ -83,10 +84,12 @@
   .card {
     max-width: 280px;
   }
+
   .card-img-top {
     aspect-ratio: 2/3;
     max-height: 400px;
   }
+
   .input-group {
     width: 80%;
     margin: 0 auto;

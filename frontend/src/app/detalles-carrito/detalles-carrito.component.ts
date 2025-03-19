@@ -268,14 +268,14 @@ export class DetallesCarritoComponent implements OnInit {
     try {
       // Crear un nuevo pedido con los libros comprados
       const nuevoPedido = new Pedido();
-     
+      
       // Obtener el usuario actual
       const usuarioActual = this.authService.getCurrentUser();
       if (!usuarioActual || !usuarioActual.id) {
         swal('Error', 'No se pudo identificar al usuario actual', 'error');
         return;
       }
-
+      
       // Obtener la información más reciente del usuario
       this.usuarioService.getUsuario(usuarioActual.id).subscribe({
         next: (usuarioActualizado) => {
@@ -283,23 +283,23 @@ export class DetallesCarritoComponent implements OnInit {
           const usuario = new Usuario();
           usuario.id = usuarioActual.id;
           nuevoPedido.usuario = usuario;
-
+          
           // Formatear la fecha como dd/MM/yyyy
           const hoy = new Date();
           const dia = String(hoy.getDate()).padStart(2, '0');
           const mes = String(hoy.getMonth() + 1).padStart(2, '0');
           const anio = hoy.getFullYear();
           const fechaFormateada = `${dia}/${mes}/${anio}`;
-         
+          
           console.log('Fecha formateada para el backend:', fechaFormateada);
-         
+          
           nuevoPedido.fechaPedido = fechaFormateada; // Formato dd/MM/yyyy que espera el backend
-         
+          
           nuevoPedido.estado = "COMPLETADO";
           nuevoPedido.total = this.calcularTotal();
           nuevoPedido.precioTotal = this.calcularTotal();
           nuevoPedido.direccionEnvio = usuarioActualizado.direccion;
-
+          
           // Para evitar problemas con la relación bidireccional, enviamos solo los datos necesarios
           // sin incluir la referencia circular a pedido
           const pedidoParaEnviar = {
@@ -311,7 +311,7 @@ export class DetallesCarritoComponent implements OnInit {
             // No enviamos detalles aquí, los crearemos después de crear el pedido
             detalles: []
           };
-
+          
           // Guardar el pedido en la base de datos
           this.pedidoService.createPedido(pedidoParaEnviar as any).subscribe({
             next: (pedidoCreado) => {
@@ -324,14 +324,13 @@ export class DetallesCarritoComponent implements OnInit {
                     mensaje: 'El item del carrito no tiene un libro asociado'
                   });
                 }
-
+                
                 const detallePedido = {
                   pedido: { id: pedidoCreado.id },
                   libro: { id: item.libro.id },
                   cantidad: item.cantidad,
                   precioUnitario: item.libro.precio || 0
                 };
-
 
                 return this.pedidoService.createDetallePedido(detallePedido);
               });
@@ -389,19 +388,6 @@ export class DetallesCarritoComponent implements OnInit {
                         this.eliminarItemsDelCarrito();
                       });
                     }
-                  }, 1000); // Esperar 1 segundo
-                },
-                error: (error) => {
-                  console.error('Error al crear los detalles del pedido:', error);
-                  // Mostrar mensaje de éxito parcial
-                  swal({
-                    title: '¡Pago completado!',
-                    text: `Tu pago por ${this.calcularTotal().toFixed(2)}€ ha sido procesado correctamente, pero hubo un problema al registrar tu pedido. Por favor, contacta con soporte. Serás redirigido a tu perfil para ver tu historial de pedidos.`,
-                    type: 'warning',
-                    confirmButtonText: 'Continuar'
-                  }).then(() => {
-                    // Eliminar los items del carrito a pesar del error
-                    this.eliminarItemsDelCarrito();
                   });
                 },
                 error: (error) => {
