@@ -239,8 +239,13 @@ export class LibroService {
     page = Math.max(0, page);
     size = Math.max(1, size);
 
-    return this.http.get(`${this.urlEndPoint}/genero/${generoId}/page/${page}/size/${size}`)
+    const url = `${this.urlEndPoint}/genero/${generoId}/page/${page}/size/${size}`;
+    console.log('Llamando a API para obtener libros por género:', url);
+    console.log('Parámetros:', { generoId, page, size });
+
+    return this.http.get(url)
       .pipe(
+        tap(response => console.log('Respuesta de API (libros por género):', response)),
         map((response: any) => {
           // Procesar los libros de la respuesta
           if (response.content) {
@@ -264,13 +269,16 @@ export class LibroService {
         }),
         catchError(e => {
           console.error('Error al cargar libros por género:', e);
+          console.log('Intentando fallback en el cliente...');
           // Si hay un error, intentar obtener todos los libros y filtrar por género en el cliente
           return this.getLibrosNoPagin().pipe(
             map(libros => {
+              console.log('Filtrando libros por género en el cliente. Total libros:', libros.length);
               // Filtrar libros por género
               const librosFiltrados = libros.filter(libro =>
                 libro.generos && libro.generos.some(genero => genero.id === generoId)
               );
+              console.log('Libros filtrados por género:', librosFiltrados.length);
              
               // Calcular el total de páginas
               const totalPages = Math.ceil(librosFiltrados.length / size);

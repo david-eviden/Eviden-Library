@@ -151,6 +151,7 @@ export const routes: Routes = [
   { path: 'libros/page/:page', component: LibroComponent},
   { path: 'libros/autor/:autorId/page/:page/size/:size', component: LibroComponent},
   { path: 'libros/genero/:generoId/page/:page/size/:size', component: LibroComponent},
+  { path: 'libros/autor/:autorId/genero/:generoId/page/:page/size/:size', component: LibroComponent},
   { path: 'libro/:id', component: DetallesLibroComponent },
   { path: 'login', component: LoginComponent },
   { path: 'registro', component: RegistroComponent },

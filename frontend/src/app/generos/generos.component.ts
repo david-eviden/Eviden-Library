@@ -114,7 +114,13 @@ export class GenerosComponent implements OnInit{
   }
     
   verLibrosGenero(generoId: number): void {
-    this.router.navigate(['/libros/genero', generoId, 'page', 0, 'size', 6]);
+    this.router.navigate(['/libros'], {
+      queryParams: {
+        generoId: generoId,
+        page: 0,
+        size: 8
+      }
+    });
   }
 }
     

@@ -80,50 +80,37 @@ export class FavoritoService {
       return throwError('Token inválido o expirado');
     }
    
-    // Obtener el usuario del localStorage
-    const usuarioString = localStorage.getItem('usuario');
-    if (!usuarioString) {
-      console.error('No se encontró información del usuario en localStorage');
-      return throwError('Usuario no autenticado');
+    // Obtener el ID del usuario actual usando el AuthService
+    const usuarioId = this.authService.getCurrentUserId();
+    if (!usuarioId) {
+      console.error('No se pudo obtener el ID del usuario');
+      return throwError('ID de usuario no disponible');
     }
 
-    try {
-      const usuarioData = JSON.parse(usuarioString);
-      const usuarioId = usuarioData.id;
-     
-      if (!usuarioId) {
-        console.error('ID de usuario no encontrado en localStorage');
-        return throwError('ID de usuario no disponible');
-      }
-
-      // Crear objeto favorito en el formato exacto que espera el backend
-      const favoritoCompleto = new Favorito();
-      favoritoCompleto.usuario = new Usuario();
-      favoritoCompleto.usuario.id = usuarioId;
-      favoritoCompleto.libro = libro;
-      favoritoCompleto.fechaAgregado = new Date().toISOString();
-     
-      return this.http.post(`${this.urlFavoritoEndPoint}`, favoritoCompleto, {
-        observe: 'response'
-      }).pipe(
-        map(response => {
-          return response.body;
-        }),
-        catchError(error => {
-          console.error('Error al agregar favorito:', error);
-          console.error('Detalles del error:', {
-            status: error.status,
-            statusText: error.statusText,
-            message: error.message,
-            error: error.error
-          });
-          return throwError(error);
-        })
-      );
-    } catch (error) {
-      console.error('Error al procesar la información del usuario:', error);
-      return throwError('Error al procesar la información del usuario');
-    }
+    // Crear objeto favorito en el formato exacto que espera el backend
+    const favoritoCompleto = new Favorito();
+    favoritoCompleto.usuario = new Usuario();
+    favoritoCompleto.usuario.id = usuarioId;
+    favoritoCompleto.libro = libro;
+    favoritoCompleto.fechaAgregado = new Date().toISOString();
+   
+    return this.http.post(`${this.urlFavoritoEndPoint}`, favoritoCompleto, {
+      observe: 'response'
+    }).pipe(
+      map(response => {
+        return response.body;
+      }),
+      catchError(error => {
+        console.error('Error al agregar favorito:', error);
+        console.error('Detalles del error:', {
+          status: error.status,
+          statusText: error.statusText,
+          message: error.message,
+          error: error.error
+        });
+        return throwError(error);
+      })
+    );
   }
 
   // Verificar si un libro está en favoritos
@@ -226,7 +213,7 @@ export class FavoritoService {
       }),
       catchError(error => {
         console.error(`Error al eliminar favorito para libro ${libroId} y usuario ${usuarioId}:`, error);
-        return throwError(error);
+        return throwError(() => error);
       })
     );
   }

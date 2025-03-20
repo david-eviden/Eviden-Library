@@ -1,4 +1,5 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'paginator-nav',
@@ -14,15 +15,37 @@ export class PaginatorComponent implements OnInit, OnChanges {
   @Input()
   pageSize: number = 6; // Tamaño de página por defecto
 
+  @Input()
+  autorId: number = 0; // ID del autor seleccionado
+  
+  @Input()
+  generoId: number = 0; // ID del género seleccionado
+  
   paginas: number[] = [];
 
   desde: number = 0;
   hasta: number = 0;
 
-  constructor() {}
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    
+    // Obtener parámetros de consulta de la URL actual
+    this.route.queryParams.subscribe(params => {
+      const autorIdParam = params['autorId'];
+      if (autorIdParam) {
+        this.autorId = +autorIdParam;
+      }
+      
+      const generoIdParam = params['generoId'];
+      if (generoIdParam) {
+        this.generoId = +generoIdParam;
+      }
+      
+      const sizeParam = params['size'];
+      if (sizeParam) {
+        this.pageSize = +sizeParam;
+      }
+    });
   }
 
   ngOnChanges(): void {
@@ -49,5 +72,25 @@ export class PaginatorComponent implements OnInit, OnChanges {
       // Si hay 5 o menos páginas, simplemente mostrar todas
       this.paginas = new Array(totalPages).fill(0).map((_valor, indice) => indice + 1);
     }
+  }
+  
+  // Método para construir los parámetros de consulta
+  getQueryParams(page: number): any {
+    const params: any = { page: page };
+    
+    if (this.autorId > 0) {
+      params.autorId = this.autorId;
+    }
+    
+    if (this.generoId > 0) {
+      params.generoId = this.generoId;
+    }
+    
+    // Añadir el tamaño de página a los parámetros
+    if (this.pageSize > 0) {
+      params.size = this.pageSize;
+    }
+    
+    return params;
   }
 }
