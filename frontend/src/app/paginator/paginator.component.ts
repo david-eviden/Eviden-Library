@@ -12,7 +12,7 @@ export class PaginatorComponent implements OnInit, OnChanges {
   paginador: any;
   
   @Input()
-  pageSize: number = 6; // Tamaño de página por defecto
+  pageSize: number = 8; // Tamaño de página por defecto
 
   paginas: number[] = [];
 

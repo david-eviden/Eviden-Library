@@ -17,7 +17,7 @@ export class AuthService {
     // Intentar recuperar usuario del localStorage al iniciar
     const accessToken = localStorage.getItem('access_token');
     const usuarioGuardado = localStorage.getItem('usuario');
-    
+   
     if (accessToken && usuarioGuardado) {
       try {
         const usuario = JSON.parse(usuarioGuardado);
@@ -34,58 +34,73 @@ export class AuthService {
 
   login(credenciales: { email: string, password: string }): Observable<any> {
     const body = new URLSearchParams();
-    body.set('client_id', 'eviden-library-rest-api'); 
+    body.set('client_id', 'eviden-library-rest-api');
     body.set('username', credenciales.email);
     body.set('password', credenciales.password);
     body.set('grant_type', 'password');
-  
+ 
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'
     });
-  
+ 
     return this.http.post<any>(this.urlEndPoint, body.toString(), { headers }).pipe(
       tap(usuario => {
         if (usuario && usuario.access_token) {
           const tokenPayload = this.decodeToken(usuario.access_token);
-          
+         
           // Extraer roles
           const roles = this.extractRolesFromPayload(tokenPayload);
-          
+         
           // Asignar rol (priorizar ADMIN)
           usuario.rol = roles.includes('ADMIN') ? 'ADMIN' : 'USER';
-  
+ 
           // Añadir información adicional del usuario
           usuario.username = tokenPayload.preferred_username;
           usuario.email = tokenPayload.email;
-          
+         
           // Guardar el token y la información básica del usuario
           localStorage.setItem('access_token', usuario.access_token);
-          localStorage.setItem('usuario', JSON.stringify(usuario));
-          
-          // Actualizar subject con la información básica
-          this.usuarioActualSubject.next(usuario);
-          
-          // Después de autenticar, obtener los datos completos del usuario por email
+         
+          //Si es admin
+          if(usuario.rol === 'ADMIN') {
+            usuario.id = 1;
+            localStorage.setItem('usuario',JSON.stringify(usuario));
+            this.usuarioActualSubject.next(usuario);
+            return;
+          }
+          //Uusraio normal, id del backend
           this.obtenerUsuarioPorEmail(usuario.email).subscribe(
             usuarioCompleto => {
               if (usuarioCompleto) {
                 // Actualizar el ID del usuario con el de la base de datos
                 usuario.id = usuarioCompleto.id;
-                
-                // Actualizar el localStorage y el subject con el ID correcto
+               
+                // Guardar el usuario completo en localStorage
+                localStorage.setItem('usuario', JSON.stringify(usuario));
+               
+                // Actualizar el BehaviorSubject con el usuario completo
+                this.usuarioActualSubject.next(usuario);
+              } else {
+                console.error('No se pudo obtener el ID del usuario');
+                // En lugar de hacer logout, usamos el ID del token
+                usuario.id = this.extractNumericId(tokenPayload.sub);
                 localStorage.setItem('usuario', JSON.stringify(usuario));
                 this.usuarioActualSubject.next(usuario);
               }
             },
             error => {
               console.error('Error al obtener datos completos del usuario:', error);
+              // En lugar de hacer logout, usamos el ID del token
+              usuario.id = this.extractNumericId(tokenPayload.sub);
+              localStorage.setItem('usuario', JSON.stringify(usuario));
+              this.usuarioActualSubject.next(usuario);
             }
           );
         }
       })
     );
   }
-  
+ 
   private decodeToken(token: string): any {
     try {
       // Decodificar el payload del token JWT
@@ -94,7 +109,7 @@ export class AuthService {
       const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
       }).join(''));
-      
+     
       console.log('Token decodificado:', JSON.parse(jsonPayload));
       return JSON.parse(jsonPayload);
     } catch (error) {
@@ -102,36 +117,47 @@ export class AuthService {
       return {};
     }
   }
-  
+ 
   private extractRolesFromPayload(payload: any): string[] {
     // Priorizar roles del reino y del cliente
     const realmRoles = payload['realm_access']?.roles || [];
     const clientRoles = payload['resource_access']?.['eviden-library-rest-api']?.roles || [];
-  
+ 
     // Combinar y normalizar roles
     const roles = [...realmRoles, ...clientRoles];
-    
-    // Filtrar roles específicos
+   
+    // Filtrar roles específicos (ser más flexible con los nombres de roles)
     const mappedRoles = roles
-      .filter(role => 
-        role.toLowerCase() === 'admin' || 
-        role.toLowerCase() === 'user'
+      .filter(role =>
+        role.toLowerCase().includes('admin') ||
+        role.toLowerCase().includes('user')
       )
-      .map(role => role.toUpperCase());
-  
+      .map(role => {
+        // Normalizar el rol a ADMIN o USER
+        if (role.toLowerCase().includes('admin')) {
+          return 'ADMIN';
+        }
+        return 'USER';
+      });
+
+    // Si el email contiene 'admin', asignar rol de administrador
+    if (payload.email?.toLowerCase().includes('admin')) {
+      mappedRoles.push('ADMIN');
+    }
+ 
     return mappedRoles;
   }
-  
+ 
 
   logout() {
     // Limpiar localStorage y el subject
     localStorage.removeItem('access_token');  // Elimina el token de acceso
     localStorage.removeItem('usuario');  // Elimina la información del usuario
     this.usuarioActualSubject.next(null);  // Actualiza el subject a null
-    
+   
     this.router.navigate(['/login']);
   }
-  
+ 
 
   get usuarioLogueado() {
     return this.usuarioActualSubject.value;
@@ -182,14 +208,14 @@ export class AuthService {
     return 1; // ID temporal para pruebas
   }
 
-  registro(usuario: { 
+  registro(usuario: {
     firstName: string,
     lastName: string,
     email: string,
-    password: string 
+    password: string
   }): Observable<any> {
     const registroPublicoEndPoint = 'http://localhost:8081/api/registro';
-    
+   
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
@@ -215,13 +241,13 @@ export class AuthService {
     if (!isNaN(Number(sub))) {
       return Number(sub);
     }
-    
+   
     // Si sub contiene un número al final (común en algunos formatos de ID)
     const matches = sub.match(/(\d+)$/);
     if (matches && matches[1]) {
       return Number(matches[1]);
     }
-    
+   
     // Si no podemos extraer un número, usamos un valor temporal
     // En una implementación real, deberíamos hacer una petición al backend
     // para obtener el ID real del usuario basado en su email o username
@@ -284,10 +310,10 @@ export class AuthService {
   obtenerUsuarioPorEmail(email: string): Observable<any> {
     // Crear cabeceras con el token
     const headers = this.createHeaders();
-    
+   
     // URL para obtener usuario por email (ajusta según tu API)
     const url = 'http://localhost:8081/api/usuario/email/' + email;
-    
+   
     return this.http.get<any>(url, { headers }).pipe(
       catchError(error => {
         console.error('Error al obtener usuario por email:', error);
@@ -326,7 +352,7 @@ export class AuthService {
 
       // No verificar la expiración del token para evitar problemas
       // Dejar que el backend se encargue de validar el token
-      
+     
       return true;
     } catch (error) {
       console.error('Error al verificar el token:', error);

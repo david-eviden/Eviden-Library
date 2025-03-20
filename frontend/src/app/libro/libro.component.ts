@@ -190,11 +190,6 @@ export class LibroComponent implements OnInit{
       this.paginador = response;
     });
   } */
- //Manejar la paginacion
- handlePageChange(event: any): void {
-  this.currentPage = event;
-  this.cargarLibros();
- }
 
   // Cargar autores para el filtro
   cargarAutores(): void {

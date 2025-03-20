@@ -117,6 +117,6 @@ export class AutorComponent implements OnInit {
   }
 
   verLibrosAutor(autorId: number): void {
-    this.router.navigate(['/libros/autor', autorId, 'page', 0, 'size',6]);
+    this.router.navigate(['/libros/autor', autorId, 'page', 0, 'size',8]);
   }
 }
