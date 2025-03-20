@@ -211,7 +211,7 @@ public class FavoritoController {
 		
 		if(favoritos.isEmpty()) {
 			response.put("mensaje", "El usuario con ID: ".concat(usuarioId.toString().concat(" no tiene favoritos")));
-			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(response, HttpStatus.OK);
 		}
 		
 		return new ResponseEntity<>(favoritos, HttpStatus.OK);

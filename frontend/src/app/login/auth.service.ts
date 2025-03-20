@@ -35,6 +35,7 @@ export class AuthService {
   login(credenciales: { email: string, password: string }): Observable<any> {
     const body = new URLSearchParams();
     body.set('client_id', 'eviden-library-rest-api');
+    body.set('client_secret', 'your-client-secret');
     body.set('username', credenciales.email);
     body.set('password', credenciales.password);
     body.set('grant_type', 'password');

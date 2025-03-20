@@ -8,11 +8,12 @@
         </div>
 
         <div class="card-body">
-            <div class="row m-1">
+            <div *ngIf="libro && libro.id" class="row m-1">
                 <div class="col-md-4 text-center mb-4 mb-md-0">
                     <div class="position-relative">
-                        <img [src]="libro.imagen ? libro.imagen : '/img/libroEjemplo.jpg'" [id]="'imagen-libro-' + libro.id"
-                            class="img-fluid book-cover" alt="Imagen de {{ libro.titulo }}"
+                        <img [src]="libro.imagen ? libro.imagen : '/img/libroEjemplo.jpg'"
+                            [id]="'imagen-libro-' + libro.id" class="img-fluid book-cover"
+                            alt="Imagen de {{ libro.titulo }}"
                             [style.view-transition-name]="'imagen-libro-' + libro.id">
                     </div>
                 </div>
@@ -20,10 +21,12 @@
 
                 <div class="col-md-8">
                     <!-- Información del libro -->
-                    <h3 class="book-title d-flex align-items-center" [style.view-transition-name]="'titulo-libro-' + libro.id">
+                    <h3 class="book-title d-flex align-items-center"
+                        [style.view-transition-name]="'titulo-libro-' + libro.id">
                         {{ libro.titulo }}
                         <!-- Icono de tick para libros comprados -->
-                        <i *ngIf="authService.estaLogueado() && haCompradoLibro(libro.id)" class="bi bi-patch-check-fill text-primary fs-4 ms-2"></i>
+                        <i *ngIf="authService.estaLogueado() && haCompradoLibro(libro.id)"
+                            class="bi bi-patch-check-fill text-primary fs-4 ms-2"></i>
                     </h3>
                     <p class="text-muted autor" [style.view-transition-name]="'autor-libro-' + libro.autores[0].id">
                         Por <strong>{{ libro.autores[0].nombre }}</strong>
@@ -71,10 +74,9 @@
                     <!-- Botones de acción (solo si cliente)-->
                     <div *ngIf="authService.esUsuario"
                         class="d-flex flex-column flex-sm-row justify-content-between gap-2 mb-5">
-                        <button class="btn btn-primary" 
-                                (click)="addToCart()"
-                                [disabled]="agregandoAlCarrito">
-                            <i class="bi" [ngClass]="{'bi-cart-plus': !agregandoAlCarrito, 'bi-hourglass-split': agregandoAlCarrito}"></i>
+                        <button class="btn btn-primary" (click)="addToCart()" [disabled]="agregandoAlCarrito">
+                            <i class="bi"
+                                [ngClass]="{'bi-cart-plus': !agregandoAlCarrito, 'bi-hourglass-split': agregandoAlCarrito}"></i>
                             {{agregandoAlCarrito ? ' Añadiendo...' : ' Añadir al carrito'}}
                         </button>
                         <button class="btn" [ngClass]="{'btn-danger': esFavorito, 'btn-outline-danger': !esFavorito}"
