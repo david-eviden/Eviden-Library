@@ -87,7 +87,7 @@ public class LibroController {
     }
     
     // Obtener libros de un genero y autor específico (paginado con tamaño personalizado)
-    @GetMapping("/libros/genero/{generoId}/autor/{autorId}/page/{page}/size/{size}")
+    @GetMapping("/libros/autor/{autorId}/genero/{generoId}/page/{page}/size/{size}")
     public Page<Libro> getLibrosPorGeneroYAutor(
     		@PathVariable(name = "autorId") Long autorId,
             @PathVariable(name = "generoId") Long generoId,            

@@ -190,6 +190,11 @@ export class LibroComponent implements OnInit{
       this.paginador = response;
     });
   } */
+ //Manejar la paginacion
+ handlePageChange(event: any): void {
+  this.currentPage = event;
+  this.cargarLibros();
+ }
 
   // Cargar autores para el filtro
   cargarAutores(): void {
@@ -209,25 +214,6 @@ export class LibroComponent implements OnInit{
     this.currentPageSize = +event.target.value;
     this.currentPage = 0; // Volvemos a la primera página al cambiar el tamaño
     
-    // Actualizar la URL con los parámetros actuales
-    const params: any = { page: this.currentPage };
-    
-    // Mantener los filtros existentes
-    if (this.selectedAutorId > 0) {
-      params.autorId = this.selectedAutorId;
-    }
-    
-    if (this.selectedGeneroId > 0) {
-      params.generoId = this.selectedGeneroId;
-    }
-    
-    // Añadir el tamaño de página a los parámetros
-    params.size = this.currentPageSize;
-    
-    this.router.navigate(['/libros'], {
-      queryParams: params
-    });
-    
     this.cargarLibros();
   }
 
@@ -237,22 +223,6 @@ export class LibroComponent implements OnInit{
     this.selectedAutorId = autorId;
     this.currentPage = 0; // Resetear a la primera página
    
-    // Actualizar la URL con los parámetros actuales
-    const params: any = { page: this.currentPage };
-   
-    if (autorId > 0) {
-      params.autorId = autorId;
-    }
-   
-    if (this.selectedGeneroId > 0) {
-      params.generoId = this.selectedGeneroId;
-    }
-   
-    this.router.navigate(['/libros'], {
-      queryParams: params,
-      queryParamsHandling: 'merge'
-    });
-   
     this.cargarLibros();
   }
 
@@ -260,22 +230,6 @@ export class LibroComponent implements OnInit{
   filtrarPorGenero(generoId: number): void {
     this.selectedGeneroId = generoId;
     this.currentPage = 0; // Resetear a la primera página
-   
-    // Actualizar la URL con los parámetros actuales
-    const params: any = { page: this.currentPage };
-   
-    if (this.selectedAutorId > 0) {
-      params.autorId = this.selectedAutorId;
-    }
-   
-    if (generoId > 0) {
-      params.generoId = generoId;
-    }
-   
-    this.router.navigate(['/libros'], {
-      queryParams: params,
-      queryParamsHandling: 'merge'
-    });
    
     this.cargarLibros();
   }
