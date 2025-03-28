@@ -1,6 +1,6 @@
 <div class="container2 my-3">
 
-    <h2 class="text-center mb-4">Catálogo de Libros</h2>
+    <h2 class="text-center mb-4 text-decoration-underline">Catálogo de Libros</h2>
 
     <!--Lista de generos-->
     <div class="generos-horizontal mb-4">
@@ -101,7 +101,8 @@
 
     <div class="row mt-4">
         <div class="col-12">
-            <paginator-nav *ngIf="paginador" [paginador]="paginador" [pageSize]="currentPageSize" [autorId]="selectedAutorId" [generoId]="selectedGeneroId"></paginator-nav>
+            <paginator-nav *ngIf="paginador" [paginador]="paginador" [pageSize]="currentPageSize"
+                [autorId]="selectedAutorId" [generoId]="selectedGeneroId"></paginator-nav>
         </div>
     </div>
 

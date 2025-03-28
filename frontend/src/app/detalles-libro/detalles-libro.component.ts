@@ -63,12 +63,22 @@ export class DetallesLibroComponent implements OnInit {
       }
     });
 
+    //Valoraciones
     this.valoracionService.getValoraciones().subscribe(
       (valoraciones) => {
         this.valoraciones = valoraciones;
       },
       (error) => {
         console.error('Error al obtener las valoraciones:', error);
+      }
+    );
+    //Libros recomendados
+    this.libroService.getLibrosPorGenero(genero).subscribe(
+      libros => {
+        this.librosPorGenero.set(genero, libros);
+      },
+      error => {
+        console.error('Error al cargar libros por género', error);
       }
     );
   }
@@ -462,4 +472,13 @@ export class DetallesLibroComponent implements OnInit {
     });
   }
 
+  verDetallesLibro(libroId: number): void {
+    this.router.navigate(['/libro', libroId]);
+  }
+
+  librosPorGenero: Map<string, Libro[]> = new Map();
+  
+  getLibrosPorGenero(genero: string): Libro[] {
+    return this.librosPorGenero.get(genero) || [];
+  }
 }
