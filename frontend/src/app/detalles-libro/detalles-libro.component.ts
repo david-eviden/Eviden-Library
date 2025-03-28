@@ -447,4 +447,9 @@ export class DetallesLibroComponent implements OnInit {
     return this.librosCompradosService.haCompradoLibro(usuarioId, libroId);
   }
 
+  //Ver los libros del autor
+  verLibrosAutor(autorId: number): void {
+    this.router.navigate(['/libros/autor', autorId, 'page', 0, 'size',4]);
+  }
+
 }
