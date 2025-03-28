@@ -4,6 +4,10 @@
             <button class="btn btn-outline-secondary m-3" (click)="irAtras()">
                 <i class="bi bi-arrow-left me-2"></i>Volver
             </button>
+            <button class="btn btn-outline-secondary m-3 position-absolute top-0 end-0"
+                (click)="verLibrosGenero(libro.generos[0].id)">
+                {{ libro.generos[0].nombre }}
+            </button>
             <h2 class="text-center my-3">Detalles del Libro</h2>
         </div>
 
@@ -31,9 +35,6 @@
                     <p class="text-muted autor" [style.view-transition-name]="'autor-libro-' + libro.autores[0].id">
                         Por <strong (click)="verLibrosAutor(libro.autores[0].id)">{{ libro.autores[0].nombre }}</strong>
                     </p>
-                    <div class="genre-box">
-                        <span class="genre-text">{{ libro.generos[0].nombre }}</span>
-                    </div>
                     <div class="stars-container">
                         <p class="text-muted valMedia">Valoración media:
                             <span class="star-rating">
