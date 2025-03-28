@@ -158,5 +158,22 @@
                     </div>
                 </div>
             </div>
+
+            <!--Tambien te puede interesar-->
+            <div class="row" *ngIf="librosRecomendados.length > 0" class="recommended-books">
+                <div class="card-header bg-transparent text-center">
+                    <h3 class="mb-0">También te puede interesar</h3>
+                </div>
+                <div class="card-body">
+                    <div class="recommended-books-grid">
+                        <div *ngFor="let libroRecomendado of librosRecomendados" class="recommended-book-card">
+                            <img [src]="libroRecomendado.imagen" [alt]="libroRecomendado.titulo">
+                            <h4>{{ libroRecomendado.titulo }}</h4>
+                            <p>{{ libroRecomendado.autores[0]?.nombre || 'Autor desconocido' }}</p>
+                            <button (click)="verDetallesLibroRecomendado(libroRecomendado.id)">Ver detalles</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
