@@ -21,6 +21,7 @@ import { LibrosCompradosService } from '../services/libros-comprados.service';
 export class DetallesLibroComponent implements OnInit {
   libro: Libro = new Libro();
   valoraciones: Valoracion[] = [];
+  librosRecomendados: Libro[] = [];
   esFavorito: boolean = false;
   verificandoFavorito: boolean = false;
   agregandoAlCarrito: boolean = false;
@@ -81,6 +82,9 @@ export class DetallesLibroComponent implements OnInit {
     this.libroService.getLibro(id).subscribe(
       (libro) => {
         this.libro = libro;
+        //libros recomendados del mismo genero
+        this.cargarLibrosRecomendados(libro.generos);
+
         // Verificar si el libro está en favoritos
         if (this.authService.estaLogueado() && this.authService.esUsuario) {
           this.verificandoFavorito = true;
@@ -102,6 +106,38 @@ export class DetallesLibroComponent implements OnInit {
         this.router.navigate(['/libros']);
       }
     );
+  }
+
+  // Nuevo método para cargar libros recomendados
+  cargarLibrosRecomendados(generos: any[]): void {
+    if (!generos || generos.length === 0) {
+      return;
+    }
+
+    // Obtener id de géneros
+    const generosIds = generos.map(g => g.id);
+
+    this.libroService.getLibrosRecomendados(generosIds, this.libro.id).subscribe(
+      (libros) => {
+        // Limitar a 4 libros recomendados
+        this.librosRecomendados = libros.slice(0, 4);
+      },
+      (error) => {
+        console.error('Error al cargar libros recomendados:', error);
+      }
+    );
+  }
+
+  // Método para ver los detalles de un libro recomendado
+  verDetallesLibroRecomendado(libroId: number): void {
+    // Usar View Transition si está disponible
+    if ('startViewTransition' in document) {
+      (document as any).startViewTransition(() => {
+        this.router.navigate(['/libro', libroId]);
+      });
+    } else {
+      this.router.navigate(['/libro', libroId]);
+    }
   }
 
   // Verificar si el libro está en favoritos
