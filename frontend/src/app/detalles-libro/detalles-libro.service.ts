@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { DetallesLibro } from './detalles-libro';
@@ -46,6 +46,29 @@ export class DetallesLibroService implements OnInit {
           libro.autores = [];
         }
         return libro;
+      })
+    );
+  }
+
+  getLibrosRecomendados(generosIds: number[], libroActualId: number): Observable<Libro[]> {
+    // Crear HttpParams para enviar los IDs de géneros
+    let params = new HttpParams()
+      .set('generos', generosIds.join(','))
+      .set('libroActualId', libroActualId.toString());
+
+    return this.http.get<Libro[]>(`${this.urlEndPoint}/recomendados`, { params }).pipe(
+      map(libros => {
+        // Asegurar que cada libro tenga autores
+        return libros.map(libro => {
+          if (!libro.autores) {
+            libro.autores = [];
+          }
+          return libro;
+        });
+      }),
+      catchError(e => {
+        console.error('Error al obtener libros recomendados:', e);
+        return throwError(e);
       })
     );
   }
