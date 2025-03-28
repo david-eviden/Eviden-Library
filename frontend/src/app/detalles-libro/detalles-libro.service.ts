@@ -51,12 +51,7 @@ export class DetallesLibroService implements OnInit {
   }
 
   getLibrosRecomendados(generosIds: number[], libroActualId: number): Observable<Libro[]> {
-    // Crear HttpParams para enviar los IDs de géneros
-    let params = new HttpParams()
-      .set('generos', generosIds.join(','))
-      .set('libroActualId', libroActualId.toString());
-
-    return this.http.get<Libro[]>(`${this.urlEndPoint}/recomendados`, { params }).pipe(
+    return this.http.get<Libro[]>(`${this.urlEndPoint}`).pipe(
       map(libros => {
         // Asegurar que cada libro tenga autores
         return libros.map(libro => {
