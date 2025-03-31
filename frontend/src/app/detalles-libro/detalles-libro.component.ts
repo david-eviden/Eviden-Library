@@ -479,4 +479,15 @@ export class DetallesLibroComponent implements OnInit {
       });
     }
   }
+
+  //Ver detalles libro
+  verDetallesLibro(libroId: number): void {
+    if ('startViewTransition' in document) {
+      (document as any).startViewTransition(() => {
+        this.router.navigate(['/libro', libroId]);
+      });
+    }else{
+      this.router.navigate(['/libro', libroId]);
+    }
+  }
 }
