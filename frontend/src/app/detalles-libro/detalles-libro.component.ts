@@ -10,6 +10,7 @@ import { AuthService } from '../login/auth.service';
 import { FavoritoService } from '../favorito/favorito.service';
 import { DetallesCarritoService } from '../detalles-carrito/detalles-carrito.service';
 import { LibrosCompradosService } from '../services/libros-comprados.service';
+import { LibroService } from '../libro/libro.service';
 
 
 @Component({
@@ -24,6 +25,8 @@ export class DetallesLibroComponent implements OnInit {
   esFavorito: boolean = false;
   verificandoFavorito: boolean = false;
   agregandoAlCarrito: boolean = false;
+  librosRelacionados: Libro[] = [];
+  maxLibrosRelacionados: number = 4;
 
   constructor(
     private route: ActivatedRoute,
@@ -33,7 +36,8 @@ export class DetallesLibroComponent implements OnInit {
     private favoritoService: FavoritoService,
     private carritoService: DetallesCarritoService,
     public authService: AuthService,
-    private librosCompradosService: LibrosCompradosService
+    private librosCompradosService: LibrosCompradosService,
+    private libroServiceGeneral: LibroService
   ) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationStart)
@@ -72,15 +76,6 @@ export class DetallesLibroComponent implements OnInit {
         console.error('Error al obtener las valoraciones:', error);
       }
     );
-    //Libros recomendados
-    /* this.libroService.getLibrosPorGenero(genero).subscribe(
-      libros => {
-        this.librosPorGenero.set(genero, libros);
-      },
-      error => {
-        console.error('Error al cargar libros por género', error);
-      }
-    ); */
   }
 
   /**
@@ -106,6 +101,8 @@ export class DetallesLibroComponent implements OnInit {
             }
           });
         }
+        //Cargar libbros relacionados
+        this.cargarLibrosRelacionados();
       },
       (error) => {
         console.error(error);
@@ -462,23 +459,24 @@ export class DetallesLibroComponent implements OnInit {
     this.router.navigate(['/libros/autor', autorId, 'page', 0, 'size',4]);
   }
 
-  verLibrosGenero(generoId: number): void {
-    this.router.navigate(['/libros'], {
-      queryParams: {
-        generoId: generoId,
-        page: 0,
-        size: 8
-      }
-    });
-  }
-
-  verDetallesLibro(libroId: number): void {
-    this.router.navigate(['/libro', libroId]);
-  }
-
-  librosPorGenero: Map<string, Libro[]> = new Map();
-  
-  getLibrosPorGenero(genero: string): Libro[] {
-    return this.librosPorGenero.get(genero) || [];
+  //Libros del mismo genero
+  cargarLibrosRelacionados(): void{
+    if (this.libro && this.libro.generos && this.libro.generos.length > 0) {
+      const generoPrincipal = this.libro.generos[0];
+      this.libroServiceGeneral.getLibrosNoPagin().subscribe({
+        next: (libros) => {
+          //Filtrar libros del mismo género
+          this.librosRelacionados = libros
+            .filter((libros: Libro) =>
+              this.libro.id !== this.libro.id && //excluyendo el libro actual 
+              this.libro.generos.some(g => g.id === generoPrincipal.id)
+            )
+            .slice(0, this.maxLibrosRelacionados);// 4
+        },
+        error: (err: any) => {
+          console.error('Error al cargar libros relacionados:', err);
+        }
+      });
+    }
   }
 }
