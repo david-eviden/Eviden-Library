@@ -4,6 +4,7 @@ import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'r
 import { Valoracion } from './valoracion';
 import { Router } from '@angular/router';
 import swal from 'sweetalert2';
+import { LibroService } from '../libro/libro.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class ValoracionService implements OnInit {
   private valoracionesSubject = new BehaviorSubject<Valoracion[]>([]);
   valoraciones$ = this.valoracionesSubject.asObservable();  // Observable al que nos suscribimos en los componentes
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private libroService: LibroService) {}
 
   ngOnInit(): void {}
 
@@ -40,10 +41,37 @@ export class ValoracionService implements OnInit {
           valoracion.id = item.id;
           valoracion.usuario = item.usuario;
           valoracion.libro = item.libro;
+          if (item.libro) {
+            valoracion.libro = {
+              id: item.libro.id,
+              titulo: item.libro.titulo,
+              precio: item.libro.precio,
+              stock: item.libro.stock,
+              imagen: item.libro.imagen,
+              descripcion: item.libro.descripcion,
+              anio: item.libro.anio,
+              valoraciones: item.libro.valoraciones || [],
+              valoracionMedia: item.libro.valoracionMedia || 0,
+              autores: item.libro.autores || [],
+              generos: item.libro.generos || []
+            };
+          }
           valoracion.puntuacion = item.puntuacion;
           valoracion.comentario = item.comentario;
           valoracion.libroDetalles = item.libroDetalles;
           valoracion.fecha = new Date(item.fecha);
+
+          //info del libro
+          if(item.libroDetalles) {
+            this.libroService.getLibro(item.libroDetalles).subscribe(
+              libro => {
+                valoracion.libro = libro;
+              },
+              error => {
+                console.error('Error al obtener el libro:', error);
+              }
+            )
+          }
           return valoracion;
         });
       })
