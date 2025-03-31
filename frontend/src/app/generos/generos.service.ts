@@ -9,8 +9,8 @@ import swal from 'sweetalert2';
   providedIn: 'root'  //disponible a nivel global
 })
 export class GeneroService implements OnInit{
-  private urlEndPoint: string = 'http://localhost:8081/api/generos';
-  private urlEndPoint1: string = 'http://localhost:8081/api/genero'; 
+  private urlEndPoint: string = 'http://localhost:8080/api/generos';
+  private urlEndPoint1: string = 'http://localhost:8080/api/genero'; 
 
   // Creamos un BehaviorSubject para la lista de generoes
   private generoesSubject = new BehaviorSubject<Genero[]>([]);

@@ -13,7 +13,7 @@ export class DetallesCarritoService {
 
   private contadorItemsCarrito = new BehaviorSubject<number>(0);
 
-  private urlEndPoint: string = 'http://localhost:8081/api/detalles-carrito';
+  private urlEndPoint: string = 'http://localhost:8080/api/detalles-carrito';
 
   constructor(
     private http: HttpClient,
@@ -53,7 +53,7 @@ export class DetallesCarritoService {
   }
 
   update(detalleCarrito: detallesCarrito): Observable<detallesCarrito> {
-    return this.http.put<any>(`http://localhost:8081/api/detalle-carrito/${detalleCarrito.id}`, detalleCarrito).pipe(
+    return this.http.put<any>(`http://localhost:8080/api/detalle-carrito/${detalleCarrito.id}`, detalleCarrito).pipe(
 
       map(response => response.detalleCarrito as detallesCarrito),
       catchError(error => {
@@ -64,7 +64,7 @@ export class DetallesCarritoService {
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`http://localhost:8081/api/detalle-carrito/${id}`).pipe(
+    return this.http.delete<void>(`http://localhost:8080/api/detalle-carrito/${id}`).pipe(
 
       catchError(error => {
         console.error('Error al eliminar detalle del carrito:', error);
