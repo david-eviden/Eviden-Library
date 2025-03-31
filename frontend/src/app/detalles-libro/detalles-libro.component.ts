@@ -508,17 +508,7 @@ export class DetallesLibroComponent implements OnInit {
   }
 
   //Ver detalles libro
-  verDetallesLibro(libroId: number): void {
-    //limpiar
-    this.libro= new Libro();
-    if ('startViewTransition' in document) {
-      (document as any).startViewTransition(() => {
-        this.router.navigate(['/libro', libroId]);
-      });
-    }else{
+  verDetallesLibro(libroId: number): void {    
       this.router.navigate(['/libro', libroId]);
-    }
-  }
-
-  
+  }  
 }
