@@ -203,6 +203,18 @@ a {
     text-decoration: none;
 }
 
+/*Te puede interesar*/
+.book-card:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.book-img {
+    max-height: 400px;
+    object-fit: contain;
+}
+
+
 /* Responsividad para móviles */
 @media (max-width: 767.98px) {
     .book-title {

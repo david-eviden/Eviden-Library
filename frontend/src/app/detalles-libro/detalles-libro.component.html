@@ -173,7 +173,7 @@
                         No hay libros relacionados disponibles en este momento.
                     </div>
                     <div class="row">
-                        <div class="col-md-3 mb-4" *ngFor="let libro os librosRelacionados">
+                        <div class="col-md-3 mb-4" *ngFor="let libro of librosRelacionados">
                             <div class="card h-100 book-card" (click)="verDetallesLibro(libro.id)">
                                 <div class="book-img position-relative">
                                     <img [src]="libro.imagen || '/img/libroEjemplo.jpg'" [alt]="libro.titulo"
