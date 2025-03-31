@@ -1,6 +1,6 @@
 <div class="search-container position-relative" (clickOutside)="onClickOutside($event)">
     <div class="input-group">
-        <input class="form-control" type="search" placeholder="Buscar por título, autor o género..."
+        <input class="form-control" type="search" [placeholder]="placeholder"
             [(ngModel)]="searchTerm" (input)="onSearchInput($event)" (keyup.enter)="performFullSearch()"
             name="searchTerm" aria-label="Search">
         <button class="btn btn-primary" (click)="performFullSearch()">

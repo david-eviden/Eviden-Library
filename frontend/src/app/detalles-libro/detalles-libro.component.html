@@ -108,10 +108,10 @@
                     <h3 class="mb-0">Valoraciones</h3>
                 </div>
                 <div class="card-body">
-                    <div *ngIf="libro.valoraciones.length === 0" class="alert alert-info">
+                    <div *ngIf="libro.valoraciones && libro.valoraciones.length === 0" class="alert alert-info">
                         Este libro aún no tiene valoraciones.
                     </div>
-                    <div class="card mb-3" *ngFor="let valoracion of libro.valoraciones">
+                    <div class="card mb-3" *ngFor="let valoracion of valoracionesFiltradas">
                         <div class="card-body">
                             <a [routerLink]="['/usuario', valoracion.usuario?.id]">
                                 <div class="d-flex justify-content-between align-items-start">
@@ -152,6 +152,33 @@
                                     <i class="bi bi-person-x me-2"></i>Eliminar
                                 </button>
                             </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Paginador de valoraciones -->
+                    <div class="row" *ngIf="libro.valoraciones && libro.valoraciones.length > pageSizeValoraciones">
+                        <div class="col-12">
+                            <!-- Paginador personalizado para valoraciones -->
+                            <ul class="pagination pagination-sm flex-wrap justify-content-center my-4">
+                                <li [ngClass]="paginadorValoraciones.first ? 'disabled page-item' : 'page-item'">
+                                    <a href="javascript:void(0)" (click)="cambiarPaginaValoraciones(0)" class="page-link">Primera</a>
+                                </li>
+                                <li *ngIf="paginadorValoraciones.number > 0" class="page-item">
+                                    <a href="javascript:void(0)" (click)="cambiarPaginaValoraciones(paginadorValoraciones.number-1)" class="page-link">&laquo;</a>
+                                </li>
+                                <li *ngFor="let pagina of [].constructor(paginadorValoraciones.totalPages); let i = index" 
+                                    [ngClass]="i == paginadorValoraciones.number ? 'active page-item' : 'page-item'">
+                                    <span *ngIf="i == paginadorValoraciones.number" class="page-link">{{ i + 1 }}</span>
+                                    <a *ngIf="i != paginadorValoraciones.number" href="javascript:void(0)" 
+                                       (click)="cambiarPaginaValoraciones(i)" class="page-link">{{ i + 1 }}</a>
+                                </li>
+                                <li *ngIf="paginadorValoraciones.number < paginadorValoraciones.totalPages-1" class="page-item">
+                                    <a href="javascript:void(0)" (click)="cambiarPaginaValoraciones(paginadorValoraciones.number+1)" class="page-link">&raquo;</a>
+                                </li>
+                                <li [ngClass]="paginadorValoraciones.last ? 'disabled page-item' : 'page-item'">
+                                    <a href="javascript:void(0)" (click)="cambiarPaginaValoraciones(paginadorValoraciones.totalPages-1)" class="page-link">Última</a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>

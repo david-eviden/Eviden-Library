@@ -156,8 +156,12 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'registro', component: RegistroComponent },
   { path: 'valoraciones', component: ValoracionComponent},
+  { path: 'valoraciones/page/:page', component: ValoracionComponent},
+  { path: 'valoraciones/page/:page/size/:size', component: ValoracionComponent},
   { path: 'generos', component: GenerosComponent},
   { path: 'autores', component: AutorComponent},
+  { path: 'autores/page/:page', component: AutorComponent},
+  { path: 'autores/page/:page/size/:size', component: AutorComponent},
   { path: 'search-results', component: ResultadoBusquedaComponent},
   { path: 'error', component: ErrorComponent },
 
