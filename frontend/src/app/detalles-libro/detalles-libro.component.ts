@@ -458,6 +458,17 @@ export class DetallesLibroComponent implements OnInit {
   verLibrosAutor(autorId: number): void {
     this.router.navigate(['/libros/autor', autorId, 'page', 0, 'size',4]);
   }
+  
+  //Ver libros del genero
+  verLibrosGenero(generoId: number): void {
+    this.router.navigate(['/libros'], {
+      queryParams: {
+        generoId: generoId,
+        page: 0,
+        size: 8
+      }
+    });
+  }
 
   //Libros del mismo genero
   cargarLibrosRelacionados(): void{
@@ -490,4 +501,6 @@ export class DetallesLibroComponent implements OnInit {
       this.router.navigate(['/libro', libroId]);
     }
   }
+
+  
 }
