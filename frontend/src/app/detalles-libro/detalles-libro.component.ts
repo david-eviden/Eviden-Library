@@ -11,6 +11,7 @@ import { FavoritoService } from '../favorito/favorito.service';
 import { DetallesCarritoService } from '../detalles-carrito/detalles-carrito.service';
 import { LibrosCompradosService } from '../services/libros-comprados.service';
 import { LibroService } from '../libro/libro.service';
+import { Genero } from '../generos/generos';
 
 
 @Component({
@@ -52,6 +53,14 @@ export class DetallesLibroComponent implements OnInit {
     }
   }
 
+  //genero del libro
+  get primerGenero(): Genero | null {
+    return this.libro?.generos && this.libro.generos.length > 0 ? this.libro.generos[0] : null;
+  }
+
+  getNombrePrimerGenero(): string {
+    return this.libro?.generos?.[0]?.nombre ?? 'Sin género';
+  }
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const id = +params.get('id')!;

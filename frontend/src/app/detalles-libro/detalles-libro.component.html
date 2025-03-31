@@ -4,9 +4,9 @@
             <button class="btn btn-outline-secondary m-3" (click)="irAtras()">
                 <i class="bi bi-arrow-left me-2"></i>Volver
             </button>
-            <button class="btn btn-outline-secondary m-3 position-absolute top-0 end-0"
-                (click)="verLibrosGenero(libro.generos[0].id)">
-                {{ libro.generos[0].nombre || 'Sin genero' }}
+            <button class="btn btn-outline-secondary m-3 position-absolute top-0 end-0" *ngIf="libro && primerGenero"
+                (click)="verLibrosGenero(primerGenero.id)">
+                {{ primerGenero.nombre}}
             </button>
             <h2 class="text-center my-3">Detalles del Libro</h2>
         </div>
@@ -176,7 +176,7 @@
                     <div class="row">
                         <div class="col-md-3 mb-4" *ngFor="let libro of librosRelacionados">
                             <div class="card h-100 book-card" (click)="verDetallesLibro(libro.id)">
-                                <div class="book-img position-relative">
+                                <div class="book-img ">
                                     <img [src]="libro.imagen || '/img/libroEjemplo.jpg'" [alt]="libro.titulo"
                                         class="card-img-top">
                                     <!--Icono de tick para libros comprados-->
