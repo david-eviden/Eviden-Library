@@ -73,14 +73,14 @@ export class DetallesLibroComponent implements OnInit {
       }
     );
     //Libros recomendados
-    this.libroService.getLibrosPorGenero(genero).subscribe(
+    /* this.libroService.getLibrosPorGenero(genero).subscribe(
       libros => {
         this.librosPorGenero.set(genero, libros);
       },
       error => {
         console.error('Error al cargar libros por género', error);
       }
-    );
+    ); */
   }
 
   /**
