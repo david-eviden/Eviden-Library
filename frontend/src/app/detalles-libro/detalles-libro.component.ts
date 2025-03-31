@@ -482,7 +482,7 @@ export class DetallesLibroComponent implements OnInit {
               libro.id !== this.libro.id && // Excluir el libro actual
               libro.generos && // Verificar que tenga géneros
               libro.generos.length > 0 && // Verificar que tenga al menos un género
-              libro.generos[0].id === generoPrincipal.id 
+              libro.generos.some(genero => genero.id === generoPrincipal.id)
             )
             .slice(0, this.maxLibrosRelacionados);
          
@@ -500,6 +500,8 @@ export class DetallesLibroComponent implements OnInit {
 
   //Ver detalles libro
   verDetallesLibro(libroId: number): void {
+    //limpiar
+    this.libro= new Libro();
     if ('startViewTransition' in document) {
       (document as any).startViewTransition(() => {
         this.router.navigate(['/libro', libroId]);
