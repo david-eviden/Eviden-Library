@@ -31,7 +31,8 @@
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 <div *ngFor="let libro of results.libros" class="col">
                     <div class="card h-100 shadow-sm hover-card" (click)="getDetallesLibro(libro.id)">
-                        <img [src]="'/img/libroEjemplo.jpg'" class="card-img-top" [alt]="'Imagen de '+libro.titulo">
+                        <img [src]="libro.imagen ? libro.imagen : '/img/libroEjemplo.jpg'" class="card-img-top"
+                            [alt]="'Imagen de '+libro.titulo">
                         <div class="card-body">
                             <h5 class="card-title">{{libro.titulo}}</h5>
                             <p class="card-text text-muted">
@@ -75,7 +76,8 @@
                 <div class="row row-cols-1 row-cols-md-3 g-4">
                     <div *ngFor="let libro of librosRelacionados" class="col">
                         <div class="card h-100 shadow-sm hover-card" (click)="getDetallesLibro(libro.id)">
-                            <img [src]="'/img/libroEjemplo.jpg'" class="card-img-top" [alt]="'Imagen de '+libro.titulo">
+                            <img [src]="libro.imagen ? libro.imagen : '/img/libroEjemplo.jpg'" class="card-img-top"
+                                [alt]="'Imagen de '+libro.titulo">
                             <div class="card-body">
                                 <h5 class="card-title">{{libro.titulo}}</h5>
                                 <p class="card-text text-muted">
@@ -117,7 +119,8 @@
                 <div class="row row-cols-1 row-cols-md-3 g-4">
                     <div *ngFor="let libro of librosRelacionados" class="col">
                         <div class="card h-100 shadow-sm hover-card" (click)="getDetallesLibro(libro.id)">
-                            <img [src]="'/img/libroEjemplo.jpg'" class="card-img-top" [alt]="'Imagen de '+libro.titulo">
+                            <img [src]="libro.imagen ? libro.imagen : '/img/libroEjemplo.jpg'" class="card-img-top"
+                                [alt]="'Imagen de '+libro.titulo">
                             <div class="card-body">
                                 <h5 class="card-title">{{libro.titulo}}</h5>
                                 <p class="card-text text-muted">
@@ -144,7 +147,8 @@
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 <div *ngFor="let libro of librosRelacionados" class="col">
                     <div class="card h-100 shadow-sm hover-card" (click)="getDetallesLibro(libro.id)">
-                        <img [src]="'/img/libroEjemplo.jpg'" class="card-img-top" [alt]="'Imagen de '+libro.titulo">
+                        <img [src]="libro.imagen ? libro.imagen : '/img/libroEjemplo.jpg'" class="card-img-top"
+                            [alt]="'Imagen de '+libro.titulo">
                         <div class="card-body">
                             <h5 class="card-title">{{libro.titulo}}</h5>
                             <p class="card-text text-muted">

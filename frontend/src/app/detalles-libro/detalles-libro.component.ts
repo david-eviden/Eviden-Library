@@ -10,6 +10,8 @@ import { AuthService } from '../login/auth.service';
 import { FavoritoService } from '../favorito/favorito.service';
 import { DetallesCarritoService } from '../detalles-carrito/detalles-carrito.service';
 import { LibrosCompradosService } from '../services/libros-comprados.service';
+import { LibroService } from '../libro/libro.service';
+import { Genero } from '../generos/generos';
 
 
 @Component({
@@ -25,9 +27,14 @@ export class DetallesLibroComponent implements OnInit {
   esFavorito: boolean = false;
   verificandoFavorito: boolean = false;
   agregandoAlCarrito: boolean = false;
+
+  librosRelacionados: Libro[] = [];
+  maxLibrosRelacionados: number = 4;
+
   paginadorValoraciones: any;
   currentPageValoraciones: number = 0;
   pageSizeValoraciones: number = 3; // Máximo 3 valoraciones por página
+
 
   constructor(
     private route: ActivatedRoute,
@@ -37,7 +44,8 @@ export class DetallesLibroComponent implements OnInit {
     private favoritoService: FavoritoService,
     private carritoService: DetallesCarritoService,
     public authService: AuthService,
-    private librosCompradosService: LibrosCompradosService
+    private librosCompradosService: LibrosCompradosService,
+    private libroServiceGeneral: LibroService
   ) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationStart)
@@ -52,6 +60,14 @@ export class DetallesLibroComponent implements OnInit {
     }
   }
 
+  //genero del libro
+  get primerGenero(): Genero | null {
+    return this.libro?.generos && this.libro.generos.length > 0 ? this.libro.generos[0] : null;
+  }
+
+  getNombrePrimerGenero(): string {
+    return this.libro?.generos?.[0]?.nombre ?? 'Sin género';
+  }
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const id = +params.get('id')!;
@@ -67,10 +83,19 @@ export class DetallesLibroComponent implements OnInit {
       }
     });
 
+    //Valoraciones
+    this.valoracionService.getValoraciones().subscribe(
+      (valoraciones) => {
+        this.valoraciones = valoraciones;
+      },
+      (error) => {
+        console.error('Error al obtener las valoraciones:', error);
+
     // Obtener el parámetro de página de valoraciones si existe
     this.route.queryParams.subscribe(params => {
       if (params['valoracionesPage']) {
         this.currentPageValoraciones = +params['valoracionesPage'];
+
       }
       
       // Actualizar valoraciones si ya están cargadas
@@ -106,6 +131,8 @@ export class DetallesLibroComponent implements OnInit {
             }
           });
         }
+        //Cargar libbros relacionados
+        this.cargarLibrosRelacionados();
       },
       (error) => {
         console.error(error);
@@ -506,4 +533,52 @@ export class DetallesLibroComponent implements OnInit {
     return this.librosCompradosService.haCompradoLibro(usuarioId, libroId);
   }
 
+  //Ver los libros del autor
+  verLibrosAutor(autorId: number): void {
+    this.router.navigate(['/libros/autor', autorId, 'page', 0, 'size',4]);
+  }
+
+  //Ver libros del genero
+  verLibrosGenero(generoId: number): void {
+    this.router.navigate(['/libros'], {
+      queryParams: {
+        generoId: generoId,
+        page: 0,
+        size: 8
+      }
+    });
+  }
+
+  //Libros del mismo genero
+  cargarLibrosRelacionados(): void {
+    if (this.libro && this.libro.generos && this.libro.generos.length > 0) {
+      const generoPrincipal = this.libro.generos[0];
+      this.libroServiceGeneral.getLibrosNoPagin().subscribe({
+        next: (libros) => {
+          //Filtrar libros del mismo género
+          this.librosRelacionados = libros
+            .filter((libro: Libro) =>
+              libro.id !== this.libro.id && // Excluir el libro actual
+              libro.generos && // Verificar que tenga géneros
+              libro.generos.length > 0 && // Verificar que tenga al menos un género
+              libro.generos.some(genero => genero.id === generoPrincipal.id)
+            )
+            .slice(0, this.maxLibrosRelacionados);
+         
+          console.log('Género principal:', generoPrincipal);
+          console.log('Libros relacionados cargados:', this.librosRelacionados);
+        },
+        error: (error) => {
+          console.error('Error al cargar libros relacionados:', error);
+        }
+      });
+    } else {
+      console.log('No hay géneros disponibles para cargar libros relacionados');
+    }
+  }
+
+  //Ver detalles libro
+  verDetallesLibro(libroId: number): void {    
+      this.router.navigate(['/libro', libroId]);
+  }  
 }
