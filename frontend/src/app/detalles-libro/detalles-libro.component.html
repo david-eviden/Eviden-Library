@@ -4,10 +4,11 @@
             <button class="btn btn-outline-secondary m-3" (click)="irAtras()">
                 <i class="bi bi-arrow-left me-2"></i>Volver
             </button>
-            <button class="btn btn-outline-secondary m-3 position-absolute top-0 end-0" *ngIf="libro && primerGenero"
-                (click)="verLibrosGenero(primerGenero.id)">
-                {{ primerGenero.nombre}}
-            </button>
+            <div class="position-absolute top-0 end-0 m-3">
+                <button class="btn btn-outline-secondary me-2" *ngFor="let genero of libro.generos"
+                    (click)="verLibrosGenero(genero.id)">{{genero.nombre}}
+                </button>
+            </div>
             <h2 class="text-center my-3">Detalles del Libro</h2>
         </div>
 
@@ -161,29 +162,37 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Paginador de valoraciones -->
                     <div class="row" *ngIf="libro.valoraciones && libro.valoraciones.length > pageSizeValoraciones">
                         <div class="col-12">
                             <!-- Paginador personalizado para valoraciones -->
                             <ul class="pagination pagination-sm flex-wrap justify-content-center my-4">
                                 <li [ngClass]="paginadorValoraciones.first ? 'disabled page-item' : 'page-item'">
-                                    <a href="javascript:void(0)" (click)="cambiarPaginaValoraciones(0)" class="page-link">Primera</a>
+                                    <a href="javascript:void(0)" (click)="cambiarPaginaValoraciones(0)"
+                                        class="page-link">Primera</a>
                                 </li>
                                 <li *ngIf="paginadorValoraciones.number > 0" class="page-item">
-                                    <a href="javascript:void(0)" (click)="cambiarPaginaValoraciones(paginadorValoraciones.number-1)" class="page-link">&laquo;</a>
+                                    <a href="javascript:void(0)"
+                                        (click)="cambiarPaginaValoraciones(paginadorValoraciones.number-1)"
+                                        class="page-link">&laquo;</a>
                                 </li>
-                                <li *ngFor="let pagina of [].constructor(paginadorValoraciones.totalPages); let i = index" 
+                                <li *ngFor="let pagina of [].constructor(paginadorValoraciones.totalPages); let i = index"
                                     [ngClass]="i == paginadorValoraciones.number ? 'active page-item' : 'page-item'">
                                     <span *ngIf="i == paginadorValoraciones.number" class="page-link">{{ i + 1 }}</span>
-                                    <a *ngIf="i != paginadorValoraciones.number" href="javascript:void(0)" 
-                                       (click)="cambiarPaginaValoraciones(i)" class="page-link">{{ i + 1 }}</a>
+                                    <a *ngIf="i != paginadorValoraciones.number" href="javascript:void(0)"
+                                        (click)="cambiarPaginaValoraciones(i)" class="page-link">{{ i + 1 }}</a>
                                 </li>
-                                <li *ngIf="paginadorValoraciones.number < paginadorValoraciones.totalPages-1" class="page-item">
-                                    <a href="javascript:void(0)" (click)="cambiarPaginaValoraciones(paginadorValoraciones.number+1)" class="page-link">&raquo;</a>
+                                <li *ngIf="paginadorValoraciones.number < paginadorValoraciones.totalPages-1"
+                                    class="page-item">
+                                    <a href="javascript:void(0)"
+                                        (click)="cambiarPaginaValoraciones(paginadorValoraciones.number+1)"
+                                        class="page-link">&raquo;</a>
                                 </li>
                                 <li [ngClass]="paginadorValoraciones.last ? 'disabled page-item' : 'page-item'">
-                                    <a href="javascript:void(0)" (click)="cambiarPaginaValoraciones(paginadorValoraciones.totalPages-1)" class="page-link">Última</a>
+                                    <a href="javascript:void(0)"
+                                        (click)="cambiarPaginaValoraciones(paginadorValoraciones.totalPages-1)"
+                                        class="page-link">Última</a>
                                 </li>
                             </ul>
                         </div>
@@ -200,26 +209,40 @@
                     <div *ngIf="librosRelacionados.length === 0" class="alert alert-info">
                         No hay libros relacionados disponibles en este momento.
                     </div>
-                    <div class="row g-2 justify-content-center">
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" *ngFor="let libro of librosRelacionados">
-                            <div class="card h-100" (click)="verDetallesLibro(libro.id)">
-                                <div class="position-relative">
-                                    <img [src]="libro.imagen ? libro.imagen : '/img/libroEjemplo.jpg'" 
-                                         class="card-img-top" alt="Portada del libro">
-                                    <!-- Icono de tick para libros comprados -->
-                                    <div *ngIf="authService.estaLogueado() && haCompradoLibro(libro.id)" 
-                                         class="position-absolute top-0 end-0 p-2">
-                                        <i class="bi bi-patch-check-fill text-white fs-4"></i>
+                    <div *ngIf="librosRelacionados.length > 0" class="carousel-container position-relative"
+                        (mouseenter)="onCaroruselMouseEnter()" (mouseleave)="onCaroruselMouseLeave()">
+                        <button *ngIf="showPrevButton" class="carousel-control-prev" type="button"
+                            (click)="prevSlide()">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        </button>
+                        <button *ngIf="showNextButton" class="carousel-control-next" type="button"
+                            (click)="nextSlide()">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        </button>
+                        <div class="carousel-inner">
+                            <div class="row">
+                                <div class="col-md-3 mb-4"
+                                    *ngFor="let libro of librosRelacionados.slice(currentSlide, currentSlide + slidesPerView)">
+                                    <div class="card h-100 book-card" (click)="verDetallesLibro(libro.id)">
+                                        <div class="book-img">
+                                            <img [src]="libro.imagen || '/img/libroEjemplo.jpg'" [alt]="libro.titulo"
+                                                class="card-img-top">
+                                            <!--Icono de tick para libros comprados-->
+                                            <div *ngIf="authService.estaLogueado() && haCompradoLibro(libro.id)"
+                                                class="position-absolute top-0 end-0 p-2">
+                                                <i class="bi bi-patch-check-fill text-primary fs-4"></i>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{libro.titulo}}</h5>
+                                            <p class="card-text text-muted">
+                                                {{ libro.autores[0].nombre }}
+                                            </p>
+                                            <p class="card-text">
+                                                <strong>{{ libro.precio | currency:'EUR':'symbol':'1.2-2' }}</strong>
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ libro.titulo }}</h5>
-                                    <p class="card-text">
-                                        <span *ngFor="let autor of libro.autores; let last = last">
-                                            {{ autor.nombre }}<span *ngIf="!last">, </span>
-                                        </span>
-                                        <span *ngIf="!libro.autores || libro.autores.length === 0">Sin autores</span>
-                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -228,4 +251,3 @@
             </div>
         </div>
     </div>
-</div>

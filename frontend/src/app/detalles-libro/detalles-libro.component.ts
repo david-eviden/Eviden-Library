@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { Libro } from '../libro/libro';
 import { DetallesLibroService } from './detalles-libro.service';
@@ -20,7 +20,7 @@ import { Genero } from '../generos/generos';
   templateUrl: './detalles-libro.component.html',
   styleUrls: ['./detalles-libro.component.css'],
 })
-export class DetallesLibroComponent implements OnInit {
+export class DetallesLibroComponent implements OnInit, OnDestroy {
   libro: Libro = new Libro();
   valoraciones: Valoracion[] = [];
   valoracionesFiltradas: Valoracion[] = []; // Para mostrar solo las valoraciones paginadas
@@ -29,7 +29,14 @@ export class DetallesLibroComponent implements OnInit {
   agregandoAlCarrito: boolean = false;
 
   librosRelacionados: Libro[] = [];
-  maxLibrosRelacionados: number = 4;
+  maxLibrosRelacionados: number = 12;
+  //carrousel
+  currentSlide: number = 0;
+  slidesPerView: number = 4;
+  carrouselInterval: any;
+  showPrevButton: boolean = false;
+  showNextButton: boolean = true;
+
 
   paginadorValoraciones: any;
   currentPageValoraciones: number = 0;
@@ -60,14 +67,6 @@ export class DetallesLibroComponent implements OnInit {
     }
   }
 
-  //genero del libro
-  get primerGenero(): Genero | null {
-    return this.libro?.generos && this.libro.generos.length > 0 ? this.libro.generos[0] : null;
-  }
-
-  getNombrePrimerGenero(): string {
-    return this.libro?.generos?.[0]?.nombre ?? 'Sin género';
-  }
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const id = +params.get('id')!;
@@ -104,7 +103,77 @@ export class DetallesLibroComponent implements OnInit {
         this.actualizarPaginacionValoraciones();
       }
     });
+    this.startCarrousel();
   }
+
+  ngOnDestroy(): void {
+      if(this.carrouselInterval){
+        clearInterval(this.carrouselInterval);
+      }
+  }
+
+  startCarrousel(): void {
+    this.carrouselInterval = setInterval(() => {
+      this.nextSlide();
+    },5000);//5 seg
+  }
+
+  stopCarrousel(): void {
+    if(this.carrouselInterval){
+      clearInterval(this.carrouselInterval);
+    }
+  }
+
+  nextSlide(): void {
+    if(this.librosRelacionados.length <= this.slidesPerView){
+      return;
+    }
+    const totalSlides = Math.ceil(this.librosRelacionados.length / this.slidesPerView);
+    const currentSlideNumber = Math.floor(this.currentSlide / this.slidesPerView);
+
+    if(currentSlideNumber < totalSlides - 1){
+      this.currentSlide += this.slidesPerView;
+      this.updateButtonVisibility();
+    }else{
+      this.currentSlide = 0;
+      this.updateButtonVisibility();
+    }
+  }
+
+  prevSlide(): void {
+    if(this.librosRelacionados.length <= this.slidesPerView){
+      return;
+    }
+    if(this.currentSlide > 0){
+      this.currentSlide -= this.slidesPerView;
+      this.updateButtonVisibility();
+    }
+  }
+
+  updateButtonVisibility(): void{
+    //ocultar botones
+    if(!this.librosRelacionados || this.librosRelacionados.length <= this.slidesPerView){
+      this.showPrevButton = false;
+      this.showNextButton = false;
+      return;
+    }
+    //actualizar
+    this.showPrevButton = this.currentSlide > 0;
+
+    //hay mas slides disponibles?
+    const totalSlides = Math.ceil(this.librosRelacionados.length / this.slidesPerView);
+    const currentSlideNumber = Math.floor(this.currentSlide / this.slidesPerView);
+    this.showNextButton = currentSlideNumber < totalSlides - 1;
+  }
+
+  onCaroruselMouseEnter(): void {
+    this.stopCarrousel();
+  }
+
+  onCaroruselMouseLeave(): void {
+    this.startCarrousel();
+  }
+
 
   /**
    * Carga los detalles de un libro
@@ -554,27 +623,42 @@ export class DetallesLibroComponent implements OnInit {
   cargarLibrosRelacionados(): void {
     if (this.libro && this.libro.generos && this.libro.generos.length > 0) {
       const generoPrincipal = this.libro.generos[0];
+      const autorPrincipal = this.libro.autores[0];
+     
+      console.log('Cargando libros relacionados...');
+      console.log('Género principal:', generoPrincipal);
+      console.log('Autor principal:', autorPrincipal);
+     
       this.libroServiceGeneral.getLibrosNoPagin().subscribe({
         next: (libros) => {
-          //Filtrar libros del mismo género
+          console.log('Total de libros recibidos:', libros.length);
+         
+          // Filtrar libros del mismo género O autor
           this.librosRelacionados = libros
-            .filter((libro: Libro) =>
-              libro.id !== this.libro.id && // Excluir el libro actual
-              libro.generos && // Verificar que tenga géneros
-              libro.generos.length > 0 && // Verificar que tenga al menos un género
-              libro.generos.some(genero => genero.id === generoPrincipal.id)
-            )
+            .filter((libro: Libro) => {
+              const esMismoLibro = libro.id !== this.libro.id;
+              const tieneGeneros = libro.generos && libro.generos.length > 0;
+              const tieneAutores = libro.autores && libro.autores.length > 0;
+              const mismoGenero = tieneGeneros && libro.generos.some(genero => genero.id === generoPrincipal.id);
+              const mismoAutor = tieneAutores && libro.autores.some(autor => autor.id === autorPrincipal.id);
+             
+              return esMismoLibro && (mismoGenero || mismoAutor);
+            })
             .slice(0, this.maxLibrosRelacionados);
          
-          console.log('Género principal:', generoPrincipal);
-          console.log('Libros relacionados cargados:', this.librosRelacionados);
+          console.log('Libros relacionados filtrados:', this.librosRelacionados.length);
+          console.log('Libros relacionados:', this.librosRelacionados);
+
+          //reinicio carrousel y actualizo visibilidad de botones
+          this.currentSlide = 0;
+          this.updateButtonVisibility();
         },
         error: (error) => {
           console.error('Error al cargar libros relacionados:', error);
         }
       });
     } else {
-      console.log('No hay géneros disponibles para cargar libros relacionados');
+      console.log('No hay géneros o autores disponibles para cargar libros relacionados');
     }
   }
 
