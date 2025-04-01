@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 })
 export class DetallesPedidoService {
 
-    private urlEndPoint: string = 'http://localhost:8080/api/detallesPedido'; 
+    private urlEndPoint: string = 'http://localhost:8081/api/detallesPedido'; 
   
     constructor(private http: HttpClient, private router: Router) {}  
 

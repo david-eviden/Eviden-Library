@@ -11,9 +11,9 @@ import { LibroService } from '../libro/libro.service';
 })
 export class ValoracionService implements OnInit {
 
-  private urlEndPoint: string = 'http://localhost:8080/api/valoraciones';
+  private urlEndPoint: string = 'http://localhost:8081/api/valoraciones';
 
-  private urlEndPoint1: string = 'http://localhost:8080/api/valoracion';
+  private urlEndPoint1: string = 'http://localhost:8081/api/valoracion';
 
   // Creamos un BehaviorSubject para la lista de valoraciones
   private valoracionesSubject = new BehaviorSubject<Valoracion[]>([]);
