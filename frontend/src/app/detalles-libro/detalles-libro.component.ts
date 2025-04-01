@@ -551,22 +551,30 @@ export class DetallesLibroComponent implements OnInit {
     if (this.libro && this.libro.generos && this.libro.generos.length > 0) {
       const generoPrincipal = this.libro.generos[0];
       const autorPrincipal = this.libro.autores[0];
+     
+      console.log('Cargando libros relacionados...');
+      console.log('Género principal:', generoPrincipal);
+      console.log('Autor principal:', autorPrincipal);
+     
       this.libroServiceGeneral.getLibrosNoPagin().subscribe({
         next: (libros) => {
-          //Filtrar libros del mismo género y autor
+          console.log('Total de libros recibidos:', libros.length);
+         
+          // Filtrar libros del mismo género O autor
           this.librosRelacionados = libros
-            .filter((libro: Libro) =>
-              libro.id !== this.libro.id && // Excluir el libro actual
-              libro.generos && // Verificar que tenga géneros
-              libro.generos.length > 0 && // Verificar que tenga al menos un género
-              libro.autores && //verificar que tenga autores
-              libro.autores.length > 0 && //al menos un autor
-              libro.generos.some(genero => genero.id === generoPrincipal.id) && //Mismo genero
-              libro.autores.some(autor => autor.id === autorPrincipal.id) //Mismo autor
-            )
+            .filter((libro: Libro) => {
+              const esMismoLibro = libro.id !== this.libro.id;
+              const tieneGeneros = libro.generos && libro.generos.length > 0;
+              const tieneAutores = libro.autores && libro.autores.length > 0;
+              const mismoGenero = tieneGeneros && libro.generos.some(genero => genero.id === generoPrincipal.id);
+              const mismoAutor = tieneAutores && libro.autores.some(autor => autor.id === autorPrincipal.id);
+             
+              return esMismoLibro && (mismoGenero || mismoAutor);
+            })
             .slice(0, this.maxLibrosRelacionados);
          
-          console.log('Libros relacionados cargados:', this.librosRelacionados);
+          console.log('Libros relacionados filtrados:', this.librosRelacionados.length);
+          console.log('Libros relacionados:', this.librosRelacionados);
         },
         error: (error) => {
           console.error('Error al cargar libros relacionados:', error);
