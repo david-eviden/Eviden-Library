@@ -18,7 +18,7 @@ import { Genero } from '../generos/generos';
   selector: 'app-detalles-libro',
   standalone: false,
   templateUrl: './detalles-libro.component.html',
-  styleUrl: './detalles-libro.component.css',
+  styleUrls: ['./detalles-libro.component.css'],
 })
 export class DetallesLibroComponent implements OnInit {
   libro: Libro = new Libro();
@@ -83,14 +83,15 @@ export class DetallesLibroComponent implements OnInit {
       }
     });
 
-    //Valoraciones
     this.valoracionService.getValoraciones().subscribe(
       (valoraciones) => {
         this.valoraciones = valoraciones;
       },
       (error) => {
         console.error('Error al obtener las valoraciones:', error);
-
+      }
+    );
+    
     // Obtener el parámetro de página de valoraciones si existe
     this.route.queryParams.subscribe(params => {
       if (params['valoracionesPage']) {
