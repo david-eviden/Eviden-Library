@@ -29,7 +29,11 @@ export class DetallesLibroComponent implements OnInit {
   agregandoAlCarrito: boolean = false;
 
   librosRelacionados: Libro[] = [];
-  maxLibrosRelacionados: number = 4;
+  maxLibrosRelacionados: number = 12;
+  //carrousel
+  currentSlide: number = 0;
+  slidesPerView: number = 4;
+
 
   paginadorValoraciones: any;
   currentPageValoraciones: number = 0;
@@ -546,19 +550,22 @@ export class DetallesLibroComponent implements OnInit {
   cargarLibrosRelacionados(): void {
     if (this.libro && this.libro.generos && this.libro.generos.length > 0) {
       const generoPrincipal = this.libro.generos[0];
+      const autorPrincipal = this.libro.autores[0];
       this.libroServiceGeneral.getLibrosNoPagin().subscribe({
         next: (libros) => {
-          //Filtrar libros del mismo género
+          //Filtrar libros del mismo género y autor
           this.librosRelacionados = libros
             .filter((libro: Libro) =>
               libro.id !== this.libro.id && // Excluir el libro actual
               libro.generos && // Verificar que tenga géneros
               libro.generos.length > 0 && // Verificar que tenga al menos un género
-              libro.generos.some(genero => genero.id === generoPrincipal.id)
+              libro.autores && //verificar que tenga autores
+              libro.autores.length > 0 && //al menos un autor
+              libro.generos.some(genero => genero.id === generoPrincipal.id) && //Mismo genero
+              libro.autores.some(autor => autor.id === autorPrincipal.id) //Mismo autor
             )
             .slice(0, this.maxLibrosRelacionados);
          
-          console.log('Género principal:', generoPrincipal);
           console.log('Libros relacionados cargados:', this.librosRelacionados);
         },
         error: (error) => {
@@ -566,7 +573,19 @@ export class DetallesLibroComponent implements OnInit {
         }
       });
     } else {
-      console.log('No hay géneros disponibles para cargar libros relacionados');
+      console.log('No hay géneros o autores disponibles para cargar libros relacionados');
+    }
+  }
+  //Controles carrousel
+  nextSlide(): void {
+    if(this.currentSlide < this.librosRelacionados.length - this.slidesPerView){
+      this.currentSlide++;
+    }
+  }
+
+  prevSlide(): void{
+    if(this.currentSlide > 0){
+      this.currentSlide--;
     }
   }
 
