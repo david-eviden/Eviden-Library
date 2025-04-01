@@ -210,7 +210,7 @@
                         No hay libros relacionados disponibles en este momento.
                     </div>
                     <div *ngIf="librosRelacionados.length > 0" class="carousel-container position-relative"
-                        (mouseenter)="onCaroruselMouseEnter" (mouseleave)="onCaroruselMouseLeave">
+                        (mouseenter)="onCaroruselMouseEnter()" (mouseleave)="onCaroruselMouseLeave()">
                         <button *ngIf="showPrevButton" class="carousel-control-prev" type="button"
                             (click)="prevSlide()">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
