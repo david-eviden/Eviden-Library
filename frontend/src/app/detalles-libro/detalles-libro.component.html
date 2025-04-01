@@ -209,13 +209,14 @@
                     <div *ngIf="librosRelacionados.length === 0" class="alert alert-info">
                         No hay libros relacionados disponibles en este momento.
                     </div>
-                    <div *ngIf="librosRelacionados.length > 0" class="carousel-container position-relative">
-                        <button class="carousel-control-prev" type="button" (click)="prevSlide()"
-                            [disabled]="currentSlide === 0">
+                    <div *ngIf="librosRelacionados.length > 0" class="carousel-container position-relative"
+                        (mouseenter)="onCaroruselMouseEnter" (mouseleave)="onCaroruselMouseLeave">
+                        <button *ngIf="showPrevButton" class="carousel-control-prev" type="button"
+                            (click)="prevSlide()">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         </button>
-                        <button class="carousel-control-next" type="button" (click)="nextSlide()"
-                            [disabled]="currentSlide >= librosRelacionados.length - slidesPerView">
+                        <button *ngIf="showNextButton" class="carousel-control-next" type="button"
+                            (click)="nextSlide()">
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                         </button>
                         <div class="carousel-inner">

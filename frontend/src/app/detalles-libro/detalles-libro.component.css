@@ -257,6 +257,8 @@ a {
 .carousel-control-prev,
 .carousel-control-next {
     width: 5%;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
     height: 40px;
     width: 40px;
     top: 50%;
@@ -264,18 +266,6 @@ a {
     z-index: 10;
 }
 
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-    background-color: black;
-}
-
-.carousel-control-prev {
-    left: -10px;
-}
-
-.carousel-control-next {
-    right: -10px;
-}
 
 .carousel-control-prev:disabled,
 .carousel-control-next:disabled {
@@ -286,11 +276,13 @@ a {
 .carousel-inner {
     overflow: hidden;
     width: 100%;
+    transition: transform 0.6 ease-in-out;
 }
 
 .carousel-inner .row {
     margin: 0;
     width: 100%;
+    transition: transform 0.6 ease-in-out;
 }
 
 .col-12.col-sm-6.col-md-4.col-lg-3 .card {
