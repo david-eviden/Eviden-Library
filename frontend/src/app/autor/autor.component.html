@@ -37,4 +37,11 @@
             </div>
         </li>
     </ul>
+    
+    <!-- Paginador -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <paginator-nav *ngIf="paginador" [paginador]="paginador" [pageSize]="currentPageSize"></paginator-nav>
+        </div>
+    </div>
 </div>

@@ -1,5 +1,5 @@
 import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, tap, throwError, of } from 'rxjs';
 import { Autor } from './autor';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import swal from 'sweetalert2';
@@ -20,6 +20,25 @@ export class AutorService implements OnInit {
   constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {}
+
+  // Obtener autores paginados
+  getAutoresPaginados(page: number, size: number): Observable<any> {
+    return this.http.get<any>(`${this.urlEndPoint}/page/${page}/size/${size}`).pipe(
+      catchError(e => {
+        console.error('Error en getAutoresPaginados:', e);
+        // Retornar un objeto vacío con estructura similar a la paginación para evitar errores
+        return of({
+          content: [],
+          number: 0,
+          size: size,
+          totalElements: 0,
+          totalPages: 0,
+          first: true,
+          last: true
+        });
+      })
+    );
+  }
 
   // Obtener lista de autores
   getAutores(): Observable<Autor[]> {

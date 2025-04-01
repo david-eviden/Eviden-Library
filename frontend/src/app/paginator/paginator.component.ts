@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'paginator-nav',
@@ -21,12 +21,23 @@ export class PaginatorComponent implements OnInit, OnChanges {
   @Input()
   generoId: number = 0; // ID del género seleccionado
   
+  @Input()
+  routeBase: string = '/libros'; // Ruta base por defecto
+  
   paginas: number[] = [];
 
   desde: number = 0;
   hasta: number = 0;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private router: Router) {
+    // Detectar la ruta actual para establecer la ruta base
+    const currentUrl = this.router.url;
+    if (currentUrl.includes('/valoraciones')) {
+      this.routeBase = '/valoraciones';
+    } else if (currentUrl.includes('/autores')) {
+      this.routeBase = '/autores';
+    }
+  }
 
   ngOnInit(): void {
     // Obtener parámetros de consulta de la URL actual
@@ -49,6 +60,11 @@ export class PaginatorComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(): void {
+    if (!this.paginador) {
+      console.warn('Paginador es nulo o indefinido');
+      return;
+    }
+    
     const pagesToShow = 4;  // Número máximo de páginas a mostrar
     const currentPage = this.paginador.number;
     const totalPages = this.paginador.totalPages;
@@ -92,5 +108,10 @@ export class PaginatorComponent implements OnInit, OnChanges {
     }
     
     return params;
+  }
+  
+  // Obtener la ruta base para los enlaces de paginación
+  getRouteBase(): string {
+    return this.routeBase;
   }
 }

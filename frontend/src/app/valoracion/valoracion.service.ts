@@ -1,6 +1,6 @@
 import { HttpClient} from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, tap, throwError, of } from 'rxjs';
 import { Valoracion } from './valoracion';
 import { Router } from '@angular/router';
 import swal from 'sweetalert2';
@@ -29,6 +29,32 @@ export class ValoracionService implements OnInit {
       catchError(e => {
         console.error(e.error.mensaje);
         return throwError(() => e);
+      })
+    );
+  }
+
+  // Obtener valoraciones paginadas
+  getValoracionesPaginadas(page: number, size: number): Observable<any> {
+    return this.http.get<any>(`${this.urlEndPoint}/page/${page}/size/${size}`).pipe(
+      tap(response => {
+        if (response && response.content) {
+          (response.content as Valoracion[]).forEach(valoracion => {
+            valoracion.fecha = new Date(valoracion.fecha);
+          });
+        }
+      }),
+      catchError(e => {
+        console.error('Error en getValoracionesPaginadas:', e);
+        // Retornar un objeto vacío con estructura similar a la paginación para evitar errores
+        return of({
+          content: [],
+          number: 0,
+          size: size,
+          totalElements: 0,
+          totalPages: 0,
+          first: true,
+          last: true
+        });
       })
     );
   }

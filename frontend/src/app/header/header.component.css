@@ -3,6 +3,7 @@
   top: 0;
   left: 0;
   width: 100%;
+  max-width: 100vw;
   z-index: 1050;
 }
 
@@ -23,6 +24,7 @@
 
 .navbar .dropdown {
   flex-shrink: 0;
+  position: relative;
 }
 
 .nav-row .flex-grow-1 {
@@ -45,6 +47,20 @@
   border: none;
 }
 
+/* Estilos para el logo */
+.logo-container {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  max-width: 150px;
+  flex-shrink: 0;
+}
+
+.header-logo {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
 
 @media (max-width: 700px) {
   .navbar .d-flex {
@@ -60,6 +76,12 @@
 
   .navbar {
     padding: 1rem 0;
+  }
+
+  .logo-container {
+    height: 32px;
+    max-width: 100px;
+    margin-right: 5px;
   }
 
   .container-fluid {

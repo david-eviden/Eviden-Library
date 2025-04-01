@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, OnInit, OnDestroy, Output } from '@angular/core';
 import { SearchService } from './search.service';
 import { Router } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
@@ -9,11 +9,12 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
   templateUrl: './search.component.html',
   styleUrl: './search.component.css'
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent implements OnInit, OnDestroy {
   searchTerm: string = '';
   searchResults: any = { libros: [], autores: [], generos: [] };
   showDropdown: boolean = false;
   private searchSubject = new Subject<string>();
+  placeholder: string = 'Buscar por título, autor o género...';
 
   @Output() search = new EventEmitter<string>();
 
@@ -33,6 +34,14 @@ export class SearchComponent implements OnInit {
         this.clearResults();
       }
     });
+    
+    // Set placeholder based on screen size
+    this.updatePlaceholder();
+    window.addEventListener('resize', this.updatePlaceholder.bind(this));
+  }
+
+  updatePlaceholder(): void {
+    this.placeholder = window.innerWidth < 576 ? 'Busca tu libro...' : 'Buscar por título, autor o género...';
   }
 
   onSearchInput(event: any): void {
@@ -150,5 +159,11 @@ export class SearchComponent implements OnInit {
       this.showDropdown = false;
     }
     //limpia busqueda y oculta el dropdown
+  }
+
+  ngOnDestroy() {
+    // Remove event listener on component destroy
+    window.removeEventListener('resize', this.updatePlaceholder.bind(this));
+    this.searchSubject.unsubscribe();
   }
 }

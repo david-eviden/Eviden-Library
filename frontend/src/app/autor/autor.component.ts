@@ -3,7 +3,7 @@ import { AutorService } from './autor.service';
 import { Autor } from './autor';
 import swal from 'sweetalert2';
 import { AuthService } from '../login/auth.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-autor',
@@ -13,25 +13,63 @@ import { Router } from '@angular/router';
 })
 export class AutorComponent implements OnInit {
   autores: Autor[] = [];
+  paginador: any;
+  currentPage: number = 0;
+  currentPageSize: number = 6;
 
   constructor(
     private autorService: AutorService,  
     public authService: AuthService,
-    private router: Router
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.autorService.autores$.subscribe(
-      (autores: Autor[]) => {
-        this.autores = autores;
-      },
-      error => {
-        console.error('Error al obtener los autores', error); 
+    // Escuchar cambios en los parámetros de ruta y consulta
+    this.activatedRoute.queryParams.subscribe(params => {
+      // Actualizar página actual
+      const pageParam = params['page'];
+      if (pageParam) {
+        this.currentPage = +pageParam;
       }
-    );
+      
+      // Actualizar tamaño de página
+      const sizeParam = params['size'];
+      if (sizeParam) {
+        this.currentPageSize = +sizeParam;
+      }
+      
+      this.cargarAutores();
+    });
+  }
 
-    // Obtener autores al cargar el componente
-    this.autorService.getAutores().subscribe();
+  cargarAutores(): void {
+    // Por ahora usamos el método estándar sin paginación, en caso de que el backend no tenga el endpoint paginado
+    this.autorService.getAutores().subscribe({
+      next: (autores) => {
+        // Crear un objeto de paginación simulado para que funcione el paginador
+        this.paginador = {
+          content: autores,
+          number: this.currentPage,
+          size: this.currentPageSize,
+          totalElements: autores.length,
+          totalPages: Math.ceil(autores.length / this.currentPageSize),
+          first: this.currentPage === 0,
+          last: this.currentPage >= Math.ceil(autores.length / this.currentPageSize) - 1,
+          numberOfElements: Math.min(this.currentPageSize, autores.length - this.currentPage * this.currentPageSize)
+        };
+        
+        // Aplicar paginación en cliente
+        const start = this.currentPage * this.currentPageSize;
+        const end = start + this.currentPageSize;
+        this.autores = autores.slice(start, end);
+      },
+      error: (error) => {
+        console.error('Error cargando los autores: ', error);
+        this.autores = [];
+        this.paginador = null;
+      }
+    });
   }
 
   // Eliminar autor con confirmación
@@ -52,8 +90,8 @@ export class AutorComponent implements OnInit {
       if (result.value) {
         this.autorService.delete(autor.id).subscribe(
           response => {
-            // Cuando la eliminación es exitosa, actualizamos la lista
-            this.autores = this.autores.filter(a => a.id !== autor.id);
+            // Cuando la eliminación es exitosa, actualizamos la lista con paginación
+            this.cargarAutores();
             swal(
               '¡Eliminado!',
               `El autor "${autor.nombre}" ha sido eliminado con éxito`,
@@ -98,6 +136,7 @@ export class AutorComponent implements OnInit {
           response => {
             // Vaciamos el array de autores
             this.autores = [];
+            this.paginador = null;
   
             swal(
               '¡Eliminados!',

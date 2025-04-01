@@ -23,11 +23,18 @@ import { Genero } from '../generos/generos';
 export class DetallesLibroComponent implements OnInit {
   libro: Libro = new Libro();
   valoraciones: Valoracion[] = [];
+  valoracionesFiltradas: Valoracion[] = []; // Para mostrar solo las valoraciones paginadas
   esFavorito: boolean = false;
   verificandoFavorito: boolean = false;
   agregandoAlCarrito: boolean = false;
+
   librosRelacionados: Libro[] = [];
   maxLibrosRelacionados: number = 4;
+
+  paginadorValoraciones: any;
+  currentPageValoraciones: number = 0;
+  pageSizeValoraciones: number = 3; // Máximo 3 valoraciones por página
+
 
   constructor(
     private route: ActivatedRoute,
@@ -83,8 +90,19 @@ export class DetallesLibroComponent implements OnInit {
       },
       (error) => {
         console.error('Error al obtener las valoraciones:', error);
+
+    // Obtener el parámetro de página de valoraciones si existe
+    this.route.queryParams.subscribe(params => {
+      if (params['valoracionesPage']) {
+        this.currentPageValoraciones = +params['valoracionesPage'];
+
       }
-    );
+      
+      // Actualizar valoraciones si ya están cargadas
+      if (this.libro && this.libro.valoraciones) {
+        this.actualizarPaginacionValoraciones();
+      }
+    });
   }
 
   /**
@@ -95,6 +113,9 @@ export class DetallesLibroComponent implements OnInit {
     this.libroService.getLibro(id).subscribe(
       (libro) => {
         this.libro = libro;
+        // Configurar paginación para valoraciones
+        this.actualizarPaginacionValoraciones();
+        
         // Verificar si el libro está en favoritos
         if (this.authService.estaLogueado() && this.authService.esUsuario) {
           this.verificandoFavorito = true;
@@ -118,6 +139,50 @@ export class DetallesLibroComponent implements OnInit {
         this.router.navigate(['/libros']);
       }
     );
+  }
+
+  /**
+   * Actualiza la paginación de valoraciones
+   */
+  actualizarPaginacionValoraciones(): void {
+    if (!this.libro || !this.libro.valoraciones) {
+      return;
+    }
+
+    // Crear un objeto de paginación simulado para las valoraciones
+    this.paginadorValoraciones = {
+      content: this.libro.valoraciones,
+      number: this.currentPageValoraciones,
+      size: this.pageSizeValoraciones,
+      totalElements: this.libro.valoraciones.length,
+      totalPages: Math.ceil(this.libro.valoraciones.length / this.pageSizeValoraciones),
+      first: this.currentPageValoraciones === 0,
+      last: this.currentPageValoraciones >= Math.ceil(this.libro.valoraciones.length / this.pageSizeValoraciones) - 1,
+      numberOfElements: Math.min(this.pageSizeValoraciones, this.libro.valoraciones.length - this.currentPageValoraciones * this.pageSizeValoraciones)
+    };
+    
+    // Aplicar paginación en cliente
+    const start = this.currentPageValoraciones * this.pageSizeValoraciones;
+    const end = start + this.pageSizeValoraciones;
+    this.valoracionesFiltradas = this.libro.valoraciones.slice(start, end);
+  }
+
+  /**
+   * Cambiar a una página específica de valoraciones
+   * @param page Número de página
+   */
+  cambiarPaginaValoraciones(page: number): void {
+    this.currentPageValoraciones = page;
+    
+    // Actualizar URL con el nuevo parámetro de página sin recargar
+    const queryParams = { ...this.route.snapshot.queryParams, valoracionesPage: page };
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: queryParams,
+      queryParamsHandling: 'merge',
+    }).then(() => {
+      this.actualizarPaginacionValoraciones();
+    });
   }
 
   // Verificar si el libro está en favoritos
@@ -341,9 +406,8 @@ export class DetallesLibroComponent implements OnInit {
 
   // Eliminar valoracion con confirmación
   deleteValoracion(valoracion: Valoracion): void {
-    // Mensaje de confirmación de eliminación
     swal({
-      title: `¿Estás seguro de eliminar la valoración?`,
+      title: `¿Estás seguro de eliminar esta valoración?`,
       text: "¡Esta operación no es reversible!",
       type: "warning",
       showCancelButton: true,
@@ -357,21 +421,27 @@ export class DetallesLibroComponent implements OnInit {
       if (result.value) {
         this.valoracionService.delete(valoracion.id).subscribe(
           response => {
-            // Cuando la eliminación es exitosa, actualizamos la lista
-            this.libro.valoraciones = this.libro.valoraciones.filter(v => v.id !== valoracion.id);
-            swal(
-              '¡Eliminado!',
-              `La valoración ha sido eliminada con éxito`,
-              'success'
-            );
+            // Actualizar la lista de valoraciones en el libro
+            if (this.libro.valoraciones) {
+              this.libro.valoraciones = this.libro.valoraciones.filter(v => v.id !== valoracion.id);
+              
+              // Recalcular valoración media
+              if (this.libro.valoraciones.length > 0) {
+                const suma = this.libro.valoraciones.reduce((total, val) => total + val.puntuacion, 0);
+                this.libro.valoracionMedia = suma / this.libro.valoraciones.length;
+              } else {
+                this.libro.valoracionMedia = 0;
+              }
+              
+              // Actualizar la paginación
+              this.actualizarPaginacionValoraciones();
+            }
+            
+            swal('¡Eliminada!', 'La valoración ha sido eliminada con éxito', 'success');
           },
           error => {
-            console.error('Error al eliminar la valoración', error);
-            swal(
-              'Error',
-              'Hubo un problema al eliminar la valoración',
-              'error'
-            );
+            console.error('Error al eliminar la valoración:', error);
+            swal('Error', 'No se pudo eliminar la valoración', 'error');
           }
         );
       } else if (result.dismiss === swal.DismissReason.cancel) {
