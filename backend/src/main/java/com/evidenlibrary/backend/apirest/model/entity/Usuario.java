@@ -54,6 +54,9 @@ public class Usuario implements Serializable{
 	    
 	@Column(nullable = false)
 	private String rol;
+	
+	@Column(columnDefinition = "LONGTEXT")
+	private String foto;
 	    
 	@JsonIgnore
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
@@ -128,6 +131,14 @@ public class Usuario implements Serializable{
 
 	public void setRol(String rol) {
 		this.rol = rol;
+	}
+
+	public String getFoto() {
+		return foto;
+	}
+
+	public void setFoto(String foto) {
+		this.foto = foto;
 	}
 
 	public List<Pedido> getPedidos() {

@@ -18,9 +18,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.evidenlibrary.backend.apirest.model.entity.DetallePedido;
 import com.evidenlibrary.backend.apirest.model.entity.Pedido;
 import com.evidenlibrary.backend.apirest.model.entity.Usuario;
+import com.evidenlibrary.backend.apirest.model.service.DetallePedidoService;
+import com.evidenlibrary.backend.apirest.model.service.EmailService;
 import com.evidenlibrary.backend.apirest.model.service.PedidoService;
+import com.evidenlibrary.backend.apirest.model.service.UsuarioService;
 
 @CrossOrigin(origins = { "http://localhost:4200" })
 @RestController
@@ -29,6 +33,15 @@ public class PedidoController {
 
     @Autowired
     private PedidoService pedidoService;
+    
+    @Autowired
+    private UsuarioService usuarioService;
+    
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private DetallePedidoService detallePedidoService;
 
     @GetMapping("/pedidos")
     public List<Pedido> index() {
@@ -47,7 +60,7 @@ public class PedidoController {
     }
 
     @GetMapping("/pedido/{id}")
-    public ResponseEntity<?> show(@PathVariable Long id) {
+    public ResponseEntity<?> show(@PathVariable(name = "id") Long id) {
         Pedido pedido;
         Map<String, Object> response = new HashMap<>();
 
@@ -67,8 +80,8 @@ public class PedidoController {
         return new ResponseEntity<>(pedido, HttpStatus.OK);
     }
 
-    @GetMapping("/pedidos/usuario/{usuarioId}")
-    public ResponseEntity<?> findByUsuarioId(@PathVariable Long usuarioId) {
+    @GetMapping("/pedidos/usuario/{id}")
+    public ResponseEntity<?> findByUsuarioId(@PathVariable(name = "id") Long usuarioId) {
         List<Pedido> pedidos;
         Map<String, Object> response = new HashMap<>();
 
@@ -83,6 +96,58 @@ public class PedidoController {
         return new ResponseEntity<>(pedidos, HttpStatus.OK);
     }
 
+    @PostMapping("/pedido/enviar-email/{id}")
+    public ResponseEntity<?> enviarEmailConfirmacion(@PathVariable(name = "id") Long id) {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            // Obtener el pedido completo con todos sus detalles
+            Pedido pedido = pedidoService.findById(id);
+            
+            if (pedido == null) {
+                response.put("mensaje", "El pedido con ID: ".concat(id.toString().concat(" no existe en la base de datos")));
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+            
+            // Cargar explícitamente los detalles del pedido
+            List<DetallePedido> detalles = detallePedidoService.findByPedidoId(id);
+            pedido.setDetalles(detalles);
+            
+            // Obtener el usuario completo para acceder a su email
+            if (pedido.getUsuario() != null && pedido.getUsuario().getId() != null) {
+                Usuario usuario = usuarioService.findById(pedido.getUsuario().getId());
+                if (usuario != null && usuario.getEmail() != null && !usuario.getEmail().isEmpty()) {
+                    // Enviar email de confirmación
+                    boolean emailEnviado = emailService.enviarEmailConfirmacionPedido(pedido, usuario.getEmail());
+                    if (emailEnviado) {
+                        response.put("emailEnviado", true);
+                        response.put("mensaje", "Email de confirmación enviado correctamente a: " + usuario.getEmail());
+                        System.out.println("Email de confirmación enviado a: " + usuario.getEmail());
+                    } else {
+                        response.put("emailEnviado", false);
+                        response.put("mensaje", "No se pudo enviar el email de confirmación a: " + usuario.getEmail());
+                        System.out.println("No se pudo enviar el email de confirmación a: " + usuario.getEmail());
+                    }
+                } else {
+                    response.put("emailEnviado", false);
+                    response.put("mensaje", "No se pudo enviar el email de confirmación: email de usuario no disponible");
+                    System.out.println("No se pudo enviar el email de confirmación: email de usuario no disponible");
+                }
+            } else {
+                response.put("emailEnviado", false);
+                response.put("mensaje", "No se pudo enviar el email de confirmación: usuario no disponible");
+                System.out.println("No se pudo enviar el email de confirmación: usuario no disponible");
+            }
+            
+            return new ResponseEntity<>(response, HttpStatus.OK);
+            
+        } catch (DataAccessException e) {
+            response.put("mensaje", "Error al enviar el email de confirmación");
+            response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping("/pedido")
     public ResponseEntity<?> create(@RequestBody Pedido pedido) {
         Pedido nuevoPedido;
@@ -90,6 +155,10 @@ public class PedidoController {
 
         try {
             nuevoPedido = pedidoService.save(pedido);
+            
+            // Ya no enviamos el email aquí, lo haremos después de crear todos los detalles
+            // desde el frontend
+            
         } catch (DataAccessException e) {
             response.put("mensaje", "Error al realizar el insert en la base de datos");
             response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
@@ -102,7 +171,7 @@ public class PedidoController {
     }
 
     @PutMapping("/pedido/{id}")
-    public ResponseEntity<?> update(@RequestBody Pedido pedido, @PathVariable Long id) {
+    public ResponseEntity<?> update(@RequestBody Pedido pedido, @PathVariable(name = "id") Long id) {
         Pedido pedidoActual = pedidoService.findById(id);
         Pedido pedidoUpdated;
         Map<String, Object> response = new HashMap<>();
@@ -135,7 +204,7 @@ public class PedidoController {
     }
 
     @DeleteMapping("/pedido/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
         Map<String, Object> response = new HashMap<>();
 
         try {

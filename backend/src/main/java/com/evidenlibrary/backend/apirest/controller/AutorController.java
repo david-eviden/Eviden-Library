@@ -41,7 +41,7 @@ public class AutorController {
 	
 	// Obtener autores por ID
 	@GetMapping("/autor/{id}")
-	public ResponseEntity<?> show(@PathVariable Long id) {
+	public ResponseEntity<?> show(@PathVariable(name = "id") Long id) {
 		
 		Autor autor;
 		Map<String, Object> response = new HashMap<>();
@@ -97,7 +97,7 @@ public class AutorController {
 	// Actualizar autor
 	@PutMapping("/autor/{id}")
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<?> update(@RequestBody Autor autor, BindingResult result ,@PathVariable Long id) {
+	public ResponseEntity<?> update(@RequestBody Autor autor, BindingResult result ,@PathVariable(name = "id") Long id) {
 		
 		Autor currentAutor = this.autorService.findById(id);
 		Autor nuevoAutor;
@@ -132,33 +132,50 @@ public class AutorController {
 		}
 		
 		response.put("mensaje", "El autor ha sido actualizado con éxito");
-		response.put("cliente", nuevoAutor);
+		response.put("autor", nuevoAutor);
 		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 
 	// Eliminar autor por ID
-		@DeleteMapping("/autores/{id}")
-		public ResponseEntity<?> delete(@PathVariable Long id) {
-			Autor currentAutor = this.autorService.findById(id);
-			Map<String, Object> response = new HashMap<>();
+	@DeleteMapping("/autor/{id}")
+	public ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
+		Autor currentAutor = this.autorService.findById(id);
+		Map<String, Object> response = new HashMap<>();
 
-			// Validación de que exista el autor
-			if (currentAutor == null) {
-				response.put("mensaje", "El autor con ID: " + id + " no existe en la base de datos");
-				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-			}
-
-			try {
-				autorService.delete(currentAutor);
-			} catch (DataAccessException e) {
-				response.put("mensaje", "Error al eliminar el autor en la base de datos");
-				response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
-				return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-
-			response.put("mensaje", "El autor ha sido eliminado con éxito");
-			response.put("autor", currentAutor);
-			return new ResponseEntity<>(response, HttpStatus.OK);
+		// Validación de que exista el autor
+		if (currentAutor == null) {
+			response.put("mensaje", "El autor con ID: " + id + " no existe en la base de datos");
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
+
+		try {
+			autorService.delete(currentAutor);
+		} catch (DataAccessException e) {
+			response.put("mensaje", "Error al eliminar el autor en la base de datos");
+			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		response.put("mensaje", "El autor ha sido eliminado con éxito");
+		response.put("autor", currentAutor);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+		
+	// Eliminar todos los autores
+	@DeleteMapping("/autores")
+	public ResponseEntity<?> deleteAll() {
+		Map<String, Object> response = new HashMap<>();
+
+		try {
+		    autorService.deleteAll();
+		} catch(DataAccessException e) {
+		    response.put("mensaje", "Error al eliminar los autores en la base de datos");
+		    response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+		    return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		response.put("mensaje", "Todos los autors han sido eliminados con éxito");
+		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
+	}
 
 }

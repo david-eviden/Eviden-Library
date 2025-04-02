@@ -4,20 +4,21 @@ import { map, Observable } from 'rxjs';
 import { Carrito } from './carrito';
 import { detallesCarrito } from '../detalles-carrito/detalles-carrito';
 import { Libro } from '../libro/libro';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CarritoService {
+  private urlEndPoint: string = 'http://localhost:8080/api/carritos';
 
-  private urlEndPoint: string = 'http://localhost:8080/api/carritos'; 
+  private carrito: any[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   getCarritos(): Observable<Carrito[]> {
     return this.http.get<any[]>(this.urlEndPoint).pipe(
       map(response => {
-        console.log('Respuesta del servidor:', response);
         return response.map(item => {
           const carrito = new Carrito();
           if (item.usuario) {
@@ -30,7 +31,7 @@ export class CarritoService {
             detalleCarrito.id = detalle.id;
             detalleCarrito.cantidad = detalle.cantidad;
             detalleCarrito.precioUnitario = detalle.precioUnitario;
-            
+           
             // Mapear el libro correctamente
             if (detalle.libro) {
               const libro = new Libro();
@@ -40,12 +41,16 @@ export class CarritoService {
               libro.stock = detalle.libro.stock;
               detalleCarrito.libro = libro;
             }
-            
+           
             return detalleCarrito;
           }) || [];
           return carrito;
         });
       })
-    ); 
+    );
+  }
+
+  addToCarrito(libro: any): void {
+    console.log('Añadir libro al carrito', libro);
   }
 }

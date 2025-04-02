@@ -1,7 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { detallesPedido } from './detalles-pedido';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -10,8 +11,8 @@ export class DetallesPedidoService {
 
     private urlEndPoint: string = 'http://localhost:8080/api/detallesPedido'; 
   
-    constructor(private http: HttpClient) {}
-  
+    constructor(private http: HttpClient, private router: Router) {}  
+
     getdetallesPedido(): Observable<detallesPedido[]> {
       return this.http.get(this.urlEndPoint).pipe(
   

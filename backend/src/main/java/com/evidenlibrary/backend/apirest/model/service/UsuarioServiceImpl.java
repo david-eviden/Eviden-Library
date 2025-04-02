@@ -42,6 +42,12 @@ public class UsuarioServiceImpl implements UsuarioService {
 	public Usuario findById(Long id) {
 		return usuarioDao.findById(id).orElse(null);
 	}
+	
+    @Override
+    @Transactional(readOnly = true)
+    public Usuario findByEmail(String email) {
+        return usuarioDao.findByEmail(email);
+    }
 
 	@Override
 	@Transactional(readOnly = true)

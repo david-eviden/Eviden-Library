@@ -18,4 +18,6 @@ public interface FavoritoService {
 	public void deleteLibroByFavorito(Long id);
 	
 	public void delete(Favorito detalles);
+
+	public List<Favorito> findByUsuarioId(Long usuarioId);
 }

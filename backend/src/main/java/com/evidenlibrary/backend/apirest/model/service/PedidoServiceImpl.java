@@ -30,8 +30,7 @@ public class PedidoServiceImpl implements PedidoService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<Pedido> findPedidosByUsuarioId(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		return pedidoDao.findByUsuarioId(id);
 	}
 
 	@Override

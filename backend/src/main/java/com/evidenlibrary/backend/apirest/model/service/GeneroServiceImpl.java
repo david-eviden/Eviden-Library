@@ -1,6 +1,8 @@
 package com.evidenlibrary.backend.apirest.model.service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,5 +65,27 @@ public class GeneroServiceImpl implements GeneroService {
 		// Eliminar el género
 		generoDao.delete(genero);
 	}
+	
+    @Override
+    @Transactional
+    public void deleteAll() {
+        // Obtener todos los géneros
+        List<Genero> generos = findAll();
+        
+        // Para cada género, desasociar todos sus libros
+        for (Genero genero : generos) {
+            // Obtener una nueva colección para evitar ConcurrentModificationException
+            Set<Libro> librosDelGenero = new HashSet<>(genero.getLibros());
+            
+            // Eliminar la asociación entre el género y cada libro
+            for (Libro libro : librosDelGenero) {
+                libro.getGeneros().remove(genero);
+                libroDao.save(libro); // Guardar el libro con la relación actualizada
+            }
+        }
+        
+        // Una vez que todas las asociaciones han sido eliminadas, eliminar todos los géneros
+        generoDao.deleteAll();
+    }
 
 }

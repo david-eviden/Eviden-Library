@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Router, NavigationStart, Event as RouterEvent, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -12,4 +11,5 @@ export class AppComponent {
   title = 'frontend';
 
   constructor(private router: Router) {}
+
 }

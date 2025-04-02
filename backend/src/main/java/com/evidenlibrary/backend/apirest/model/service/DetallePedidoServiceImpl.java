@@ -18,13 +18,25 @@ public class DetallePedidoServiceImpl implements DetallePedidoService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<DetallePedido> findAll() {
-		return detallePedidoDao.findAll();
+		return (List<DetallePedido>) detallePedidoDao.findAll();
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public DetallePedido findById(Long id) {
 		return detallePedidoDao.findById(id).orElse(null);
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<DetallePedido> findByLibroId(Long libroId) {
+	    return detallePedidoDao.findByLibroId(libroId);
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<DetallePedido> findByPedidoId(Long pedidoId) {
+		return detallePedidoDao.findByPedidoId(pedidoId);
 	}
 
 	@Override
@@ -39,10 +51,9 @@ public class DetallePedidoServiceImpl implements DetallePedidoService {
 		detallePedidoDao.delete(detallePedido);
 	}
 
-	@Override
-	@Transactional(readOnly = true)
-	public List<DetallePedido> findByPedidoId(Long pedidoId) {
-		return detallePedidoDao.findByPedidoId(pedidoId);
-	}
-
+    @Override
+    @Transactional
+    public void deleteAll() {
+        detallePedidoDao.deleteAll();
+    }
 }

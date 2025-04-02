@@ -1,7 +1,0 @@
-INDEX VERSION 1.4+C:\Users\a938140\OneDrive - Eviden\Escritorio\DirectorioGitHub\TrabajoFinal\Eviden-Library\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
-1538616160.index
-3155691280.index
-847203335.index
-1256995459.index
-1965174767.index
-4284153050.index

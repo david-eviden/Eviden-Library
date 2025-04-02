@@ -1,9 +1,10 @@
 <div class="container my-3">
     <h2 class="text-center mb-4">Lista de Pedidos</h2>
-    <div class="alert alert-info" *ngIf="pedidos.length === 0">
+    <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+    <div class="alert alert-info" *ngIf="pedidos.length === 0 && !error">
         No hay pedidos disponibles.
     </div>
-    <ul class="list-group">
+    <ul *ngIf="authService.esAdmin" class="list-group">
         <li *ngFor="let pedido of pedidos" class="list-group-item">
             <div class="mb-3">
                 <h5 class="mb-1">
@@ -14,7 +15,6 @@
                         <span class="text-muted">Usuario no disponible</span>
                     </ng-template>
                 </h5>
-                <p class="mb-0">Fecha: {{ pedido.fechaPedido }}</p>
                 <p class="mb-0">Total: {{ pedido.total | currency:'EUR' }}</p>
                 <p class="mb-0">Dirección: {{ pedido.direccionEnvio }}</p>
                 <p class="mb-0">Estado: {{ pedido.estado }}</p>
@@ -35,7 +35,7 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let detalle of pedido.detalles">
-                                <td>{{ detalle.libro.titulo }}</td>
+                                <td>{{ detalle.libro.titulo || 'Libro no disponible' }}</td>
                                 <td>{{ detalle.cantidad }}</td>
                                 <td>{{ detalle.precioUnitario | currency:'EUR' }}</td>
                                 <td>{{ detalle.cantidad * detalle.precioUnitario | currency:'EUR' }}</td>
@@ -45,10 +45,13 @@
                 </div>
             </div>
             
+            <div *ngIf="!pedido.detalles || pedido.detalles.length === 0" class="alert alert-warning mt-3">
+                No hay detalles disponibles para este pedido.
+            </div>
+
             <div class="text-end mt-2">
-                <button class="btn btn-primary btn-sm">Ver detalles</button>
+                <!-- <button class="btn btn-primary btn-sm" [routerLink]="['/pedido', pedido.id]">Ver detalles</button> -->
             </div>
         </li>
     </ul>
 </div>
-

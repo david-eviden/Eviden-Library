@@ -38,8 +38,8 @@ public class Genero implements Serializable{
     @Column(nullable = false)
     private String descripcion;
     
-    @JsonBackReference
     @ManyToMany(mappedBy = "generos")
+    @JsonBackReference
     public final Set<Libro> libros = new HashSet<>();
 
     // Getter/Setter

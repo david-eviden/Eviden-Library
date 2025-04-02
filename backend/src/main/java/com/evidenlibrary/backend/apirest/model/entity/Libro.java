@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -52,38 +51,59 @@ public class Libro implements Serializable {
     @Column(nullable = false)
     private String descripcion;
     
-    public String getDescripcion() {
-		return descripcion;
-	}
+    @Column(nullable = true, columnDefinition = "LONGTEXT")
+    private String imagen;
+    
+    @Column(nullable = true)
+    private String anio;
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
-
-	@ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
         name = "libro_autor",
         joinColumns = @JoinColumn(name = "libro_id"),
         inverseJoinColumns = @JoinColumn(name = "autor_id")
     )
-    @JsonManagedReference
-    public final Set<Autor> autores = new HashSet<>();
+    private final Set<Autor> autores = new HashSet<>();
     
-    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
         name = "libro_genero",
         joinColumns = @JoinColumn(name = "libro_id"),
         inverseJoinColumns = @JoinColumn(name = "genero_id")
     )
-    @JsonIgnore
-    public final Set<Genero> generos = new HashSet<>();
+    private final Set<Genero> generos = new HashSet<>();
     
     @OneToMany(mappedBy = "libro", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    public final List<Valoracion> valoraciones = new ArrayList<>();
-
+    private final List<Valoracion> valoraciones = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "libro", fetch = FetchType.EAGER)
+    @JsonIgnore
+    private final List<Favorito> favoritos = new ArrayList<>();
+    
+    @Column(name = "valoracion_media", nullable = true)
+    private Double valoracionMedia;
     
     // Getter/Setter
     
+    public String getDescripcion() {
+		return descripcion;
+	}
+
+	public String getImagen() {
+		return imagen;
+	}
+
+	public void setImagen(String imagen) {
+		this.imagen = imagen;
+	}
+
+	public List<Favorito> getFavoritos() {
+		return favoritos;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
     
 	public String getTitulo() {
 		return titulo;
@@ -123,7 +143,37 @@ public class Libro implements Serializable {
 
 	public Long getId() {
 		return id;
+	}	
+	
+	public String getAnio() {
+		return anio;
 	}
-    
-    
+
+	public void setAnio(String anio) {
+		this.anio = anio;
+	}
+
+	//Valoracion media
+	public Double getValoracionMedia() {
+        if (valoraciones.isEmpty()) { // No hay valoraciones
+        	this.valoracionMedia = 0.0;
+        	return this.valoracionMedia;
+        }
+        // Calcular la media
+        /*double suma = 0.0;
+        for (Valoracion v : valoraciones) {
+            suma += v.getPuntuacion();
+        }*/
+        double suma = valoraciones.stream()
+        			.mapToDouble(Valoracion::getPuntuacion)
+        			.sum();
+        this.valoracionMedia = suma / valoraciones.size();
+        return valoracionMedia;
+    }
+
+	public void setValoracionMedia(Double valoracionMedia) {
+		this.valoracionMedia = valoracionMedia;
+	}
+	
+	
 }
